@@ -6,13 +6,11 @@ body, html {
     align-items: center;
 }
 body {
-    /* Other styling */
    background-color: black;
-    background-size: cover; /* This will cover the entire area, without stretching the image */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    background-position: center; /* Centers the image */
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center;
 }
-
 .canvas-container {
     display: flex;
     justify-content: center;

@@ -45,5 +45,3 @@ class AssetManager {
     };
 };
 
-// Test Commit :) - Chris
-

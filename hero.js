@@ -1,4 +1,4 @@
-class hero {
+class Hero {
 
     constructor(game) {
 

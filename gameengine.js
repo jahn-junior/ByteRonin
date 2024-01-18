@@ -10,10 +10,15 @@ class GameEngine {
         this.entities = [];
 
         // Information on the input
-        this.click = null;
-        this.mouse = null;
-        this.wheel = null;
-        this.keys = {};
+        this.w = false;
+        this.a = false;
+        this.s = false;
+        this.d = false;
+
+        this.i = false;
+        this.j = false;
+        this.k = false;
+        this.l = false;
 
         // Options and the Details
         this.options = options || {
@@ -37,23 +42,11 @@ class GameEngine {
     };
 
     startInput() {
+        let that = this;
+
         const getXandY = e => ({
             x: e.clientX - this.ctx.canvas.getBoundingClientRect().left,
             y: e.clientY - this.ctx.canvas.getBoundingClientRect().top
-        });
-        
-        this.ctx.canvas.addEventListener("mousemove", e => {
-            if (this.options.debugging) {
-                console.log("MOUSE_MOVE", getXandY(e));
-            }
-            this.mouse = getXandY(e);
-        });
-
-        this.ctx.canvas.addEventListener("click", e => {
-            if (this.options.debugging) {
-                console.log("CLICK", getXandY(e));
-            }
-            this.click = getXandY(e);
         });
 
         this.ctx.canvas.addEventListener("wheel", e => {
@@ -72,8 +65,63 @@ class GameEngine {
             this.rightclick = getXandY(e);
         });
 
-        this.ctx.canvas.addEventListener("keydown", event => this.keys[event.key] = true);
-        this.ctx.canvas.addEventListener("keyup", event => this.keys[event.key] = false);
+        this.ctx.canvas.addEventListener("keydown", function (e) {
+            switch (e.code) {
+                case "KeyW":
+                    that.w = true;
+                    break;
+                case "KeyA":
+                    that.a = true;
+                    break;
+                case "KeyS":
+                    that.s = true;
+                    break;
+                case "KeyD":
+                    that.d = true;
+                    break;
+                case "KeyI":
+                    that.i = true;
+                    break;
+                case "KeyJ":
+                    that.j = true;
+                    break;
+                case "KeyK":
+                    that.k = true;
+                    break;
+                case "KeyL":
+                    that.l = true;
+                    break;
+            }
+        }, false);
+
+        this.ctx.canvas.addEventListener("keyup", function (e) {
+            switch (e.code) {
+                case "KeyW":
+                    that.w = false;
+                    break;
+                case "KeyA":
+                    that.a = false;
+                    break;
+                case "KeyS":
+                    that.s = false;
+                    break;
+                case "KeyD":
+                    that.d = false;
+                    break;
+                case "KeyI":
+                    that.i = false;
+                    break;
+                case "KeyJ":
+                    that.j = false;
+                    break;
+                case "KeyK":
+                    that.k = false;
+                    break;
+                case "KeyL":
+                    that.l = false;
+                    break;
+            }
+        }, false);
     };
 
     addEntity(entity) {
@@ -96,9 +144,7 @@ class GameEngine {
         for (let i = 0; i < entitiesCount; i++) {
             let entity = this.entities[i];
 
-            if (!entity.removeFromWorld) {
-                entity.update();
-            }
+            entity.update();
         }
 
         for (let i = this.entities.length - 1; i >= 0; --i) {
@@ -115,5 +161,3 @@ class GameEngine {
     };
 
 };
-
-// KV Le was here :)

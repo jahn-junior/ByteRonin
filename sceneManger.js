@@ -3,7 +3,7 @@ class SceneManager {
         this.game = game;
         this.game.camera = this;
         this.x = 0;
-        this.hero = new Hero(this.game, 150, 500);
+        this.hero = new Hero(this.game, 150, 650);
         this.load();
     };
 
@@ -15,7 +15,7 @@ class SceneManager {
 
     load() {
         // this.clearEntities();
-        this.game.addEntity(new Arena(this.game));
+        this.game.addEntity(new Background(this.game));
         this.game.addEntity(this.hero);
 
     };
@@ -33,3 +33,4 @@ class SceneManager {
     
     };
 };
+

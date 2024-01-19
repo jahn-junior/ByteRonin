@@ -1,17 +1,30 @@
-const gameEngine = new GameEngine();
 
 const ASSET_MANAGER = new AssetManager();
 
 ASSET_MANAGER.queueDownload("./map/background.png")
 ASSET_MANAGER.queueDownload("./sprites/hero.png")
+ASSET_MANAGER.queueDownload("./TempBackGround.jpg");
 
 ASSET_MANAGER.downloadAll(() => {
-	const canvas = document.getElementById("gameWorld");
-	const ctx = canvas.getContext("2d");
-	ctx.imageSmoothingEnabled = false;
-	gameEngine.init(ctx);
+    const gameEngine = new GameEngine();
+   
+    PARAMS.BLOCKWIDTH = PARAMS.BITWIDTH * PARAMS.SCALE;
 
-	gameEngine.addEntity(new Hero(gameEngine));
-	gameEngine.addEntity(new Arena(gameEngine));
-	gameEngine.start();
+    const canvas = document.getElementById("gameWorld");
+    const ctx = canvas.getContext("2d");
+
+    PARAMS.CANVAS_WIDTH = canvas.width;
+	PARAMS.CANVAS_HEIGHT = canvas.height;
+    
+	ctx.imageSmoothingEnabled = false;
+
+    gameEngine.init(ctx);
+
+    new SceneManager(gameEngine);
+
+	// gameEngine.addEntity(new Background(gameEngine));
+	// gameEngine.addEntity(new Hero(gameEngine));
+
+    gameEngine.start();
 });
+

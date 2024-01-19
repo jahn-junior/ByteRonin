@@ -1,12 +1,13 @@
 class Hero {
 
-    constructor(game) {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
 
-        this.game = game;
+        this.game.hero = this;
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
-        this.x = 150;
-        this.y = 500;
+        // this.x = 150;
+        // this.y = 500;
 
         this.dir = 0; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = attacking
@@ -92,6 +93,6 @@ class Hero {
     };
 
     draw(ctx) {
-        this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x, this.y, 4);
+        this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y, PARAMS.SCALE);
     };
 }

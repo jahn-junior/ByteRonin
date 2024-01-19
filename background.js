@@ -1,7 +1,7 @@
 class Background {
-    constructor(game, imagePath) {
+    constructor(game) {
         this.game = game;
-        this.image = ASSET_MANAGER.getAsset(imagePath);
+        this.image = ASSET_MANAGER.getAsset("./TempBackGround.jpg");
     }
 
     update() {

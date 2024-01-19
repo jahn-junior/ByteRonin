@@ -7,7 +7,7 @@ class Hero {
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
         // this.x = 150;
-        // this.y = 650;
+        // this.y = 500;
 
         this.dir = 0; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = attacking

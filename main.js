@@ -1,6 +1,7 @@
 
 const ASSET_MANAGER = new AssetManager();
 
+ASSET_MANAGER.queueDownload("./map/background.png")
 ASSET_MANAGER.queueDownload("./sprites/hero.png")
 ASSET_MANAGER.queueDownload("./TempBackGround.jpg");
 

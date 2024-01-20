@@ -28,6 +28,30 @@ class SceneManager {
             let floorTwo = level.floor2[i];
             this.game.addEntity(new Floor2(this.game, floorTwo.x, floorTwo.y));
         }
+        for (let i = 0; i<level.floor3.length; i++) {
+            let floorThree = level.floor3[i];
+            this.game.addEntity(new Floor3(this.game, floorThree.x, floorThree.y));
+        }
+        for (let i = 0; i<level.underfloor.length; i++) {
+            let underfloor = level.underfloor[i];
+            this.game.addEntity(new Underfloor(this.game, underfloor.x, underfloor.y));
+        }
+        for (let i = 0; i<level.lpillar.length; i++) {
+            let pLeft = level.lpillar[i];
+            this.game.addEntity(new PillarL(this.game, pLeft.x, pLeft.y));
+        }
+        for (let i = 0; i<level.rpillar.length; i++) {
+            let pRight = level.rpillar[i];
+            this.game.addEntity(new PillarR(this.game, pRight.x, pRight.y));
+        }
+        for (let i = 0; i<level.lplatform.length; i++) {
+            let platformL = level.lplatform[i];
+            this.game.addEntity(new PlatformL(this.game, platformL.x, platformL.y));
+        }
+        for (let i = 0; i<level.rplatform.length; i++) {
+            let platformR = level.rplatform[i];
+            this.game.addEntity(new PlatformR(this.game, platformR.x, platformR.y));
+        }
         this.game.addEntity(this.hero);
     };
 

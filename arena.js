@@ -27,8 +27,6 @@ class Floor1 {
     };
 
     draw(ctx) {
-        ctx.drawImage(this.spritesheet, 0, 0, 129, 65, this.x- this.game.camera.x, this.y,  PARAMS.BLOCKWIDTH * 5, PARAMS.BLOCKWIDTH * 2.5);
-        console.log(this.x);
-        console.log(this.y);
+        ctx.drawImage(this.spritesheet, 0, 0, 129, 65, this.x- this.game.camera.x, this.y,  PARAMS.BLOCKWIDTH * 2, PARAMS.BLOCKWIDTH);
     };
 }

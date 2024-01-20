@@ -15,7 +15,13 @@ class SceneManager {
 
     load() {
         // this.clearEntities();
-        this.game.addEntity(new Arena(this.game));
+        this.game.addEntity(new Background(this.game));
+        this.game.addEntity(new Floor1(this.game, 0, 600));
+        this.game.addEntity(new Floor1(this.game, 300, 600));
+        this.game.addEntity(new Floor1(this.game, 600, 600));
+        this.game.addEntity(new Floor1(this.game, 900, 600));
+        this.game.addEntity(new Floor1(this.game, 1200, 600));
+        
         this.game.addEntity(this.hero);
 
     };

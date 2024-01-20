@@ -94,5 +94,7 @@ class Hero {
 
     draw(ctx) {
         this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y, PARAMS.SCALE);
+
+
     };
 }

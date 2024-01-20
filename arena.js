@@ -1,19 +1,3 @@
-class Arena {
-    constructor(game) {
-        this.game = game;
-        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.tiles = [];
-    }
-    load() {
-
-    };
-    update() {
-
-    };
-
-    draw(ctx) {
-    };
-}
 class Floor1 {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });

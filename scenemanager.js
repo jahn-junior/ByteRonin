@@ -28,7 +28,7 @@ class SceneManager {
             let pillar = level.pillar1[i];
             this.game.addEntity(new Pillar1(this.game, pillar.x, pillar.y));
         }
-        this.game.addEntity(this.hero); 
+        this.game.addEntity(this.hero);
     };
 
     updateAudio() {

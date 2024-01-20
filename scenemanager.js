@@ -4,7 +4,7 @@ class SceneManager {
         this.game.camera = this;
         this.x = 0;
         this.hero = new Hero(this.game, 150, 500);
-        this.load();
+        this.load(levelOne);
     };
 
     clearEntities() {
@@ -13,17 +13,22 @@ class SceneManager {
         });
     };
 
-    load() {
-        // this.clearEntities();
+    /* This method loads everything we see on the canvas.
+     * @Params level : takes the games level, which loads the coresponding json object.
+     */
+    load(level) {
+        this.level = level;
         this.game.addEntity(new Background(this.game));
-        this.game.addEntity(new Floor1(this.game, 0, 600));
-        this.game.addEntity(new Floor1(this.game, 300, 600));
-        this.game.addEntity(new Floor1(this.game, 600, 600));
-        this.game.addEntity(new Floor1(this.game, 900, 600));
-        this.game.addEntity(new Floor1(this.game, 1200, 600));
-        
-        this.game.addEntity(this.hero);
 
+        for (let i = 0; i<level.floor1.length; i++) {
+            let floor = level.floor1[i];
+            this.game.addEntity(new Floor1(this.game, floor.x, floor.y));
+        }
+        for (let i = 0; i<level.pillar1.length; i++) {
+            let pillar = level.pillar1[i];
+            this.game.addEntity(new Pillar1(this.game, pillar.x, pillar.y));
+        }
+        this.game.addEntity(this.hero);
     };
 
     updateAudio() {

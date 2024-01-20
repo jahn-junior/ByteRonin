@@ -3,7 +3,7 @@ class SceneManager {
         this.game = game;
         this.game.camera = this;
         this.x = 0;
-        this.hero = new Hero(this.game, 150, 500);
+        this.hero = new Hero(this.game, 150, 490);
         this.load(levelOne);
     };
 
@@ -21,12 +21,12 @@ class SceneManager {
         this.game.addEntity(new Background(this.game));
 
         for (let i = 0; i<level.floor1.length; i++) {
-            let floor = level.floor1[i];
-            this.game.addEntity(new Floor1(this.game, floor.x, floor.y));
+            let floorOne = level.floor1[i];
+            this.game.addEntity(new Floor1(this.game, floorOne.x, floorOne.y));
         }
-        for (let i = 0; i<level.pillar1.length; i++) {
-            let pillar = level.pillar1[i];
-            this.game.addEntity(new Pillar1(this.game, pillar.x, pillar.y));
+        for (let i = 0; i<level.floor2.length; i++) {
+            let floorTwo = level.floor2[i];
+            this.game.addEntity(new Floor2(this.game, floorTwo.x, floorTwo.y));
         }
         this.game.addEntity(this.hero);
     };

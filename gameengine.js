@@ -9,6 +9,9 @@ class GameEngine {
     // Everything that will be updated and drawn each frame
     this.entities = [];
 
+    // List of tiles that comprise the stage
+    this.stageTiles = [];
+
     // Information on the input
     this.w = false;
     this.a = false;
@@ -136,6 +139,10 @@ class GameEngine {
     this.entities.push(entity);
   }
 
+  addStageTile(tile) {
+    this.stageTiles.push(tile);
+  }
+
   draw() {
     // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -143,6 +150,11 @@ class GameEngine {
     // Draw earliest things first
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw(this.ctx, this);
+
+      if (this.entities[i].box) {
+        this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
+      }
+
     }
     this.camera.draw(this.ctx);
   }
@@ -152,7 +164,6 @@ class GameEngine {
 
     for (let i = 0; i < entitiesCount; i++) {
       let entity = this.entities[i];
-
       entity.update();
     }
     this.camera.update();

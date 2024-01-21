@@ -2,7 +2,7 @@ class Floor1 {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -11,7 +11,7 @@ class Floor1 {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 
@@ -31,7 +31,7 @@ class Floor2 {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -40,7 +40,7 @@ class Floor2 {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 
@@ -60,7 +60,7 @@ class Floor3 {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -69,7 +69,7 @@ class Floor3 {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 
@@ -118,7 +118,7 @@ class PillarL {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -127,7 +127,7 @@ class PillarL {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 
@@ -147,7 +147,7 @@ class PillarR {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -156,7 +156,7 @@ class PillarR {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 
@@ -176,7 +176,7 @@ class PlatformL {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -185,7 +185,7 @@ class PlatformL {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 
@@ -205,7 +205,7 @@ class PlatformR {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     }
 
@@ -214,7 +214,7 @@ class PlatformR {
     };
 
     update() {
-        this.box = new boundingbox(this.x - this.game.camera.x, this.y + 5 * 1.75,
+        this.box = new boundingbox(this.x - this.game.camera.x, this.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
     };
 

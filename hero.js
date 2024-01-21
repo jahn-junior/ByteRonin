@@ -7,7 +7,7 @@ class Hero {
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
         this.x = 150;
-        this.y = 500;
+        this.y = 400;
 
         this.dir = 0; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking
@@ -89,8 +89,8 @@ class Hero {
 
         let that = this;
 
-        let blockedLeft = false;
-        let blockedRight = false;
+        let canMoveLeft = true;
+        let canMoveRight = true;
 
         if (this.state != 3) {
             this.state = 4;
@@ -98,17 +98,15 @@ class Hero {
 
         this.game.stageTiles.forEach(function (tile) {
             if (that.box.collide(tile.box)) {
-                if (that.box.bottom > tile.box.top) {
+                if (that.box.bottom - tile.box.top <= 2 * PARAMS.SCALE) {
                     that.state = 0;
-                }
-                if (that.state == 3 && that.box.top <= tile.box.bottom) {
+                } else if (that.state == 3 && that.box.top - tile.box.bottom <= 2 * PARAMS.SCALE) {
+                    that.jumpTimer = 0;
                     that.state = 4;
-                }
-                if (that.box.right < tile.box.left) {
-                    blockedRight = true;
-                }
-                if (that.box.left > tile.box.right) {
-                    blockedLeft = true;
+                } else if (that.dir == 0 && that.box.right > tile.box.left) {
+                    canMoveRight = false;
+                } else if (that.dir == 1 && that.box.left < tile.box.right) {
+                    canMoveLeft = false;
                 }
             }
         });
@@ -118,25 +116,25 @@ class Hero {
         }
 
         if (this.state == 3) {
-            if (this.jumpTimer < 25) {
-                this.y -= 10;
+            if (this.jumpTimer < 50) {
+                this.y -= 8;
                 this.jumpTimer++;
             } else {
                 this.jumpTimer = 0;
                 this.state = 4;
             }
         } else if (this.state == 4) {
-            this.y += 10;
+            this.y += 8;
         }
 
-        if (this.game.d && !this.game.a && !blockedRight) {
+        if (this.game.d && !this.game.a) {
             if (this.state != 3 && this.state != 4) this.state = 2;
             this.dir = 0;
-            this.x += 5;
-        } else if (this.game.a && !this.game.d && !blockedLeft) {
+            if (canMoveRight) this.x += 5;
+        } else if (this.game.a && !this.game.d) {
             if (this.state != 3 && this.state != 4) this.state = 2;
             this.dir = 1;
-            this.x -= 5;
+            if (canMoveLeft) this.x -= 5;
         }
 
         console.log(this.state);

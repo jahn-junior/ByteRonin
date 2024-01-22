@@ -1,27 +1,191 @@
-class Arena {
-    constructor(game) {
-        this.game = game;
-        this.image = ASSET_MANAGER.getAsset("./map/background.png");
-        // Assume full size of the background image is known
-        this.imageWidth = 1024; // Replace with actual width of the image
-        this.imageHeight = 768; // Replace with actual height of the image
+class Floor1 {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
     };
-    
     update() {
 
     };
 
     draw(ctx) {
-        ctx.drawImage(this.image, 0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
-        // let xView = this.game.camera.x;
-        // let sx = xView % this.imageWidth;
-        // let destX = -(20 * PARAMS.BITWIDTH); // Start drawing at the left edge of the canvas
-        // // Continue drawing slices until the entire canvas width is covered
-        // while (destX < PARAMS.CANVAS_WIDTH) {
-        //     let sliceWidth = Math.min(this.imageWidth - sx, PARAMS.CANVAS_WIDTH - destX);
-        //     ctx.drawImage(this.image, sx, 0, sliceWidth, this.imageHeight, destX, 0, sliceWidth, PARAMS.CANVAS_HEIGHT);
-        //     destX += sliceWidth;
-        //     sx = 0; // After the first slice, start from the beginning of the image
-        // }
+        ctx.drawImage(this.spritesheet, 
+            0, 
+            64, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  PARAMS.BLOCKWIDTH * 1.75, 
+            PARAMS.BLOCKWIDTH *1.75);
+    };
+}
+
+class Floor2 {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
     }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            64, 
+            64, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  
+            PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
+    };
+}
+
+class Floor3 {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            128, 
+            64, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  
+            PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
+    };
+}
+
+class Underfloor {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            192, 
+            64, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  
+            PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
+    };
+}
+
+class PillarL {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            128, 
+            0, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  
+            PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
+    };
+}
+
+class PillarR {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            192, 
+            0, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  
+            PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);
+    };
+}
+
+class PlatformL {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            0, 
+            0, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  PARAMS.BLOCKWIDTH * 1.75, 
+            PARAMS.BLOCKWIDTH *1.75);
+    };
+}
+
+class PlatformR {
+    constructor(game, x, y) {
+        Object.assign(this, { game, x, y });
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/ground.png");
+    }
+    load() {
+
+    };
+    update() {
+
+    };
+
+    draw(ctx) {
+        ctx.drawImage(this.spritesheet, 
+            64, 
+            0, 
+            64, 
+            64, 
+            this.x- this.game.camera.x, 
+            this.y,  PARAMS.BLOCKWIDTH * 1.75, 
+            PARAMS.BLOCKWIDTH *1.75);
+    };
 }

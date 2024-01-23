@@ -24,10 +24,6 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.init(ctx);
 
     new SceneManager(gameEngine);
-
-	// gameEngine.addEntity(new Background(gameEngine));
-	// gameEngine.addEntity(new Hero(gameEngine));
-
     gameEngine.start();
 });
 

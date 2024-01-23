@@ -23,7 +23,24 @@ class Background {
     }
 
     draw(ctx) {
-        ctx.drawImage(this.images[this.frame], 0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
+        var sx = (this.game.camera.x/4) + 460;
+        var sy = (this.game.camera.y/10) + 100;
+        var sWidth = 620;
+        var sHieght = 620;
+        // Change this value if we go any higher and the background gets cut off.
+        // if (sy < 0) {
+        //     sy = 0;
+        // }
+
+        if (sx < 3) {
+            sx = 3;
+        }
+        if (sx > 650) {
+            sx = 650;
+        }
+        console.log("X" + sx);
+        console.log("Y" + sy);
+        ctx.drawImage(this.images[this.frame],sx ,sy, sWidth, sHieght, 0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
     }
 }
 

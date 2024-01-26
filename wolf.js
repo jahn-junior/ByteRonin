@@ -11,8 +11,8 @@ class Wolf {
         this.phase = 0; // 0 = phase1; 1 = phase2
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/wolf.png")
         this.animation = [];
-        this.animation[0] = new animator(this.spritesheet, 62, 7, 47, 33, 1, 0.01, true)
-        this.animation[1] = new animator(this.spritesheet, 110, 7, 47, 33, 1,0.01, true);
+        this.animation[0] = new animator(this.spritesheet, 62, 7, 47, 33, 1, 1, true)
+        this.animation[1] = new animator(this.spritesheet, 110, 7, 47, 33, 1,1, true);
         //this.vision = new Boundingbox(1200, 1000, PARAMS.BLOCKWIDTH, PARAMS.BLOCKWIDTH)
         this.dash = false;
     }

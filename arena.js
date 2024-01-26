@@ -154,7 +154,7 @@ class PillarR {
     load() {
 
     };
-
+  
     update() {
         this.box = new boundingbox(this.x - this.game.camera.x, this.y - this.game.camera.y,
             PARAMS.BLOCKWIDTH * 1.75, PARAMS.BLOCKWIDTH * 1.75);

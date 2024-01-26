@@ -4,6 +4,7 @@ class SceneManager {
         this.game.camera = this;
         this.x = 0;
         this.hero = new Hero(this.game, 150, 490);
+        // this.wolf = new Wolf(this.game, -20, 490);
         this.load(levelOne);
     };
 

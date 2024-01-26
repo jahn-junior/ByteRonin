@@ -20,7 +20,7 @@ class SceneManager {
     load(level) {
         this.level = level;
         this.game.addEntity(new Background(this.game));
-
+      
         for (let i = 0; i<level.floor1.length; i++) {
             let floorOne = level.floor1[i];
             this.game.addEntity(new Floor1(this.game, floorOne.x, floorOne.y));
@@ -61,12 +61,15 @@ class SceneManager {
         //todo
     };
 
-    update() {  
-       let midpoint = PARAMS.CANVAS_WIDTH/2 - PARAMS.BLOCKWIDTH / 2;
-       this.x = this.hero.x - midpoint + PARAMS.BLOCKWIDTH;
+    update() {
+        let xmidpoint = PARAMS.CANVAS_WIDTH / 2 - PARAMS.BLOCKWIDTH / 2;
+        let ymidpoint = PARAMS.CANVAS_HEIGHT / 2 - PARAMS.BLOCKWIDTH / 2;
+        this.x = this.hero.x - xmidpoint + PARAMS.BLOCKWIDTH / 2;
+        this.y = this.hero.y - ymidpoint + PARAMS.BLOCKWIDTH / 2 - PARAMS.BLOCKWIDTH;
+
     };
 
     draw(ctx) {
-    
+
     };
 };

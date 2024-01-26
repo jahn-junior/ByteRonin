@@ -1,5 +1,5 @@
 /** Global Parameters Object */
-const params = { };
+const params = {};
 
 /**
  * @param {Number} n
@@ -10,7 +10,7 @@ const randomInt = n => Math.floor(Math.random() * n);
 /**
  * @param {Number} r Red Value
  * @param {Number} g Green Value
- * @param {Number} b Blue Value
+ * @param {Number} b Due Value
  * @returns String that can be used as a rgb web color
  */
 const rgb = (r, g, b) => `rgba(${r}, ${g}, ${b})`;

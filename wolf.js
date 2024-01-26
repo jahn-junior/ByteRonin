@@ -93,5 +93,4 @@ class Wolf {
         //use this for animations with an added attack array frame maybe???
         //this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y, PARAMS.SCALE); 
     };
-
 }

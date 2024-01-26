@@ -4,7 +4,6 @@ for (let i = 0; i <39; i++) {
     ASSET_MANAGER.queueDownload("./background/background" + i + ".png");
 }
 
-
 ASSET_MANAGER.queueDownload("./sprites/hero.png");
 ASSET_MANAGER.queueDownload("./sprites/ground.png");
 

@@ -76,8 +76,11 @@ class SceneManager {
     };
 
     update() {
-        let midpoint = PARAMS.CANVAS_WIDTH / 2 - PARAMS.BLOCKWIDTH / 2;
-        this.x = this.hero.x - midpoint + PARAMS.BLOCKWIDTH;
+        let xmidpoint = PARAMS.CANVAS_WIDTH / 2 - PARAMS.BLOCKWIDTH / 2;
+        let ymidpoint = PARAMS.CANVAS_HEIGHT / 2 - PARAMS.BLOCKWIDTH / 2;
+        this.x = this.hero.x - xmidpoint + PARAMS.BLOCKWIDTH / 2;
+        this.y = this.hero.y - ymidpoint + PARAMS.BLOCKWIDTH / 2 - PARAMS.BLOCKWIDTH;
+
     };
 
     draw(ctx) {

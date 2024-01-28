@@ -99,14 +99,22 @@ class Hero {
         this.game.stageTiles.forEach(function (tile) {
             if (that.box.collide(tile.box)) {
                 if (that.box.bottom - tile.box.top <= 2 * PARAMS.SCALE) {
-                    that.state = 0;
-                } else if (that.state == 3 && that.box.top - tile.box.bottom <= 2 * PARAMS.SCALE) {
-                    that.jumpTimer = 0;
-                    that.state = 4;
+                    if (that.dir == 0 && that.box.right >= tile.box.left + 3 * PARAMS.SCALE ||
+                        that.dir == 1 && that.box.left <= tile.box.right - 3 * PARAMS.SCALE) {
+                        that.state = 0;
+                    }
                 } else if (that.dir == 0 && that.box.right > tile.box.left) {
                     canMoveRight = false;
                 } else if (that.dir == 1 && that.box.left < tile.box.right) {
                     canMoveLeft = false;
+                }
+
+                if (that.state == 3 && that.box.top - tile.box.bottom <= 2 * PARAMS.SCALE) {
+                    if (that.dir == 0 && that.box.right >= tile.box.left + 3 * PARAMS.SCALE ||
+                        that.dir == 1 && that.box.left <= tile.box.right - 3 * PARAMS.SCALE) {
+                        that.jumpTimer = 0;
+                        that.state = 4;
+                    }
                 }
             }
         });

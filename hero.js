@@ -8,11 +8,11 @@ class Hero {
 
         this.x = 150;
         this.y = 400;
+        this.jumpTick = 0;
+        this.fallTick = 0;
 
         this.dir = 0; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking
-
-        this.jumpTimer = 0;
 
         this.health = 100;
         this.baseDamage = 50;
@@ -89,18 +89,24 @@ class Hero {
 
         let that = this;
 
+        const MAX_FALL_VELOC = 7;
+
         let canMoveLeft = true;
         let canMoveRight = true;
 
+        // state defaults to falling
         if (this.state != 3) {
             this.state = 4;
         }
 
+        // collision handling
         this.game.stageTiles.forEach(function (tile) {
             if (that.box.collide(tile.box)) {
-                if (that.box.bottom - tile.box.top <= 2 * PARAMS.SCALE) {
+                if (that.box.bottom - tile.box.top <= 4 * PARAMS.SCALE) {
                     if (that.dir == 0 && that.box.right >= tile.box.left + 3 * PARAMS.SCALE ||
                         that.dir == 1 && that.box.left <= tile.box.right - 3 * PARAMS.SCALE) {
+                        that.jumpTick = 0;
+                        that.fallTick = 0;
                         that.state = 0;
                     }
                 } else if (that.dir == 0 && that.box.right > tile.box.left) {
@@ -109,32 +115,39 @@ class Hero {
                     canMoveLeft = false;
                 }
 
-                if (that.state == 3 && that.box.top - tile.box.bottom <= 2 * PARAMS.SCALE) {
+                if (that.state == 3 && that.box.top - tile.box.bottom <= 4 * PARAMS.SCALE) {
                     if (that.dir == 0 && that.box.right >= tile.box.left + 3 * PARAMS.SCALE ||
                         that.dir == 1 && that.box.left <= tile.box.right - 3 * PARAMS.SCALE) {
-                        that.jumpTimer = 0;
+                        that.jumpTick = 0;
+                        that.fallTick = 3;
                         that.state = 4;
                     }
                 }
             }
         });
 
+        // jump
         if (this.game.w && this.state != 3 && this.state != 4) {
             this.state = 3;
+            this.deltaY = -24;
         }
 
+        // y updates for jumping
         if (this.state == 3) {
-            if (this.jumpTimer < 50) {
-                this.y -= 4;
-                this.jumpTimer++;
+            if (this.jumpTick < 35) {
+                this.jumpTick++;
+                this.y -= 7 - (0.2 * this.jumpTick);
             } else {
-                this.jumpTimer = 0;
+                this.jumpTick = 0;
+                this.fallTick = 0;
                 this.state = 4;
             }
         } else if (this.state == 4) {
-            this.y += 4;
+            this.fallTick++;
+            this.y += 0.2 * this.fallTick <= MAX_FALL_VELOC ? 0.2 * this.fallTick : MAX_FALL_VELOC;
         }
 
+        // updates for left/right movement
         if (this.game.d && !this.game.a) {
             if (this.state != 3 && this.state != 4) this.state = 2;
             this.dir = 0;

@@ -4,8 +4,8 @@ for (let i = 0; i <39; i++) {
     ASSET_MANAGER.queueDownload("./background/background" + i + ".png");
 }
 
-
 ASSET_MANAGER.queueDownload("./sprites/hero.png");
+// ASSET_MANAGER.queueDownload("./sprites/wolf.png");
 ASSET_MANAGER.queueDownload("./sprites/ground.png");
 
 ASSET_MANAGER.downloadAll(() => {
@@ -24,10 +24,6 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.init(ctx);
 
     new SceneManager(gameEngine);
-
-	// gameEngine.addEntity(new Background(gameEngine));
-	// gameEngine.addEntity(new Hero(gameEngine));
-
     gameEngine.start();
 });
 

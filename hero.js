@@ -125,14 +125,14 @@ class Hero {
 
         if (this.state == 3) {
             if (this.jumpTimer < 50) {
-                this.y -= 8;
+                this.y -= 4;
                 this.jumpTimer++;
             } else {
                 this.jumpTimer = 0;
                 this.state = 4;
             }
         } else if (this.state == 4) {
-            this.y += 8;
+            this.y += 4;
         }
 
         if (this.game.d && !this.game.a) {

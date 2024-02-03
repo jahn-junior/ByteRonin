@@ -16,6 +16,7 @@ class Hero {
 
         this.health = 100;
         this.baseDamage = 50;
+        this.radius = 32;
 
         this.animations = [];
         this.loadAnimations();

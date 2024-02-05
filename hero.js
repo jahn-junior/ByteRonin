@@ -8,11 +8,13 @@ class Hero {
 
         this.x = 150;
         this.y = 350;
-        this.jumpTick = 0;
-        this.fallTick = 0;
+
+        this.jumpTick = 0; // used for jump deceleration
+        this.fallTick = 0; // used for fall acceleration
+        this.attackTick = 101; // value indicates that attack is ready
 
         this.dir = 0; // 0 = right, 1 = left
-        this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking
+        this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking, 6 = hitstun
 
         this.health = 100;
         this.baseDamage = 50;
@@ -52,10 +54,10 @@ class Hero {
 
         // attacking frames
         this.animations[0][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, 0, HERO_WIDTH,
-            HERO_HEIGHT, 4, 0.1, true);
+            HERO_HEIGHT, 4, 0.08, false);
 
         this.animations[1][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, HERO_HEIGHT,
-            HERO_WIDTH, HERO_HEIGHT, 4, 0.1, true);
+            HERO_WIDTH, HERO_HEIGHT, 4, 0.08, false);
 
         // jumping frames
         this.animations[0][3] = new animator(this.spritesheet, 11 * HERO_WIDTH, 0, HERO_WIDTH,
@@ -70,6 +72,15 @@ class Hero {
 
         this.animations[1][4] = new animator(this.spritesheet, 12 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH,
             HERO_HEIGHT, 1, 0.08, true);
+
+        // parry frames
+        this.animations[0][1] = new animator(this.spritesheet, 13 * HERO_WIDTH, 0, HERO_WIDTH,
+            HERO_HEIGHT, 1, 0.08, true);
+
+        this.animations[1][1] = new animator(this.spritesheet, 13 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH,
+            HERO_HEIGHT, 1, 0.08, true);
+
+        // add hitstun frames
     };
 
     updateBox() {
@@ -84,9 +95,13 @@ class Hero {
         let that = this;
 
         const MAX_FALL_VELOC = 7;
+        const ATTACK_DURATION = 26; // matches up with the animation duration
+        const ATTACK_READY = 101; // arbitrary value to signal that the hero can attack again
+        const ACTIVE_FRAME = 21;
 
         let canMoveLeft = true;
         let canMoveRight = true;
+        let canTurn = true;
 
         // state defaults to falling
         if (this.state != 3) {
@@ -120,17 +135,55 @@ class Hero {
             }
         });
 
-        // attack
-        if (this.game.j && (this.state == 0 || this.state == 1)) {
+        // attack input
+        if (this.game.j && this.attackTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
             canMoveLeft = false;
             canMoveRight = false;
+            canTurn = false;
             this.state = 5;
+            this.attackTick = 0;
         }
 
-        // jump
+        // parry input
+        if (this.game.k && (this.state == 0 || this.state == 1 || this.state == 2)) {
+            canMoveLeft = false;
+            canMoveRight = false;
+            this.state = 1
+        }
+
+        // jump input
         if (this.game.w && this.state != 3 && this.state != 4 && this.state != 5) {
             this.state = 3;
             this.deltaY = -24;
+        }
+
+        // handles state when hero is mid-attack
+        if (this.attackTick < ATTACK_DURATION) {
+            canMoveLeft = false;
+            canMoveRight = false;
+            canTurn = false;
+            this.attackTick++;
+            this.state = 5;
+            if (this.attackTick == ACTIVE_FRAME) { // enable hitbox on active frames
+                if (this.dir == 0) {
+                    this.hitbox = new boundingbox(this.x + (40 * PARAMS.SCALE) - this.game.camera.x,
+                        this.y + (20 * PARAMS.SCALE),
+                        24 * PARAMS.SCALE,
+                        34 * PARAMS.SCALE);
+                } else {
+                    this.hitbox = new boundingbox(this.x - (4 * PARAMS.SCALE) - this.game.camera.x,
+                        this.y + (20 * PARAMS.SCALE),
+                        24 * PARAMS.SCALE,
+                        34 * PARAMS.SCALE);
+                }
+            } else { // disable hitbox on inactive frames
+                this.hitbox = null;
+            }
+        } else if (this.attackTick == ATTACK_DURATION) {
+            // reload animation so that it can play on the next attack
+            this.animations[0][5] = new animator(this.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+            this.animations[1][5] = new animator(this.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
+            this.attackTick = ATTACK_READY;
         }
 
         // y updates for jumping
@@ -150,12 +203,12 @@ class Hero {
 
         // updates for left/right movement
         if (this.game.d && !this.game.a) {
-            if (this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
-            this.dir = 0;
+            if (this.state != 1 && this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
+            if (canTurn) this.dir = 0;
             if (canMoveRight) this.x += 6;
         } else if (this.game.a && !this.game.d) {
-            if (this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
-            this.dir = 1;
+            if (this.state != 1 && this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
+            if (canTurn) this.dir = 1;
             if (canMoveLeft) this.x -= 6;
         }
 

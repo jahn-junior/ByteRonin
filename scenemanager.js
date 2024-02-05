@@ -71,8 +71,8 @@ class SceneManager {
             this.game.addEntity(tile);
             this.game.addStageTile(tile);
         }
-        this.game.addEntity(this.hero);
         this.game.addEntity(this.samurai);
+        this.game.addEntity(this.hero);
         //this.game.addEntity(this.orochi);
     };
 

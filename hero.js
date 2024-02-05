@@ -73,6 +73,13 @@ class Hero {
         this.animations[1][4] = new animator(this.spritesheet, 12 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH,
             HERO_HEIGHT, 1, 0.08, true);
 
+        // parry frames
+        this.animations[0][1] = new animator(this.spritesheet, 13 * HERO_WIDTH, 0, HERO_WIDTH,
+            HERO_HEIGHT, 1, 0.08, true);
+
+        this.animations[1][1] = new animator(this.spritesheet, 13 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH,
+            HERO_HEIGHT, 1, 0.08, true);
+
         // add hitstun frames
     };
 
@@ -137,13 +144,20 @@ class Hero {
             this.attackTick = 0;
         }
 
+        // parry input
+        if (this.game.k && (this.state == 0 || this.state == 1 || this.state == 2)) {
+            canMoveLeft = false;
+            canMoveRight = false;
+            this.state = 1
+        }
+
         // jump input
         if (this.game.w && this.state != 3 && this.state != 4 && this.state != 5) {
             this.state = 3;
             this.deltaY = -24;
         }
 
-        //
+        // handles state when hero is mid-attack
         if (this.attackTick < ATTACK_DURATION) {
             canMoveLeft = false;
             canMoveRight = false;
@@ -189,11 +203,11 @@ class Hero {
 
         // updates for left/right movement
         if (this.game.d && !this.game.a) {
-            if (this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
+            if (this.state != 1 && this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
             if (canTurn) this.dir = 0;
             if (canMoveRight) this.x += 6;
         } else if (this.game.a && !this.game.d) {
-            if (this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
+            if (this.state != 1 && this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
             if (canTurn) this.dir = 1;
             if (canMoveLeft) this.x -= 6;
         }

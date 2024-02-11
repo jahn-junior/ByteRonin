@@ -6,8 +6,11 @@ class Hero {
         this.game.hero = this;
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
-        this.x = 150;
-        this.y = 350;
+        this.x = x;
+        this.y = y;
+        this.spawnX = x;
+        this.spawnY = y;
+        this.radius = 32;
 
         this.jumpTick = 0; // used for jump deceleration
         this.fallTick = 0; // used for fall acceleration
@@ -16,15 +19,26 @@ class Hero {
         this.dir = 0; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking, 6 = hitstun
 
-        this.health = 100;
-        this.baseDamage = 50;
-        this.radius = 32;
+        this.maxHealth = 25000;
+        this.currentHealth = this.maxHealth;
+        this.healthbar = new HealthBar(this);
+        this.dead = false;
+
+        this.baseDamage = 100;
+        this.critChance = 0.2; // 20%
 
         this.animations = [];
         this.loadAnimations();
 
         this.updateBox();
     };
+
+    isDead() {
+        this.dead = true;
+        this.x = this.spawnX;
+        this.y = this.spawnY;
+        this.currentHealth = this.maxHealth;
+    }
 
     loadAnimations() {
 
@@ -84,10 +98,14 @@ class Hero {
     };
 
     updateBox() {
-        this.box = new boundingbox(this.x + (20 * PARAMS.SCALE) - this.game.camera.x,
+        if (this.dead) {
+            this.box = new boundingbox(500, 0, 1, 1);
+        } else {
+            this.box = new boundingbox(this.x + (20 * PARAMS.SCALE) - this.game.camera.x,
             this.y + (16 * PARAMS.SCALE),
             21 * PARAMS.SCALE,
             37 * PARAMS.SCALE);
+        }
     };
 
     update() {
@@ -134,6 +152,36 @@ class Hero {
                 }
             }
         });
+
+        // melee attack collision vs. SAMURAI
+        if (this.hitbox && this.hitbox.collide(this.game.samurai.box)) {
+            const MELEE_DMG_MULTIPLIER = 100;
+            const randomFactor = 0.9 + Math.random() * 0.2; // random # between 0.9 and 1.1
+            const damage = this.baseDamage * MELEE_DMG_MULTIPLIER * randomFactor;
+
+            if (this.dir == 0) { // varies where dmg score shows based off of current direction
+                this.offset = 150;
+            } else {
+                this.offset = -50;
+            }
+
+            // critical hit chance calculation
+            if (Math.random() * 1 < this.critChance) {
+                const critMultiplier = 1.5;
+                const critDamage = damage * critMultiplier;
+                this.game.addEntity(new Score(this.game, this.game.samurai.x - this.game.camera.x + this.offset,
+                    this.game.samurai.y - this.game.camera.y + 50, critDamage, true));
+                this.game.samurai.currentHealth -= damage * critMultiplier;
+            } else {
+                this.game.addEntity(new Score(this.game, this.game.samurai.x - this.game.camera.x + this.offset, 
+                    this.game.samurai.y - this.game.camera.y + 50, damage, false));
+                    this.game.samurai.currentHealth -= damage;
+            }
+
+            if (this.game.samurai.currentHealth <= 0) {
+                this.game.samurai.isDead();
+            }
+        }        
 
         // attack input
         if (this.game.j && this.attackTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
@@ -212,7 +260,7 @@ class Hero {
             if (canMoveLeft) this.x -= 6;
         }
 
-        console.log(this.state);
+        // console.log(this.state);
         this.updateBox();
     }
 
@@ -220,6 +268,7 @@ class Hero {
         this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx,
             this.x - this.game.camera.x, this.y,
             PARAMS.SCALE);
+        this.healthbar.draw(ctx);
     };
 
 }

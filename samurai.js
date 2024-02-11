@@ -176,9 +176,9 @@ class Samurai {
             }
         });
 
-        // if melee attack hitbox collides with hero bounding box, decrease hero's HP.
+        // melee attack vs. HERO collision
         if (this.hitbox && this.hitbox.collide(this.game.hero.box)) {
-            this.game.hero.currentHealth -= 100;
+            this.game.hero.currentHealth -= 145; // adjust as needed
             if (this.game.hero.currentHealth <= 0) {
                 this.game.hero.isDead();
             }

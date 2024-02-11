@@ -82,8 +82,8 @@ class Score {
             ctx.fillStyle = "#17ffd8";
             
             ctx.font = '25px "Press Start 2P"';
-            ctx.fillText(" CRIT!", this.x, this.y - 50);
-            ctx.strokeText(" CRIT!", this.x, this.y - 50);
+            ctx.fillText("  CRIT!", this.x, this.y - 50);
+            ctx.strokeText("  CRIT!", this.x, this.y - 50);
 
             ctx.font = '45px "Press Start 2P"';
             ctx.fillText(Math.floor(this.score), this.x, this.y);

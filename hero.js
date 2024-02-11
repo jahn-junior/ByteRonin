@@ -24,7 +24,7 @@ class Hero {
         this.healthbar = new HealthBar(this);
         this.dead = false;
 
-        this.baseDamage = 250;
+        this.baseDamage = 100;
         this.critChance = 0.2; // 20%
 
         this.animations = [];

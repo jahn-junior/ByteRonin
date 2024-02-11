@@ -11,12 +11,20 @@ class Samurai {
 
         this.dir = 1; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = running, 2 = charging anim, 3 = primary melee, 4 = projectile blade
+        
         this.visualRadius = 400;
         this.speed = 300;
         this.velocityY = 0;
         this.chargingTimer = 0;
         this.meleeTimer = 0;
         this.projectileCount = 0;
+        this.hitbox = null;
+
+        this.maxHealth = 2000000;
+        this.currentHealth = this.maxHealth;
+        this.title = "Nano Shogun";
+        this.healthbar = new BossHealthBar(this);
+        
 
         this.animations = [];
         this.updateBox();
@@ -81,6 +89,11 @@ class Samurai {
         this.y += this.velocityY * this.game.clockTick;
     }
 
+    isDead() {
+        this.currentHealth = 0;
+        this.x = 3000; // teleport outside of arena when dead
+    }
+
     updateBox() {
         this.box = new boundingbox(this.x - this.game.camera.x + 48,
             this.y - this.game.camera.y + 26,
@@ -95,8 +108,22 @@ class Samurai {
         } else {
             this.state = 3;
             if (this.meleeTimer < 0.5) {
+                if (this.meleeTimer < 0.10) { // active bounding box to be cast for short duration
+                    if (this.dir == 1) {
+                        this.hitbox = new boundingbox(this.x - this.game.camera.x, 
+                            this.y - this.game.camera.y,
+                            48 * PARAMS.SCALE,
+                            64 * PARAMS.SCALE);
+                    } else {
+                        this.hitbox = new boundingbox(this.x - this.game.camera.x + 48, 
+                            this.y - this.game.camera.y, 
+                            48 * PARAMS.SCALE, 
+                            64 * PARAMS.SCALE);
+                    }
+                }
                 this.meleeTimer += 1 * this.game.clockTick;
             } else {
+                this.hitbox = null;
                 this.chargingTimer = 0;
                 this.meleeTimer = 0;
                 this.projectileCount += 1;
@@ -149,6 +176,14 @@ class Samurai {
             }
         });
 
+        // if melee attack hitbox collides with hero bounding box, decrease hero's HP.
+        if (this.hitbox && this.hitbox.collide(this.game.hero.box)) {
+            this.game.hero.currentHealth -= 100;
+            if (this.game.hero.currentHealth <= 0) {
+                this.game.hero.isDead();
+            }
+        }
+
         // samurai will always face torwards the hero
         if (this.game.camera.hero.x < this.x) {
             this.dir = 1;
@@ -161,14 +196,17 @@ class Samurai {
             if (canMoveLeft) { 
                 this.x -= movement;
                 this.state = 1;
+                this.hitbox = null;
             }
         } else if (canSee(this, this.game.hero) && (this.x < this.game.hero.x) && (this.x - this.game.hero.x <= 10)) {
             if (canMoveRight) {
                 this.x += movement;
                 this.state = 1;
+                this.hitbox = null;
             }
         } else {
             this.state = 0;
+            this.hitbox = null;
         }
 
         // samurai will start charging an attack when hero is close enough
@@ -191,6 +229,7 @@ class Samurai {
     draw(ctx) {
         this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, 
             this.y - this.game.camera.y, PARAMS.SCALE);
+        this.healthbar.draw(ctx);
     };
 
 }

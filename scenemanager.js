@@ -74,6 +74,10 @@ class SceneManager {
         this.game.addEntity(this.samurai);
         this.game.addEntity(this.hero);
         //this.game.addEntity(this.orochi);
+
+        this.game.bosses.push(this.samurai);
+        //this.game.bosses.push(this.orochi);
+        //this.game.bosses.push(this.wolf);
     };
 
     updateAudio() {

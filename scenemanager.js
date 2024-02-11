@@ -6,7 +6,7 @@ class SceneManager {
         this.hero = new Hero(this.game, 0, 490);
         // this.orochi = new Orochi(this.game, 800, 490);
         // this.wolf = new Wolf(this.game, -20, 490);
-        this.samurai = new Samurai(this.game, 700, 355);
+        this.samurai = new Samurai(this.game, 600, 300);
         this.load(levelOne);
     };
 

@@ -212,7 +212,7 @@ class Hero {
             if (canMoveLeft) this.x -= 6;
         }
 
-        console.log(this.state);
+        // console.log(this.state);
         this.updateBox();
     }
 

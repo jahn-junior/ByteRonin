@@ -11,7 +11,7 @@ class Samurai {
 
         this.dir = 1; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = running, 2 = charging anim, 3 = primary melee, 4 = projectile blade
-        
+
         this.visualRadius = 400;
         this.speed = 300;
         this.velocityY = 0;
@@ -21,16 +21,17 @@ class Samurai {
         this.hitbox = null;
 
         this.maxHealth = 2000000;
+        this.damage = 150;
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
         this.healthbar = new BossHealthBar(this);
-        
+
 
         this.animations = [];
         this.updateBox();
 
         this.loadAnimations();
-    }; 
+    };
 
     loadAnimations() {
 
@@ -46,7 +47,7 @@ class Samurai {
 
         // idle frames
         this.animations[0][0] = new animator(this.spritesheet, 3 * SAMURAI_WIDTH, SAMURAI_HEIGHT, SAMURAI_WIDTH,
-            SAMURAI_HEIGHT, 1, 0.08, true); 
+            SAMURAI_HEIGHT, 1, 0.08, true);
 
         this.animations[1][0] = new animator(this.spritesheet, 3 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH,
             SAMURAI_HEIGHT, 1, 0.08, true);
@@ -70,14 +71,14 @@ class Samurai {
             SAMURAI_HEIGHT, 2, 0.3, true);
 
         this.animations[1][3] = new animator(this.spritesheet, 8 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH,
-                SAMURAI_HEIGHT, 2, 0.3, true);
+            SAMURAI_HEIGHT, 2, 0.3, true);
 
         // projectile blade attack frames
         this.animations[0][4] = new animator(this.spritesheet, 6 * SAMURAI_WIDTH, SAMURAI_HEIGHT, SAMURAI_WIDTH,
             SAMURAI_HEIGHT, 2, 0.3, true);
 
         this.animations[1][4] = new animator(this.spritesheet, 6 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH,
-                SAMURAI_HEIGHT, 2, 0.3, true);
+            SAMURAI_HEIGHT, 2, 0.3, true);
     };
 
     applyGravity() {
@@ -110,14 +111,14 @@ class Samurai {
             if (this.meleeTimer < 0.5) {
                 if (this.meleeTimer < 0.10) { // active bounding box to be cast for short duration
                     if (this.dir == 1) {
-                        this.hitbox = new boundingbox(this.x - this.game.camera.x, 
+                        this.hitbox = new boundingbox(this.x - this.game.camera.x,
                             this.y - this.game.camera.y,
                             48 * PARAMS.SCALE,
                             64 * PARAMS.SCALE);
                     } else {
-                        this.hitbox = new boundingbox(this.x - this.game.camera.x + 48, 
-                            this.y - this.game.camera.y, 
-                            48 * PARAMS.SCALE, 
+                        this.hitbox = new boundingbox(this.x - this.game.camera.x + 48,
+                            this.y - this.game.camera.y,
+                            48 * PARAMS.SCALE,
                             64 * PARAMS.SCALE);
                     }
                 }
@@ -133,6 +134,9 @@ class Samurai {
 
     // A special attack that will cast after every 3rd melee attack
     projectileAttack() {
+        const PROJECTILE_VELOCITY = 10;
+        const PROJECTILE_DAMAGE = 250;
+
         if (this.chargingTimer < 2) {
             this.chargingTimer += 1 * this.game.clockTick;
             this.state = 2;
@@ -141,6 +145,19 @@ class Samurai {
             if (this.meleeTimer < 0.5) {
                 this.meleeTimer += 1 * this.game.clockTick;
             } else {
+                console.log("pew");
+
+                let projX = (this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48)
+                let proj = new Projectile(this.game,
+                    projX,
+                    this.y - this.game.camera.y + 26,
+                    16 * PARAMS.SCALE, this.box.height,
+                    this.dir, PROJECTILE_VELOCITY, "samurai-proj",
+                    PROJECTILE_DAMAGE);
+
+                this.game.addEntity(proj);
+                this.game.projectiles.push(proj);
+
                 this.chargingTimer = 0;
                 this.meleeTimer = 0;
                 this.projectileCount = 0;
@@ -176,14 +193,6 @@ class Samurai {
             }
         });
 
-        // melee attack vs. HERO collision
-        if (this.hitbox && this.hitbox.collide(this.game.hero.box)) {
-            this.game.hero.currentHealth -= 145; // adjust as needed
-            if (this.game.hero.currentHealth <= 0) {
-                this.game.hero.isDead();
-            }
-        }
-
         // samurai will always face torwards the hero
         if (this.game.camera.hero.x < this.x) {
             this.dir = 1;
@@ -192,13 +201,13 @@ class Samurai {
         }
 
         // if the hero is within visualRadius of the samurai, it will follow the hero
-        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (this.x - this.game.hero.x >= 10)) {
-            if (canMoveLeft) { 
+        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (this.x - this.game.hero.x >= 75)) {
+            if (canMoveLeft) {
                 this.x -= movement;
                 this.state = 1;
                 this.hitbox = null;
             }
-        } else if (canSee(this, this.game.hero) && (this.x < this.game.hero.x) && (this.x - this.game.hero.x <= 10)) {
+        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) && (this.x - this.game.hero.x <= 75)) {
             if (canMoveRight) {
                 this.x += movement;
                 this.state = 1;
@@ -210,7 +219,7 @@ class Samurai {
         }
 
         // samurai will start charging an attack when hero is close enough
-        if (getDistance(this, this.game.hero) <= 150) { 
+        if (getDistance(this, this.game.hero) <= 150) {
             if (this.projectileCount == 3) { // after every 3rd melee, a projectile blade will be cast
                 this.projectileAttack();
             } else {
@@ -227,7 +236,7 @@ class Samurai {
     }
 
     draw(ctx) {
-        this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, 
+        this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x,
             this.y - this.game.camera.y, PARAMS.SCALE);
         this.healthbar.draw(ctx);
     };

@@ -15,6 +15,7 @@ class Hero {
         this.jumpTick = 0; // used for jump deceleration
         this.fallTick = 0; // used for fall acceleration
         this.attackTick = 101; // value indicates that attack is ready
+        this.hitstunTick = 0;
 
         this.dir = 0; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking, 6 = hitstun
@@ -95,6 +96,12 @@ class Hero {
             HERO_HEIGHT, 1, 0.08, true);
 
         // add hitstun frames
+        this.animations[0][6] = new animator(this.spritesheet, 14 * HERO_WIDTH, 0, HERO_WIDTH,
+            HERO_HEIGHT, 2, 0.06, true);
+
+        this.animations[1][6] = new animator(this.spritesheet, 14 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH,
+            HERO_HEIGHT, 2, 0.06, true);
+
     };
 
     updateBox() {
@@ -102,9 +109,9 @@ class Hero {
             this.box = new boundingbox(500, 0, 1, 1);
         } else {
             this.box = new boundingbox(this.x + (20 * PARAMS.SCALE) - this.game.camera.x,
-            this.y + (16 * PARAMS.SCALE),
-            21 * PARAMS.SCALE,
-            37 * PARAMS.SCALE);
+                this.y + (16 * PARAMS.SCALE),
+                21 * PARAMS.SCALE,
+                37 * PARAMS.SCALE);
         }
     };
 
@@ -117,12 +124,14 @@ class Hero {
         const ATTACK_READY = 101; // arbitrary value to signal that the hero can attack again
         const ACTIVE_FRAME = 21;
 
+        const HITSTUN_DURATION = 25;
+
         let canMoveLeft = true;
         let canMoveRight = true;
         let canTurn = true;
 
         // state defaults to falling
-        if (this.state != 3) {
+        if (this.state != 3 && this.state != 6) {
             this.state = 4;
         }
 
@@ -153,35 +162,67 @@ class Hero {
             }
         });
 
-        // melee attack collision vs. SAMURAI
-        if (this.hitbox && this.hitbox.collide(this.game.samurai.box)) {
-            const MELEE_DMG_MULTIPLIER = 100;
-            const randomFactor = 0.9 + Math.random() * 0.2; // random # between 0.9 and 1.1
-            const damage = this.baseDamage * MELEE_DMG_MULTIPLIER * randomFactor;
+        // parry input
+        if (this.game.k && (this.state == 0 || this.state == 1 || this.state == 2)) {
+            canMoveLeft = false;
+            canMoveRight = false;
+            this.state = 1
+        }
 
-            if (this.dir == 0) { // varies where dmg score shows based off of current direction
-                this.offset = 150;
-            } else {
-                this.offset = -50;
+        // melee attack collision
+        this.game.bosses.forEach(function (boss) {
+            if (that.hitbox && that.hitbox.collide(boss.box)) {
+                const MELEE_DMG_MULTIPLIER = 100;
+                const randomFactor = 0.9 + Math.random() * 0.2; // random # between 0.9 and 1.1
+                const damage = that.baseDamage * MELEE_DMG_MULTIPLIER * randomFactor;
+
+                if (that.dir == 0) { // varies where dmg score shows based off of current direction
+                    that.offset = 150;
+                } else {
+                    that.offset = -50;
+                }
+
+                // critical hit chance calculation
+                if (Math.random() * 1 < that.critChance) {
+                    const critMultiplier = 1.5;
+                    const critDamage = damage * critMultiplier;
+                    that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + that.offset,
+                        boss.y - that.game.camera.y + 50, critDamage, true));
+                    boss.currentHealth -= damage * critMultiplier;
+                } else {
+                    that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + that.offset,
+                        boss.y - that.game.camera.y + 50, damage, false));
+                    boss.currentHealth -= damage;
+                }
+
+                if (boss.currentHealth <= 0) {
+                    boss.isDead();
+                }
             }
 
-            // critical hit chance calculation
-            if (Math.random() * 1 < this.critChance) {
-                const critMultiplier = 1.5;
-                const critDamage = damage * critMultiplier;
-                this.game.addEntity(new Score(this.game, this.game.samurai.x - this.game.camera.x + this.offset,
-                    this.game.samurai.y - this.game.camera.y + 50, critDamage, true));
-                this.game.samurai.currentHealth -= damage * critMultiplier;
-            } else {
-                this.game.addEntity(new Score(this.game, this.game.samurai.x - this.game.camera.x + this.offset, 
-                    this.game.samurai.y - this.game.camera.y + 50, damage, false));
-                    this.game.samurai.currentHealth -= damage;
+            if (boss.hitbox && boss.hitbox.collide(that.box)) {
+                if (that.state != 1 && that.state != 6) {
+                    that.currentHealth -= boss.damage;
+                    that.attackTick = ATTACK_READY;
+                    that.state = 6;
+                }
             }
+        });
 
-            if (this.game.samurai.currentHealth <= 0) {
-                this.game.samurai.isDead();
+        // projectile collision
+        this.game.projectiles.forEach(function (proj) {
+            if (that.box.collide(proj.hitbox)) {
+                if (that.state != 6) {
+                    that.currentHealth -= proj.damage;
+                    that.attackTick = ATTACK_READY;
+                    that.state = 6;
+                }
             }
-        }        
+        });
+
+        if (that.currentHealth <= 0) {
+            that.isDead();
+        }
 
         // attack input
         if (this.game.j && this.attackTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
@@ -192,17 +233,9 @@ class Hero {
             this.attackTick = 0;
         }
 
-        // parry input
-        if (this.game.k && (this.state == 0 || this.state == 1 || this.state == 2)) {
-            canMoveLeft = false;
-            canMoveRight = false;
-            this.state = 1
-        }
-
         // jump input
-        if (this.game.w && this.state != 3 && this.state != 4 && this.state != 5) {
+        if (this.game.w && (this.state == 0 || this.state == 2)) {
             this.state = 3;
-            this.deltaY = -24;
         }
 
         // handles state when hero is mid-attack
@@ -232,6 +265,24 @@ class Hero {
             this.animations[0][5] = new animator(this.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
             this.animations[1][5] = new animator(this.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
             this.attackTick = ATTACK_READY;
+        }
+
+        // hitstun updates
+        if (this.state == 6) {
+            if (this.hitstunTick < HITSTUN_DURATION) {
+                this.state = 6;
+                this.hitstunTick++;
+                if (this.x < this.game.samurai.x) {
+                    if (canMoveLeft) this.x -= 4;
+                } else {
+                    if (canMoveRight) this.x += 4;
+                }
+                this.y -= 5 - (0.2 * this.hitstunTick);
+            } else {
+                this.hitstunTick = 0;
+                this.fallTick = 0;
+                this.state = 4;
+            }
         }
 
         // y updates for jumping

@@ -9,6 +9,12 @@ class GameEngine {
     // Everything that will be updated and drawn each frame
     this.entities = [];
 
+    // Store bosses so that combat code can be written generically
+    this.bosses = [];
+
+    // Store projectiles so that their logic can be handled separately
+    this.projectiles = [];
+
     // List of tiles that comprise the stage
     this.stageTiles = [];
 

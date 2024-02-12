@@ -18,7 +18,7 @@ class HealthBar {
         ctx.fillRect(402, 677.5, 595 * ratio, 35);
         ctx.font = '17px "Press Start 2P", Courier New';
         ctx.fillStyle = "White";
-        ctx.fillText(this.agent.currentHealth + "/" + this.agent.maxHealth, 805, 705);
+        ctx.fillText(Math.floor(this.agent.currentHealth) + "/" + this.agent.maxHealth, 805, 705);
         ctx.fillText("Health", 410, 705);
     };
 }

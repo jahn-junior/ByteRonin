@@ -1,11 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>Byte Ronin</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press+Start+2P" />
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./timer.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
@@ -24,12 +23,22 @@
     <script type="text/javascript" src="./healthbar.js"></script>
     <script type="text/javascript" src="./hero.js"></script>
     <script type="text/javascript" src="./main.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div>
-        <!-- <h1 id="title">Byte Ronin</h1> -->
-        <canvas id="gameWorld" width="1366" height="768" style="background:white; border: 1px solid black" tabindex="0"
-            autofocus></canvas>
+      <!-- <h1 id="title">Byte Ronin</h1> -->
+      <canvas
+        id="gameWorld"
+        width="1366"
+        height="768"
+        style="background: white; border: 1px solid black"
+        tabindex="0"
+        autofocus></canvas>
     </div>
-</body>
+    <br />
+    <div>
+      <input type="checkbox" id="mute" /> Mute
+      <input type="range" id="volume" min="0" max="1" value="0.1" step="0.05" /> Volume
+    </div>
+  </body>
 </html>

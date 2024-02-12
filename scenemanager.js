@@ -13,7 +13,6 @@ class SceneManager {
     // this.orochi = new Orochi(this.game, 800, 490);
     // this.wolf = new Wolf(this.game, -20, 490);
     this.samurai = new Samurai(this.game, 700, 300);
-
     this.load(levelOne, this.samurai);
   }
 
@@ -98,8 +97,9 @@ class SceneManager {
         this.game.addStageTile(tile);
       }
     }
-    this.game.addEntity(this.hero);
+
     this.game.addEntity(this.boss);
+    this.game.addEntity(this.hero);
   }
 
   updateAudio() {

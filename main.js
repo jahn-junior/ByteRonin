@@ -8,6 +8,7 @@ ASSET_MANAGER.queueDownload("./sprites/wolf.png");
 ASSET_MANAGER.queueDownload("./sprites/orochi.png");
 ASSET_MANAGER.queueDownload("./sprites/samurai.png");
 ASSET_MANAGER.queueDownload("./sprites/ground.png");
+ASSET_MANAGER.queueDownload("./sprites/samuraiProjectile.png");
 
 ASSET_MANAGER.downloadAll(() => {
   const gameEngine = new GameEngine();

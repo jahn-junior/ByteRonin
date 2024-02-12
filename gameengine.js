@@ -57,7 +57,13 @@ class GameEngine {
       x: e.clientX - this.ctx.canvas.getBoundingClientRect().left,
       y: e.clientY - this.ctx.canvas.getBoundingClientRect().top,
     });
-
+    function mouseListener(e) {
+      that.mouse = getXandY(e);
+    }
+    function mouseClickListener(e) {
+      that.click = getXandY(e);
+      if (PARAMS.DEBUG) console.log(that.click);
+    }
     this.ctx.canvas.addEventListener("wheel", (e) => {
       if (this.options.debugging) {
         console.log("WHEEL", getXandY(e), e.wheelDelta);
@@ -139,6 +145,10 @@ class GameEngine {
       },
       false
     );
+    that.mousemove = mouseListener;
+    that.leftclick = mouseClickListener;
+    this.ctx.canvas.addEventListener("mousemove", that.mousemove, false);
+    this.ctx.canvas.addEventListener("click", that.leftclick, false);
   }
 
   addEntity(entity) {
@@ -165,7 +175,6 @@ class GameEngine {
       // if (this.entities[i].hitbox) {
       //   this.ctx.strokeRect(this.entities[i].hitbox.x, this.entities[i].hitbox.y, this.entities[i].hitbox.width, this.entities[i].hitbox.height);
       // }
-
     }
     this.camera.draw(this.ctx);
   }

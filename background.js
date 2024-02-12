@@ -8,13 +8,12 @@ class Background {
 
         // Load the 39 background images
         for (let i = 0; i < 39; i++) {
-            this.images[i] = ASSET_MANAGER.getAsset("./background/background" + i + ".png");
+            this.images[i] = ASSET_MANAGER.getAsset("./background/MainStage/background" + i + ".png");
         }
     }
 
     update() {
         let currentTime = this.game.timer.gameTime;
-
         // Check if it's time to change to the next frame
         if (currentTime - this.lastFrameChangeTime > this.frameDuration) {
             this.frame = (this.frame + 1) % this.images.length; // Cycle through frames
@@ -27,10 +26,6 @@ class Background {
         var sy = (this.game.camera.y / 10) + 100;
         var sWidth = 620;
         var sHieght = 620;
-        // Change this value if we go any higher and the background gets cut off.
-        // if (sy < 0) {
-        //     sy = 0;
-        // }
 
         if (sx < 3) {
             sx = 3;

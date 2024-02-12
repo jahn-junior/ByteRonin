@@ -6,8 +6,10 @@ class Hero {
         this.game.hero = this;
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
-        this.x = 150;
-        this.y = 400;
+        // this.x = 150;
+        // this.y = 400;
+        this.x = x;
+        this.y = y;
         this.jumpTick = 0;
         this.fallTick = 0;
 
@@ -158,8 +160,7 @@ class Hero {
             this.dir = 1;
             if (canMoveLeft) this.x -= 5;
         }
-
-        console.log(this.state);
+        console.log(this.x);
         this.updateBox();
     }
 

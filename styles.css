@@ -11,9 +11,9 @@ body {
     background-repeat: no-repeat; 
     background-position: center;
 }
-.canvas-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #453663;
+#title {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 3em;
+    font-family: 'Press Start 2P', serif;
 }

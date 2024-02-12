@@ -1,7 +1,6 @@
-
 const ASSET_MANAGER = new AssetManager();
-for (let i = 0; i <39; i++) {
-    ASSET_MANAGER.queueDownload("./background/MainStage/background" + i + ".png");
+for (let i = 0; i < 39; i++) {
+  ASSET_MANAGER.queueDownload("./background/MainStage/background" + i + ".png");
 }
 ASSET_MANAGER.queueDownload("./background/TitlePage/title.png");
 ASSET_MANAGER.queueDownload("./sprites/hero.png");
@@ -11,21 +10,20 @@ ASSET_MANAGER.queueDownload("./sprites/samurai.png");
 ASSET_MANAGER.queueDownload("./sprites/ground.png");
 
 ASSET_MANAGER.downloadAll(() => {
-    const gameEngine = new GameEngine();
-   
-    PARAMS.BLOCKWIDTH = PARAMS.BITWIDTH * PARAMS.SCALE;
+  const gameEngine = new GameEngine();
 
-    const canvas = document.getElementById("gameWorld");
-    const ctx = canvas.getContext("2d");
+  PARAMS.BLOCKWIDTH = PARAMS.BITWIDTH * PARAMS.SCALE;
 
-    PARAMS.CANVAS_WIDTH = canvas.width;
-	PARAMS.CANVAS_HEIGHT = canvas.height;
-    
-	ctx.imageSmoothingEnabled = false;
+  const canvas = document.getElementById("gameWorld");
+  const ctx = canvas.getContext("2d");
 
-    gameEngine.init(ctx);
+  PARAMS.CANVAS_WIDTH = canvas.width;
+  PARAMS.CANVAS_HEIGHT = canvas.height;
 
-    new SceneManager(gameEngine);
-    gameEngine.start();
+  ctx.imageSmoothingEnabled = false;
+
+  gameEngine.init(ctx);
+
+  new SceneManager(gameEngine);
+  gameEngine.start();
 });
-

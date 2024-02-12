@@ -210,7 +210,7 @@ class Samurai {
     // A special attack that will cast after every 3rd melee attack
     projectileAttack() {
         const PROJECTILE_VELOCITY = 10;
-        const PROJECTILE_DAMAGE = 1500 * (0.9 + Math.random() * 0.2);
+        const PROJECTILE_DAMAGE = 1200 * (0.9 + Math.random() * 0.2);
 
         if (this.chargingTimer < 2) {
             this.chargingTimer += 1 * this.game.clockTick;

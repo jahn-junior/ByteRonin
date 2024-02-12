@@ -9,6 +9,12 @@ class GameEngine {
     // Everything that will be updated and drawn each frame
     this.entities = [];
 
+    // Store bosses so that combat code can be written generically
+    this.bosses = [];
+
+    // Store projectiles so that their logic can be handled separately
+    this.projectiles = [];
+
     // List of tiles that comprise the stage
     this.stageTiles = [];
 
@@ -161,10 +167,13 @@ class GameEngine {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw(this.ctx, this);
 
-      // draw bounding boxes for debugging
+      //draw bounding boxes for debugging
       // this.ctx.strokeStyle = "red";
       // if (this.entities[i].box) {
       //   this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
+      // }
+      // if (this.entities[i].hitbox) {
+      //   this.ctx.strokeRect(this.entities[i].hitbox.x, this.entities[i].hitbox.y, this.entities[i].hitbox.width, this.entities[i].hitbox.height);
       // }
     }
     this.camera.draw(this.ctx);
@@ -175,7 +184,9 @@ class GameEngine {
 
     for (let i = 0; i < entitiesCount; i++) {
       let entity = this.entities[i];
-      entity.update();
+      if (!entity.removeFromWorld) {
+        entity.update();
+      }
     }
     this.camera.update();
 

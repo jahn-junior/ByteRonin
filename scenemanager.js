@@ -3,18 +3,17 @@ class SceneManager {
     this.game = game;
     this.game.camera = this;
     this.x = 0;
-    this.hero = new Hero(this.game, 150, 400);
+    this.hero = new Hero(this.game, 150, 300);
     this.ts = new TitleScreen(this.game);
     this.title();
-    
+
     this.boss;
-    // The bosses starting location and object creation is now in titlescreen.js. 
+    // The bosses starting location and object creation is now in titlescreen.js.
     // this.orochi = new Orochi(this.game, 800, 490);
     // this.wolf = new Wolf(this.game, -20, 490);
     // this.samurai = new Samurai(this.game, 700, 355);
 
     // this.load(levelOne, this.samurai);
-
   }
 
   clearEntities() {
@@ -110,9 +109,7 @@ class SceneManager {
     let xmidpoint = PARAMS.CANVAS_WIDTH / 2 - PARAMS.BLOCKWIDTH / 2;
     let ymidpoint = PARAMS.CANVAS_HEIGHT / 2 - PARAMS.BLOCKWIDTH / 2;
     this.x = this.hero.x - xmidpoint + PARAMS.BLOCKWIDTH / 2;
-    this.y =
-      this.hero.y - ymidpoint + PARAMS.BLOCKWIDTH / 2 - PARAMS.BLOCKWIDTH;
-    
+    this.y = this.hero.y - ymidpoint + PARAMS.BLOCKWIDTH / 2 - PARAMS.BLOCKWIDTH;
   }
 
   draw(ctx) {}

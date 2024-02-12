@@ -4,16 +4,16 @@ class SceneManager {
     this.game.camera = this;
     this.x = 0;
     this.hero = new Hero(this.game, 150, 300);
-    this.ts = new TitleScreen(this.game);
-    this.title();
-
     this.boss;
+
+    // this.ts = new TitleScreen(this.game);
+    // this.title();
+
     // The bosses starting location and object creation is now in titlescreen.js.
     // this.orochi = new Orochi(this.game, 800, 490);
     // this.wolf = new Wolf(this.game, -20, 490);
-    // this.samurai = new Samurai(this.game, 700, 355);
-
-    // this.load(levelOne, this.samurai);
+    this.samurai = new Samurai(this.game, 700, 300);
+    this.load(levelOne, this.samurai);
   }
 
   clearEntities() {
@@ -97,8 +97,9 @@ class SceneManager {
         this.game.addStageTile(tile);
       }
     }
-    this.game.addEntity(this.hero);
+
     this.game.addEntity(this.boss);
+    this.game.addEntity(this.hero);
   }
 
   updateAudio() {

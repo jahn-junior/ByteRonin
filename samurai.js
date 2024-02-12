@@ -266,8 +266,7 @@ class Samurai {
                         if (that.x <= -800) {
                             that.x = -700;
                         }
-                    } else if (that.dir == 1) {
-                        // <-- left collisions
+                    } else if (that.dir == 1) { // <-- left collisions
                         that.x += movement;
                         if (that.x >= 1200) {
                             // if the samurai clips off the map, then reset it's position inside arena
@@ -286,17 +285,13 @@ class Samurai {
         }
 
         // if the hero is within visualRadius of the samurai, it will follow the hero
-        if (canSee(this, this.game.hero) && this.x > this.game.hero.x && this.x - this.game.hero.x >= 100) {
+        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (this.x - this.game.hero.x >= 100)) {
             if (canMoveLeft && this.dir == 1) {
                 this.x -= movement;
                 this.state = 1;
                 this.hitbox = null;
             }
-        } else if (
-            canSee(this, this.game.hero) &&
-            this.x + 32 * PARAMS.SCALE < this.game.hero.x &&
-            this.x - this.game.hero.x <= 75
-        ) {
+        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) && (this.x - this.game.hero.x <= 75)) {
             if (canMoveRight && this.dir == 0) {
                 this.x += movement;
                 this.state = 1;

@@ -23,7 +23,7 @@ class Hero {
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
     this.dead = false;
-
+    this.gameover = false;
     this.baseDamage = 125;
     this.critChance = 0.2; // 20%
 
@@ -143,7 +143,10 @@ class Hero {
 
   updateBox() {
     if (this.dead) {
-      this.box = new boundingbox(500, 0, 1, 1);
+      this.box = new boundingbox(1000, 0, 1, 1);
+      if (this.y >= 800) {
+        this.gameover = true;
+      }
     } else {
       this.box = new boundingbox(
         this.x + 20 * PARAMS.SCALE - this.game.camera.x,

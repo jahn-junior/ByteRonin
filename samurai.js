@@ -220,17 +220,16 @@ class Samurai {
             if (this.meleeTimer < 0.5) {
                 this.meleeTimer += 1 * this.game.clockTick;
             } else {
-                let projX =
-                    this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
+                let projX = this.x - this.game.camera.x + 48;
+                if (this.dir == 0) projX += this.box.width;
                 let proj = new SamuraiProjectile(
                     this.game,
                     projX,
                     this.y - this.game.camera.y + 26,
-                    16 * PARAMS.SCALE,
-                    this.box.height,
+                    64 * PARAMS.SCALE,
+                    64 * PARAMS.SCALE,
                     this.dir,
                     PROJECTILE_VELOCITY,
-                    "samurai-proj",
                     PROJECTILE_DAMAGE
                 );
 
@@ -311,9 +310,6 @@ class Samurai {
                 this.meleeAttack();
             }
         }
-
-        // console.log(this.x);
-        // console.log(this.y);
 
         this.updateBox();
     }

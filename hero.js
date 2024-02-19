@@ -13,13 +13,15 @@ class Hero {
 
     this.jumpTick = 0; // used for jump deceleration
     this.fallTick = 0; // used for fall acceleration
-    this.attackTick = 101; // value indicates that attack is ready
+    this.meleeTick = 101; // value indicates that attack is ready
+    this.rangedTick = 101; // value indicates that attack is ready
     this.hitstunTick = 0;
 
     this.dir = 0; // 0 = right, 1 = left
-    this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = attacking, 6 = hitstun
+    this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee, 6 = hitstun, 7 = shoot
 
     this.maxHealth = 25000;
+    this.speed = 400;
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
     this.dead = false;
@@ -53,92 +55,36 @@ class Hero {
 
     // idle frames
     this.animations[0][0] = new animator(this.spritesheet, 0, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
-
     this.animations[1][0] = new animator(this.spritesheet, 0, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+
+    // parry frames
+    this.animations[0][1] = new animator(this.spritesheet, 18 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][1] = new animator(this.spritesheet, 18 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
     // running frames
     this.animations[0][2] = new animator(this.spritesheet, HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 6, 0.08, true);
-
-    this.animations[1][2] = new animator(
-      this.spritesheet,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      6,
-      0.08,
-      true
-    );
-
-    // attacking frames
-    this.animations[0][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 4, 0.08, false);
-
-    this.animations[1][5] = new animator(
-      this.spritesheet,
-      7 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      4,
-      0.08,
-      false
-    );
+    this.animations[1][2] = new animator(this.spritesheet, HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 6, 0.08, true);
 
     // jumping frames
-    this.animations[0][3] = new animator(this.spritesheet, 11 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
-
-    this.animations[1][3] = new animator(
-      this.spritesheet,
-      11 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    );
+    this.animations[0][3] = new animator(this.spritesheet, 16 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][3] = new animator(this.spritesheet, 16 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
     // falling frames
-    this.animations[0][4] = new animator(this.spritesheet, 12 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[0][4] = new animator(this.spritesheet, 17 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][4] = new animator(this.spritesheet, 17 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
-    this.animations[1][4] = new animator(
-      this.spritesheet,
-      12 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    );
+    // melee attack frames
+    this.animations[0][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 4, 0.08, false);
+    this.animations[1][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 4, 0.08, false);
 
-    // parry frames
-    this.animations[0][1] = new animator(this.spritesheet, 13 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    // hitstun frames
+    this.animations[0][6] = new animator(this.spritesheet, 19 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 2, 0.06, true);
+    this.animations[1][6] = new animator(this.spritesheet, 19 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 2, 0.06, true);
 
-    this.animations[1][1] = new animator(
-      this.spritesheet,
-      13 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    );
+    // ranged attack frames
+    this.animations[0][7] = new animator(this.spritesheet, 11 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 5, 0.1, false);
+    this.animations[1][7] = new animator(this.spritesheet, 11 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 5, 0.1, false);
 
-    // add hitstun frames
-    this.animations[0][6] = new animator(this.spritesheet, 14 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 2, 0.06, true);
-
-    this.animations[1][6] = new animator(
-      this.spritesheet,
-      14 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      2,
-      0.06,
-      true
-    );
   }
 
   updateBox() {
@@ -158,11 +104,13 @@ class Hero {
     let that = this;
 
     const MAX_FALL_VELOC = 7;
-    const ATTACK_DURATION = 26; // matches up with the animation duration
+    const MELEE_DURATION = 26; // matches up with the animation duration
     const ATTACK_READY = 101; // arbitrary value to signal that the hero can attack again
     const ACTIVE_FRAME = 21;
-
+    const RANGED_DURATION = 36;
     const HITSTUN_DURATION = 25;
+    const PROJECTILE_VELOCITY = 16;
+    const PROJECTILE_DAMAGE = 800 * (0.9 + Math.random() * 0.2);
 
     let canMoveLeft = true;
     let canMoveRight = true;
@@ -176,8 +124,7 @@ class Hero {
     // collision handling
     this.game.stageTiles.forEach(function (tile) {
       if (that.box.collide(tile.box)) {
-        if (that.box.bottom - tile.box.top <= 4 * PARAMS.SCALE) {
-          // bottom collision
+        if (that.box.bottom - tile.box.top <= 4 * PARAMS.SCALE) { // bottom collision
           if (
             (that.dir == 0 && that.box.right >= tile.box.left + 5 * PARAMS.SCALE) ||
             (that.dir == 1 && that.box.left <= tile.box.right - 5 * PARAMS.SCALE)
@@ -186,16 +133,13 @@ class Hero {
             that.fallTick = 0;
             that.state = 0;
           }
-        } else if (that.dir == 0 && that.box.right > tile.box.left) {
-          // right collision
+        } else if (that.dir == 0 && that.box.right > tile.box.left) { // right collision
           canMoveRight = false;
-        } else if (that.dir == 1 && that.box.left < tile.box.right) {
-          // left collision
+        } else if (that.dir == 1 && that.box.left < tile.box.right) { // left collision
           canMoveLeft = false;
         }
 
-        if (that.state == 3 && that.box.top - tile.box.bottom <= 4 * PARAMS.SCALE) {
-          // top collision
+        if (that.state == 3 && that.box.top - tile.box.bottom <= 4 * PARAMS.SCALE) { // top collision
           if (
             (that.dir == 0 && that.box.right >= tile.box.left + 5 * PARAMS.SCALE) ||
             (that.dir == 1 && that.box.left <= tile.box.right - 5 * PARAMS.SCALE)
@@ -222,12 +166,8 @@ class Hero {
         const randomFactor = 0.9 + Math.random() * 0.2; // random # between 0.9 and 1.1
         const damage = that.baseDamage * MELEE_DMG_MULTIPLIER * randomFactor;
 
-        if (that.dir == 0) {
-          // varies where dmg score shows based off of current direction
-          that.offset = 150;
-        } else {
-          that.offset = -50;
-        }
+        // varies where dmg score shows based off of current direction
+        that.offset = that.dir == 0 ? 150 : -50;
 
         // critical hit chance calculation
         if (Math.random() * 1 < that.critChance) {
@@ -264,7 +204,7 @@ class Hero {
       if (boss.hitbox && boss.hitbox.collide(that.box)) {
         if (that.state != 1 && that.state != 6) {
           that.currentHealth -= boss.damage;
-          that.attackTick = ATTACK_READY;
+          that.meleeTick = ATTACK_READY;
           that.state = 6;
         }
       }
@@ -273,9 +213,9 @@ class Hero {
     // projectile collision
     this.game.projectiles.forEach(function (proj) {
       if (that.box.collide(proj.hitbox)) {
-        if (that.state != 6) {
+        if (that.state != 6 && !(proj instanceof HeroProjectile)) {
           that.currentHealth -= proj.damage;
-          that.attackTick = ATTACK_READY;
+          that.meleeTick = ATTACK_READY;
           that.state = 6;
         }
       }
@@ -285,13 +225,13 @@ class Hero {
       that.isDead();
     }
 
-    // attack input
-    if (this.game.j && this.attackTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
+    // melee attack input
+    if (this.game.j && this.meleeTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
       canMoveLeft = false;
       canMoveRight = false;
       canTurn = false;
       this.state = 5;
-      this.attackTick = 0;
+      this.meleeTick = 0;
     }
 
     // jump input
@@ -299,14 +239,23 @@ class Hero {
       this.state = 3;
     }
 
-    // handles state when hero is mid-attack
-    if (this.attackTick < ATTACK_DURATION) {
+    // ranged attack input
+    if (this.game.i && this.rangedTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
       canMoveLeft = false;
       canMoveRight = false;
       canTurn = false;
-      this.attackTick++;
+      this.state = 7;
+      this.rangedTick = 0;
+    }
+
+    // handles state when hero is in the middle of a melee attack
+    if (this.meleeTick < MELEE_DURATION) {
+      canMoveLeft = false;
+      canMoveRight = false;
+      canTurn = false;
+      this.meleeTick++;
       this.state = 5;
-      if (this.attackTick == ACTIVE_FRAME) {
+      if (this.meleeTick == ACTIVE_FRAME) {
         // enable hitbox on active frames
         if (this.dir == 0) {
           this.hitbox = new boundingbox(
@@ -327,11 +276,41 @@ class Hero {
         // disable hitbox on inactive frames
         this.hitbox = null;
       }
-    } else if (this.attackTick == ATTACK_DURATION) {
+    } else if (this.meleeTick == MELEE_DURATION) {
       // reload animation so that it can play on the next attack
       this.animations[0][5] = new animator(this.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
       this.animations[1][5] = new animator(this.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
-      this.attackTick = ATTACK_READY;
+      this.meleeTick = ATTACK_READY;
+    }
+
+    // handles state when hero is in the middle of a ranged attack
+    if (this.rangedTick < RANGED_DURATION) {
+      canMoveLeft = false;
+      canMoveRight = false;
+      canTurn = false;
+      this.rangedTick++;
+      this.state = 7;
+    } else if (this.rangedTick == RANGED_DURATION) {
+      let projX = this.x - this.game.camera.x;
+      if (this.dir == 0) projX += this.box.width;
+      let proj = new HeroProjectile(
+        this.game,
+        projX,
+        this.y - this.game.camera.y + 20 * PARAMS.SCALE,
+        13 * PARAMS.SCALE,
+        3 * PARAMS.SCALE,
+        this.dir,
+        PROJECTILE_VELOCITY,
+        PROJECTILE_DAMAGE
+      );
+
+      this.game.addEntity(proj);
+      this.game.projectiles.push(proj);
+
+      this.animations[0][7] = new animator(this.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+      this.animations[1][7] = new animator(this.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
+
+      this.rangedTick = ATTACK_READY;
     }
 
     // hitstun updates
@@ -369,20 +348,20 @@ class Hero {
 
     // updates for left/right movement
     if (this.game.d && !this.game.a) {
-      if (this.state != 1 && this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
+      if (this.state == 0 || this.state == 2) this.state = 2;
       if (canTurn) this.dir = 0;
-      if (canMoveRight) this.x += 6;
+      if (canMoveRight) this.x += this.speed * this.game.clockTick;
     } else if (this.game.a && !this.game.d) {
-      if (this.state != 1 && this.state != 3 && this.state != 4 && this.state != 5) this.state = 2;
+      if (this.state == 0 || this.state == 2) this.state = 2;
       if (canTurn) this.dir = 1;
-      if (canMoveLeft) this.x -= 6;
+      if (canMoveLeft) this.x -= this.speed * this.game.clockTick;
     }
 
-    // console.log(this.state);
     this.updateBox();
   }
 
   draw(ctx) {
+
     this.animations[this.dir][this.state].drawFrame(
       this.game.clockTick,
       ctx,
@@ -390,6 +369,7 @@ class Hero {
       this.y,
       PARAMS.SCALE
     );
+
     this.healthbar.draw(ctx);
   }
 }

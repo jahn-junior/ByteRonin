@@ -217,19 +217,20 @@ class Samurai {
             this.state = 2;
         } else {
             this.state = 4;
-            if (this.meleeTimer < 0.5) {
-                this.meleeTimer += 1 * this.game.clockTick;
+            if (this.projectileTimer < 0.5) {
+                this.projectileTimer += 1 * this.game.clockTick;
             } else {
-                let projX = this.x - this.game.camera.x + 48;
-                if (this.dir == 0) projX += this.box.width;
+                let projX =
+                    this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
                 let proj = new SamuraiProjectile(
                     this.game,
                     projX,
-                    this.y - this.game.camera.y + 26,
-                    64 * PARAMS.SCALE,
-                    64 * PARAMS.SCALE,
+                    this.y - this.game.camera.y + 24,
+                    16 * PARAMS.SCALE,
+                    this.box.height,
                     this.dir,
                     PROJECTILE_VELOCITY,
+                    "samurai-proj",
                     PROJECTILE_DAMAGE
                 );
 
@@ -237,7 +238,7 @@ class Samurai {
                 this.game.projectiles.push(proj);
 
                 this.chargingTimer = 0;
-                this.meleeTimer = 0;
+                this.projectileTimer = 0;
                 this.projectileCount = 0;
             }
         }
@@ -301,15 +302,16 @@ class Samurai {
             this.hitbox = null;
         }
 
-        // samurai will start charging an attack when hero is close enough
         if (getDistance(this, this.game.hero) <= 150) {
-            if (this.projectileCount == 3) {
-                // after every 3rd melee, a projectile blade will be cast
-                this.projectileAttack();
-            } else {
-                this.meleeAttack();
-            }
+            this.meleeAttack();
+        } else if (getDistance(this, this.game.hero) > 400) {
+            this.canMoveLeft = false;
+            this.canMoveRight = false;
+            this.projectileAttack();
         }
+
+        // console.log(this.x);
+        // console.log(this.y);
 
         this.updateBox();
     }

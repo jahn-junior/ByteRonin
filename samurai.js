@@ -10,6 +10,7 @@ class Samurai {
 
         this.dir = 1; // 0 = right, 1 = left
         this.state = 0; // 0 = idle, 1 = running, 2 = charging anim, 3 = primary melee, 4 = projectile blade
+        this.phase = 0; // 0 = initial phase, 1 = phase I, 2 = phase II
 
         this.visualRadius = 400;
         this.speed = 300;
@@ -18,9 +19,11 @@ class Samurai {
         this.meleeTimer = 0;
         this.projectileCount = 0;
         this.hitbox = null;
+        this.isTeleported = false;
 
-        this.maxHealth = 2000000;
-        this.damage = 600 * (0.9 + Math.random() * 0.2);
+        this.maxHealth = 2500000;
+        this.baseAttack = 1000;
+        this.meleeDamage = (this.baseAttack * 0.6) * (0.9 + Math.random() * 0.2);
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
         this.healthbar = new BossHealthBar(this);
@@ -179,7 +182,7 @@ class Samurai {
         } else {
             this.state = 3;
             if (this.meleeTimer < 0.5) {
-                if (this.meleeTimer < 0.1) {
+                if (this.meleeTimer < 0.05) {
                     // active bounding box to be cast for short duration
                     if (this.dir == 1) {
                         this.hitbox = new boundingbox(
@@ -196,6 +199,7 @@ class Samurai {
                             64 * PARAMS.SCALE
                         );
                     }
+                    this.isTeleported = false;
                 }
                 this.meleeTimer += 1 * this.game.clockTick;
             } else {
@@ -210,14 +214,20 @@ class Samurai {
     // A special attack that will cast after every 3rd melee attack
     projectileAttack() {
         const PROJECTILE_VELOCITY = 10;
-        const PROJECTILE_DAMAGE = 1200 * (0.9 + Math.random() * 0.2);
+        const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
+        let chargingLimit = 2;
+        let projLimit = 0.5;
+        if (this.phase != 0) { // more rapid projectile attack if not initial phase
+            chargingLimit = 1;
+            projLimit = 0.25;
+        }
 
-        if (this.chargingTimer < 2) {
+        if (this.chargingTimer < chargingLimit) {
             this.chargingTimer += 1 * this.game.clockTick;
             this.state = 2;
         } else {
             this.state = 4;
-            if (this.projectileTimer < 0.5) {
+            if (this.projectileTimer < projLimit) {
                 this.projectileTimer += 1 * this.game.clockTick;
             } else {
                 let projX =
@@ -244,14 +254,47 @@ class Samurai {
         }
     }
 
+    teleportAttack() {
+        const originalX = this.x;
+    
+        // Determine the direction the Samurai should face after teleporting
+        this.dir = this.game.hero.dir === 0 ? 0 : 1; // Face opposite direction of the hero
+    
+        // Teleport the Samurai behind the hero
+        if (this.isTeleported == false) {
+            if (this.dir === 0) {
+                // Teleport to the left of the hero
+                this.x = this.game.hero.x - 128;
+                this.isTeleported = true;
+            } else {
+                // Teleport to the right of the hero
+                this.x = this.game.hero.x + 128;
+                this.isTeleported = true;
+            }
+        }
+        // Perform a melee attack after teleporting
+        this.meleeAttack();
+
+    }
+
     update() {
         let canMoveLeft = true;
         let canMoveRight = true;
         let movement = this.speed * this.game.clockTick;
         let that = this;
+        let healthRatio = this.currentHealth / this.maxHealth;
 
         this.applyGravity();
         this.updatePosition();
+
+        if (healthRatio < 0.4) {
+            this.phase = 2;
+            this.baseAttack = 2500;
+        } else if (healthRatio < 0.7) {
+            this.phase = 1;
+        } else {
+            this.phase = 0;
+        }
 
         this.game.stageTiles.forEach(function (tile) {
             if (that.box.collide(tile.box)) {
@@ -303,10 +346,12 @@ class Samurai {
         }
 
         if (getDistance(this, this.game.hero) <= 150) {
-            this.meleeAttack();
+            if (this.phase != 2) {
+                this.meleeAttack();
+            } else {
+                this.teleportAttack();
+            }
         } else if (getDistance(this, this.game.hero) > 400) {
-            this.canMoveLeft = false;
-            this.canMoveRight = false;
             this.projectileAttack();
         }
 

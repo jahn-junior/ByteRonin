@@ -9,6 +9,7 @@ class SceneManager {
 
     this.boss;
     this.ts = new TitleScreen(this.game);
+    this.gameover = new GameOver(this.game);
     this.title();
 
     // The bosses starting location and object creation is now in titlescreen.js.
@@ -24,6 +25,7 @@ class SceneManager {
     });
   }
   title() {
+    this.clearEntities();
     this.game.addEntity(this.ts);
   }
   /* This method loads everything we see on the canvas.
@@ -32,6 +34,7 @@ class SceneManager {
   load(level, theBoss) {
     this.level = level;
     this.boss = theBoss;
+    this.clearEntities();
     this.game.bosses.push(this.boss);
     this.game.addEntity(new Background(this.game));
 
@@ -121,8 +124,14 @@ class SceneManager {
     let ymidpoint = PARAMS.CANVAS_HEIGHT / 2 - PARAMS.BLOCKWIDTH / 2;
     this.x = this.hero.x - xmidpoint + PARAMS.BLOCKWIDTH / 2;
     this.y = this.hero.y - ymidpoint + PARAMS.BLOCKWIDTH / 2 - PARAMS.BLOCKWIDTH;
-
     this.updateAudio();
+
+    // Logic for when hero dies. Lets expand on this.
+    if (this.game.hero.gameover) {
+      this.game.hero.gameover = false;
+      this.clearEntities();
+      this.game.addEntity(new GameOver(this.game));
+    }
   }
 
   draw(ctx) {}

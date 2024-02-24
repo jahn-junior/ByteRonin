@@ -20,6 +20,7 @@ class Samurai {
         this.projectileCount = 0;
         this.hitbox = null;
         this.isTeleported = false;
+        this.isInvulnerable = false;
 
         this.maxHealth = 2500000;
         this.baseAttack = 1000;

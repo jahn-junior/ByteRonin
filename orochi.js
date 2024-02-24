@@ -11,6 +11,7 @@ class Orochi {
         this.transformTimer = 0;
         this.isTransformed = false;
         this.velocityY = 0;
+        this.isInvulnerable = false;
         
         this.title = "Cyberhydraic Maiden"
         this.maxHealth = 800000;
@@ -174,6 +175,7 @@ class Orochi {
             this.state = 4;
             this.phase = 1;
             this.isTransformed = true;
+            this.isInvulnerable = false;
         }
     }
 
@@ -213,6 +215,9 @@ class Orochi {
         this.updatePosition();
 
         if (healthRatio < 0.5) {
+            if (this.state != 4) {
+                this.isInvulnerable = true;
+            }
             if (!this.isTransformed) {
                 this.transform();
             }
@@ -277,6 +282,8 @@ class Orochi {
             }
             // this.hitbox = null;
         }
+
+        console.log(this.isInvulnerable);
 
         this.updateBox();
     };

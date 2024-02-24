@@ -225,38 +225,40 @@ class Hero {
         const randomFactor = 0.9 + Math.random() * 0.2; // random # between 0.9 and 1.1
         const damage = that.baseDamage * MELEE_DMG_MULTIPLIER * randomFactor;
 
-        if (that.dir == 0) {
-          // varies where dmg score shows based off of current direction
-          that.offset = 150;
-        } else {
-          that.offset = -50;
-        }
-
-        // critical hit chance calculation
-        if (Math.random() * 1 < that.critChance) {
-          const critMultiplier = 1.5;
-          const critDamage = damage * critMultiplier;
-          that.game.addEntity(
-            new Score(
-              that.game,
-              boss.x - that.game.camera.x + that.offset,
-              boss.y - that.game.camera.y + 50,
-              critDamage,
-              true
-            )
-          );
-          boss.currentHealth -= damage * critMultiplier;
-        } else {
-          that.game.addEntity(
-            new Score(
-              that.game,
-              boss.x - that.game.camera.x + that.offset,
-              boss.y - that.game.camera.y + 50,
-              damage,
-              false
-            )
-          );
-          boss.currentHealth -= damage;
+        if (!boss.isInvulnerable) {
+          if (that.dir == 0) {
+            // varies where dmg score shows based off of current direction
+            that.offset = 150;
+          } else {
+            that.offset = -50;
+          }
+  
+          // critical hit chance calculation
+          if (Math.random() * 1 < that.critChance) {
+            const critMultiplier = 1.5;
+            const critDamage = damage * critMultiplier;
+            that.game.addEntity(
+              new Score(
+                that.game,
+                boss.x - that.game.camera.x + that.offset,
+                boss.y - that.game.camera.y + 50,
+                critDamage,
+                true
+              )
+            );
+            boss.currentHealth -= damage * critMultiplier;
+          } else {
+            that.game.addEntity(
+              new Score(
+                that.game,
+                boss.x - that.game.camera.x + that.offset,
+                boss.y - that.game.camera.y + 50,
+                damage,
+                false
+              )
+            );
+            boss.currentHealth -= damage;
+          }
         }
 
         if (boss.currentHealth <= 0) {

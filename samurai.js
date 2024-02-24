@@ -176,12 +176,20 @@ class Samurai {
     }
 
     meleeAttack() {
-        if (this.chargingTimer < 2) {
+        let chargingLimit = 2;
+        let meleeLimit = 0.5;
+
+        if (this.phase != 0) {
+            chargingLimit = 1;
+            meleeLimit = 0.25;
+        }
+
+        if (this.chargingTimer < chargingLimit) {
             this.chargingTimer += 1 * this.game.clockTick;
             this.state = 2;
         } else {
             this.state = 3;
-            if (this.meleeTimer < 0.5) {
+            if (this.meleeTimer < meleeLimit) {
                 if (this.meleeTimer < 0.05) {
                     // active bounding box to be cast for short duration
                     if (this.dir == 1) {

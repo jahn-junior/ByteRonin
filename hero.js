@@ -24,25 +24,17 @@ class Hero {
     // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee, 6 = hitstun, 7 = shoot, 8 = dead
     this.state = 0;
 
-    this.maxHealth = 25;
+    this.maxHealth = 25000;
     this.speed = 400;
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
     this.dead = false;
-
-    this.critChance = 0.2; // 20%
+    this.gameover = false;
 
     this.animations = [];
     this.loadAnimations();
 
     this.updateBox();
-  }
-
-  isDead() {
-    this.gameover = true;
-    this.currentHealth = this.maxHealth;
-    this.x = this.spawnX;
-    this.y = this.spawnY;
   }
 
   loadAnimations() {
@@ -116,6 +108,7 @@ class Hero {
 
     const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2);
     const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2);
+    const CRIT_CHANCE = 0.2;
 
     let canMoveLeft = true;
     let canMoveRight = true;
@@ -172,7 +165,7 @@ class Hero {
         that.offset = that.dir == 0 ? 150 : -50;
 
         // critical hit chance calculation
-        if (Math.random() * 1 < that.critChance) {
+        if (Math.random() * 1 < CRIT_CHANCE) {
           const critMultiplier = 1.5;
           const critDamage = MELEE_DAMAGE * critMultiplier;
           that.game.addEntity(

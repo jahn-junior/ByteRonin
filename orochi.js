@@ -179,6 +179,49 @@ class Orochi {
         }
     }
 
+    // A special attack that will cast when the hero is at a distance
+    // projectileAttack() {
+    //     const PROJECTILE_VELOCITY = 10;
+    //     const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
+    //     let chargingLimit = 2;
+    //     let projLimit = 0.5;
+    //     if (this.phase != 0) { // more rapid projectile attack if not initial phase
+    //         chargingLimit = 1;
+    //         projLimit = 0.25;
+    //     }
+
+    //     if (this.chargingTimer < chargingLimit) {
+    //         this.chargingTimer += 1 * this.game.clockTick;
+    //         this.state = 2;
+    //     } else {
+    //         this.state = 4;
+    //         if (this.projectileTimer < projLimit) {
+    //             this.projectileTimer += 1 * this.game.clockTick;
+    //         } else {
+    //             let projX =
+    //                 this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
+    //             let proj = new SamuraiProjectile(
+    //                 this.game,
+    //                 projX,
+    //                 this.y - this.game.camera.y + 24,
+    //                 16 * PARAMS.SCALE,
+    //                 this.box.height,
+    //                 this.dir,
+    //                 PROJECTILE_VELOCITY,
+    //                 "samurai-proj",
+    //                 PROJECTILE_DAMAGE
+    //             );
+
+    //             this.game.addEntity(proj);
+    //             this.game.projectiles.push(proj);
+
+    //             this.chargingTimer = 0;
+    //             this.projectileTimer = 0;
+    //             this.projectileCount = 0;
+    //         }
+    //     }
+    // }
+
     updateBox() {
         if (this.state == 3) { // null hitbox while transforming
             this.box = new boundingbox(
@@ -282,8 +325,12 @@ class Orochi {
             }
             // this.hitbox = null;
         }
+    if (getDistance(this, this.game.hero) > 400 && this.state != 3) {
+        if (this.phase != 1) {
+            this.state = 2;
+        }
+    }
 
-        console.log(this.isInvulnerable);
 
         this.updateBox();
     };

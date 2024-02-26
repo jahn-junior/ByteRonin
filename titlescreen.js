@@ -218,7 +218,7 @@ class TitleScreen {
       ctx.fillText("Contract I: Cyber Wolf", 5 * PARAMS.BLOCKWIDTH, 2 * PARAMS.BLOCKWIDTH);
       ctx.strokeText("Contract I: Cyber Wolf", 5 * PARAMS.BLOCKWIDTH, 2 * PARAMS.BLOCKWIDTH);
       if (this.game.mouse && this.game.mouse.y > 1 * PARAMS.BLOCKWIDTH && this.game.mouse.y < 2 * PARAMS.BLOCKWIDTH) {
-        ctx.fillStyle = "Red";
+        ctx.fillStyle = "#4aedff";
         ctx.fillText("Contract I: Cyber Wolf", 5 * PARAMS.BLOCKWIDTH, 2 * PARAMS.BLOCKWIDTH);
         ctx.strokeText("Contract I: Cyber Wolf", 5 * PARAMS.BLOCKWIDTH, 2 * PARAMS.BLOCKWIDTH);
       }
@@ -267,12 +267,12 @@ class TitleScreen {
 
       ctx.fillStyle = "White";
       ctx.font = PARAMS.BLOCKWIDTH / 2 + 'px "Press Start 2P"';
-      ctx.fillText("Contract II: Cyber Orochi", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
-      ctx.strokeText("Contract II: Cyber Orochi", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
+      ctx.fillText("Contract II: Cyberhydraic Maiden", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
+      ctx.strokeText("Contract II: Cyberhydraic Maiden", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
       if (this.game.mouse && this.game.mouse.y > 3 * PARAMS.BLOCKWIDTH && this.game.mouse.y < 4 * PARAMS.BLOCKWIDTH) {
-        ctx.fillStyle = "Red";
-        ctx.fillText("Contract II: Cyber Orochi", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
-        ctx.strokeText("Contract II: Cyber Orochi", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
+        ctx.fillStyle = "#4aedff";
+        ctx.fillText("Contract II: Cyberhydraic Maiden", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
+        ctx.strokeText("Contract II: Cyberhydraic Maiden", 5 * PARAMS.BLOCKWIDTH, 4 * PARAMS.BLOCKWIDTH);
       }
       if (this.selection2) {
         ctx.fillStyle = "White";
@@ -318,12 +318,12 @@ class TitleScreen {
       ctx.fillStyle = "White";
       ctx.font = PARAMS.BLOCKWIDTH / 2 + 'px "Press Start 2P"';
       ctx.fillStyle = "White";
-      ctx.fillText("Final Contract: Mecha Samurai", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
-      ctx.strokeText("Final Contract: Mecha Samurai", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
+      ctx.fillText("Final Contract: Nano Shogun", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
+      ctx.strokeText("Final Contract: Nano Shogun", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
       if (this.game.mouse && this.game.mouse.y > 5 * PARAMS.BLOCKWIDTH && this.game.mouse.y < 6 * PARAMS.BLOCKWIDTH) {
-        ctx.fillStyle = "Red";
-        ctx.fillText("Final Contract: Mecha Samurai", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
-        ctx.strokeText("Final Contract: Mecha Samurai", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
+        ctx.fillStyle = "#4aedff";
+        ctx.fillText("Final Contract: Nano Shogun", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
+        ctx.strokeText("Final Contract: Nano Shogun", 5 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
       }
 
       if (this.selection3) {

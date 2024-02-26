@@ -220,7 +220,7 @@ class Samurai {
         }
     }
 
-    // A special attack that will cast after every 3rd melee attack
+    // A special attack that will cast when the hero is at a distance
     projectileAttack() {
         const PROJECTILE_VELOCITY = 10;
         const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
@@ -244,9 +244,9 @@ class Samurai {
                 let proj = new SamuraiProjectile(
                     this.game,
                     projX,
-                    this.y - this.game.camera.y + 24,
+                    this.y - this.game.camera.y + 72,
                     16 * PARAMS.SCALE,
-                    this.box.height,
+                    this.box.height / 2,
                     this.dir,
                     PROJECTILE_VELOCITY,
                     "samurai-proj",

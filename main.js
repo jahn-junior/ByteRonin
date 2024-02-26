@@ -9,6 +9,8 @@ ASSET_MANAGER.queueDownload("./sprites/orochi.png");
 ASSET_MANAGER.queueDownload("./sprites/samurai.png");
 ASSET_MANAGER.queueDownload("./sprites/ground.png");
 ASSET_MANAGER.queueDownload("./sprites/samuraiProjectile.png");
+ASSET_MANAGER.queueDownload("./sprites/orochiProjectile.png");
+ASSET_MANAGER.queueDownload("./sprites/orochiBeam.png");
 ASSET_MANAGER.queueDownload("./music/bossMusic.wav");
 ASSET_MANAGER.queueDownload("./music/titlePageMusic.wav");
 ASSET_MANAGER.queueDownload("./sound/lazerButton.wav");

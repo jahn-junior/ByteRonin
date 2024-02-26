@@ -196,6 +196,7 @@ class Hero {
         }
       }
 
+      // melee attack collision receiving from a boss
       if (boss.hitbox && boss.hitbox.collide(that.box)) {
         if (that.state != 1 && that.state != 6) {
           that.currentHealth -= boss.damage;

@@ -12,6 +12,7 @@ class TitleScreen {
     let canvas = document.getElementById("gameWorld");
     canvas.addEventListener("click", () => {
       if (this.playTitleMusic) {
+        ASSET_MANAGER.pauseBackgroundMusic();
         ASSET_MANAGER.playAsset("./music/titlePageMusic.wav");
         this.playTitleMusic = false;
       }
@@ -23,7 +24,7 @@ class TitleScreen {
     }
 
     this.wolf = new Wolf(this.game, 200, 490);
-    this.orochi = new Orochi(this.game, 800, 450);
+    this.orochi = new Orochi(this.game, 300, 355);
     this.samurai = new Samurai(this.game, 700, 355);
 
     this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
@@ -44,24 +45,29 @@ class TitleScreen {
     if (this.title == 0) {
       if (this.game.click && this.game.click.y > 4 * PARAMS.BLOCKWIDTH && this.game.click.y < 5 * PARAMS.BLOCKWIDTH) {
         this.title = 1;
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
       }
       if (this.game.click && this.game.click.y > 5 * PARAMS.BLOCKWIDTH && this.game.click.y < 6.5 * PARAMS.BLOCKWIDTH) {
         this.title = 2;
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
       }
     }
-    // If we are on the Play Title Page.
+    // If we are on the Contract Title Page.
     else if (this.title == 1) {
       if (this.game.click && this.game.click.y > 1 * PARAMS.BLOCKWIDTH && this.game.click.y < 2 * PARAMS.BLOCKWIDTH) {
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
         this.selection1 = true;
         this.selection2 = false;
         this.selection3 = false;
       }
       if (this.game.click && this.game.click.y > 3 * PARAMS.BLOCKWIDTH && this.game.click.y < 4 * PARAMS.BLOCKWIDTH) {
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
         this.selection1 = false;
         this.selection2 = true;
         this.selection3 = false;
       }
       if (this.game.click && this.game.click.y > 5 * PARAMS.BLOCKWIDTH && this.game.click.y < 6 * PARAMS.BLOCKWIDTH) {
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
         this.selection1 = false;
         this.selection2 = false;
         this.selection3 = true;
@@ -72,6 +78,7 @@ class TitleScreen {
         this.game.click.y > 2.5 * PARAMS.BLOCKWIDTH &&
         this.game.click.y < 3 * PARAMS.BLOCKWIDTH
       ) {
+        ASSET_MANAGER.playAsset("./sound/lazerReturn.wav");
         this.title = 0;
         this.selection1 = false;
         this.selection2 = false;
@@ -83,6 +90,7 @@ class TitleScreen {
         this.game.click.y > 4.5 * PARAMS.BLOCKWIDTH &&
         this.game.click.y < 5 * PARAMS.BLOCKWIDTH
       ) {
+        ASSET_MANAGER.playAsset("./sound/lazerReturn.wav");
         this.title = 0;
         this.selection1 = false;
         this.selection2 = false;
@@ -94,6 +102,7 @@ class TitleScreen {
         this.game.click.y > 6.5 * PARAMS.BLOCKWIDTH &&
         this.game.click.y < 7 * PARAMS.BLOCKWIDTH
       ) {
+        ASSET_MANAGER.playAsset("./sound/lazerReturn.wav");
         this.title = 0;
         this.selection1 = false;
         this.selection2 = false;
@@ -105,6 +114,7 @@ class TitleScreen {
         this.game.click.y > 2 * PARAMS.BLOCKWIDTH &&
         this.game.click.y < 2.5 * PARAMS.BLOCKWIDTH
       ) {
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
         this.title = 2;
         this.game.camera.load(levelOne, this.wolf);
         this.selection1 = false;
@@ -116,6 +126,7 @@ class TitleScreen {
         this.game.click.y > 4 * PARAMS.BLOCKWIDTH &&
         this.game.click.y < 4.5 * PARAMS.BLOCKWIDTH
       ) {
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
         this.title = 2;
         this.game.camera.load(levelOne, this.orochi);
         this.selection1 = false;
@@ -127,6 +138,7 @@ class TitleScreen {
         this.game.click.y > 6 * PARAMS.BLOCKWIDTH &&
         this.game.click.y < 6.5 * PARAMS.BLOCKWIDTH
       ) {
+        ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
         this.title = 2;
         this.game.camera.load(levelOne, this.samurai);
         this.selection1 = false;

@@ -161,34 +161,36 @@ class Hero {
     this.game.bosses.forEach(function (boss) {
       if (that.hitbox && that.hitbox.collide(boss.box)) {
 
-        // varies where dmg score shows based off of current direction
-        that.offset = that.dir == 0 ? 150 : -50;
+        if (!boss.isInvulnerable) {
+          // varies where dmg score shows based off of current direction
+          that.offset = that.dir == 0 ? 150 : -50;
 
-        // critical hit chance calculation
-        if (Math.random() * 1 < CRIT_CHANCE) {
-          const critMultiplier = 1.5;
-          const critDamage = MELEE_DAMAGE * critMultiplier;
-          that.game.addEntity(
-            new Score(
-              that.game,
-              boss.x - that.game.camera.x + that.offset,
-              boss.y - that.game.camera.y + 50,
-              critDamage,
-              true
-            )
-          );
-          boss.currentHealth -= MELEE_DAMAGE * critMultiplier;
-        } else {
-          that.game.addEntity(
-            new Score(
-              that.game,
-              boss.x - that.game.camera.x + that.offset,
-              boss.y - that.game.camera.y + 50,
-              MELEE_DAMAGE,
-              false
-            )
-          );
-          boss.currentHealth -= MELEE_DAMAGE;
+          // critical hit chance calculation
+          if (Math.random() * 1 < CRIT_CHANCE) {
+            const critMultiplier = 1.5;
+            const critDamage = MELEE_DAMAGE * critMultiplier;
+            that.game.addEntity(
+              new Score(
+                that.game,
+                boss.x - that.game.camera.x + that.offset,
+                boss.y - that.game.camera.y + 50,
+                critDamage,
+                true
+              )
+            );
+            boss.currentHealth -= MELEE_DAMAGE * critMultiplier;
+          } else {
+            that.game.addEntity(
+              new Score(
+                that.game,
+                boss.x - that.game.camera.x + that.offset,
+                boss.y - that.game.camera.y + 50,
+                MELEE_DAMAGE,
+                false
+              )
+            );
+            boss.currentHealth -= MELEE_DAMAGE;
+          }
         }
 
         if (boss.currentHealth <= 0) {
@@ -199,7 +201,7 @@ class Hero {
       // melee attack collision receiving from a boss
       if (boss.hitbox && boss.hitbox.collide(that.box)) {
         if (that.state != 1 && that.state != 6) {
-          that.currentHealth -= boss.damage;
+          that.currentHealth -= boss.meleeDamage;
           that.meleeTick = ATTACK_READY;
           that.rangedTick = ATTACK_READY;
           

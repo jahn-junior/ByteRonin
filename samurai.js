@@ -249,7 +249,6 @@ class Samurai {
                     this.box.height / 2,
                     this.dir,
                     PROJECTILE_VELOCITY,
-                    "samurai-proj",
                     PROJECTILE_DAMAGE
                 );
 
@@ -328,6 +327,17 @@ class Samurai {
                 }
             }
         });
+
+    // projectile collision
+    this.game.projectiles.forEach(function (proj) {
+        if (that.box.collide(proj.hitbox)) {
+          if (!(proj instanceof SamuraiProjectile)) {
+            that.currentHealth -= proj.damage;
+            proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
+            proj.removeFromWorld = true;
+          }
+        }
+    });
 
         // samurai will always face torwards the hero
         if (this.game.camera.hero.x < this.x) {

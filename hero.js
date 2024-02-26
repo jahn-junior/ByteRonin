@@ -15,18 +15,21 @@ class Hero {
     this.fallTick = 0; // used for fall acceleration
     this.meleeTick = 101; // value indicates that attack is ready
     this.rangedTick = 101; // value indicates that attack is ready
+    this.deathTick = 0;
     this.hitstunTick = 0;
 
-    this.dir = 0; // 0 = right, 1 = left
-    this.state = 0; // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee, 6 = hitstun, 7 = shoot
+     // 0 = right, 1 = left
+    this.dir = 0;
 
-    this.maxHealth = 25000;
+    // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee, 6 = hitstun, 7 = shoot, 8 = dead
+    this.state = 0;
+
+    this.maxHealth = 25;
     this.speed = 400;
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
     this.dead = false;
 
-    this.baseDamage = 125;
     this.critChance = 0.2; // 20%
 
     this.animations = [];
@@ -36,10 +39,10 @@ class Hero {
   }
 
   isDead() {
-    this.dead = true;
+    this.gameover = true;
+    this.currentHealth = this.maxHealth;
     this.x = this.spawnX;
     this.y = this.spawnY;
-    this.currentHealth = this.maxHealth;
   }
 
   loadAnimations() {
@@ -85,19 +88,18 @@ class Hero {
     this.animations[0][7] = new animator(this.spritesheet, 11 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 5, 0.1, false);
     this.animations[1][7] = new animator(this.spritesheet, 11 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 5, 0.1, false);
 
+    // death frames
+    this.animations[0][8] = new animator(this.spritesheet, 21 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 3, 0.3, false);
+    this.animations[1][8] = new animator(this.spritesheet, 21 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 3, 0.3, false);
   }
 
   updateBox() {
-    if (this.dead) {
-      this.box = new boundingbox(500, 0, 1, 1);
-    } else {
-      this.box = new boundingbox(
-        this.x + 20 * PARAMS.SCALE - this.game.camera.x,
-        this.y + 16 * PARAMS.SCALE,
-        21 * PARAMS.SCALE,
-        37 * PARAMS.SCALE
-      );
-    }
+    this.box = new boundingbox(
+      this.x + 20 * PARAMS.SCALE - this.game.camera.x,
+      this.y + 16 * PARAMS.SCALE,
+      21 * PARAMS.SCALE,
+      37 * PARAMS.SCALE
+    );
   }
 
   update() {
@@ -109,8 +111,11 @@ class Hero {
     const ACTIVE_FRAME = 21;
     const RANGED_DURATION = 36;
     const HITSTUN_DURATION = 25;
+    const DEATH_DURATION = 80;
     const PROJECTILE_VELOCITY = 16;
-    const PROJECTILE_DAMAGE = 800 * (0.9 + Math.random() * 0.2);
+
+    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2);
+    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2);
 
     let canMoveLeft = true;
     let canMoveRight = true;
@@ -162,9 +167,6 @@ class Hero {
     // melee attack collision
     this.game.bosses.forEach(function (boss) {
       if (that.hitbox && that.hitbox.collide(boss.box)) {
-        const MELEE_DMG_MULTIPLIER = 100;
-        const randomFactor = 0.9 + Math.random() * 0.2; // random # between 0.9 and 1.1
-        const damage = that.baseDamage * MELEE_DMG_MULTIPLIER * randomFactor;
 
         // varies where dmg score shows based off of current direction
         that.offset = that.dir == 0 ? 150 : -50;
@@ -172,7 +174,7 @@ class Hero {
         // critical hit chance calculation
         if (Math.random() * 1 < that.critChance) {
           const critMultiplier = 1.5;
-          const critDamage = damage * critMultiplier;
+          const critDamage = MELEE_DAMAGE * critMultiplier;
           that.game.addEntity(
             new Score(
               that.game,
@@ -182,18 +184,18 @@ class Hero {
               true
             )
           );
-          boss.currentHealth -= damage * critMultiplier;
+          boss.currentHealth -= MELEE_DAMAGE * critMultiplier;
         } else {
           that.game.addEntity(
             new Score(
               that.game,
               boss.x - that.game.camera.x + that.offset,
               boss.y - that.game.camera.y + 50,
-              damage,
+              MELEE_DAMAGE,
               false
             )
           );
-          boss.currentHealth -= damage;
+          boss.currentHealth -= MELEE_DAMAGE;
         }
 
         if (boss.currentHealth <= 0) {
@@ -205,6 +207,16 @@ class Hero {
         if (that.state != 1 && that.state != 6) {
           that.currentHealth -= boss.damage;
           that.meleeTick = ATTACK_READY;
+          that.rangedTick = ATTACK_READY;
+          
+          if (that.meleeTick < MELEE_DURATION) {
+            that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+            that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
+          } else if (that.rangedTick < RANGED_DURATION) {
+            that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+            that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
+          }
+
           that.state = 6;
         }
       }
@@ -216,13 +228,14 @@ class Hero {
         if (that.state != 6 && !(proj instanceof HeroProjectile)) {
           that.currentHealth -= proj.damage;
           that.meleeTick = ATTACK_READY;
+          that.rangedTick = ATTACK_READY;
           that.state = 6;
         }
       }
     });
 
-    if (that.currentHealth <= 0) {
-      that.isDead();
+    if (this.currentHealth <= 0) {
+      this.dead = true;
     }
 
     // melee attack input
@@ -355,6 +368,21 @@ class Hero {
       if (this.state == 0 || this.state == 2) this.state = 2;
       if (canTurn) this.dir = 1;
       if (canMoveLeft) this.x -= this.speed * this.game.clockTick;
+    }
+
+    if (this.dead) {
+      this.state = 8;
+      this.deathTick++;
+      if (this.deathTick == DEATH_DURATION) {
+        this.x = this.spawnX;
+        this.y = this.spawnY;
+        this.currentHealth = this.maxHealth;
+        this.dead = false;
+        this.deathTick = 0;
+        this.animations[0][8] = new animator(this.spritesheet, 21 * 60, 0, 60, 54, 3, 0.3, false);
+        this.animations[1][8] = new animator(this.spritesheet, 21 * 60, 54, 60, 54, 3, 0.3, false);
+        this.gameover = true;
+      }
     }
 
     this.updateBox();

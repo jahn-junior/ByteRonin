@@ -35,7 +35,7 @@ class SamuraiProjectile {
                 this.game.clockTick,
                 ctx,
                 this.x - 200,
-                this.y,
+                this.y - this.game.camera.y,
                 PARAMS.SCALE
             );
         } else {
@@ -43,7 +43,7 @@ class SamuraiProjectile {
                 this.game.clockTick,
                 ctx,
                 this.x,
-                this.y,
+                this.y - this.game.camera.y,
                 PARAMS.SCALE
             );
         }
@@ -85,7 +85,7 @@ class HeroProjectile {
                 this.game.clockTick,
                 ctx,
                 this.x + 100,
-                this.y + 25,
+                this.y + 25 - this.game.camera.y,
                 PARAMS.SCALE
             );
         } else {
@@ -93,7 +93,7 @@ class HeroProjectile {
                 this.game.clockTick,
                 ctx,
                 this.x,
-                this.y + 25,
+                this.y + 25 - this.game.camera.y,
                 PARAMS.SCALE
             );
         }

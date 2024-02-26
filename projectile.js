@@ -99,3 +99,70 @@ class HeroProjectile {
         }
     };
 }
+
+class OrochiProjectile {
+
+    constructor(game, x, y, w, h, dir, veloc, damage) {
+        Object.assign(this, { game, x, y, w, h, dir, veloc, damage });
+
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/orochiProjectile.png");
+        this.animations = [];
+        this.animations[0] = new animator(this.spritesheet, 0, 0, 64, 64, 1, 0.08, true);
+        this.updateBox();
+    };
+
+    updateBox() {
+        this.hitbox = new boundingbox(this.x + 64, this.y - this.game.camera.y, this.w, this.h);
+    }
+
+    update() {
+        let that = this;
+        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc);
+        this.updateBox();
+        this.game.stageTiles.forEach(function (tile) {
+            if (that.hitbox.collide(tile.box)) {
+                if (that.hitbox.right > tile.box.left && that.hitbox.left < tile.box.right) {
+                    that.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
+                    that.removeFromWorld = true;
+                }
+            }
+        });
+    };
+
+    draw(ctx) {
+        this.animations[0].drawFrame(
+            this.game.clockTick,
+            ctx,
+            this.x,
+            this.y - this.game.camera.y - 96,
+            PARAMS.SCALE
+        );
+    };
+}
+
+class OrochiBeam {
+    constructor(game, x, y, dir, damage) {
+        Object.assign(this, { game, x, y, dir, damage });
+        const BEAM_LENGTH = 384;
+        const BEAM_HEIGHT = 64;
+
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/orochiBeam.png")
+        this.animations = [];
+        this.animations[0] = new animator(this.spritesheet, 3 * BEAM_LENGTH, 0, BEAM_LENGTH, BEAM_HEIGHT, 3, 2, true);
+        this.animations[1] = new animator(this.spritesheet, 0, 0, BEAM_LENGTH, BEAM_HEIGHT, 3, 2, true);
+    };
+
+    update() {
+
+    };
+
+    draw(ctx) {
+        this.animations[this.dir].drawFrame(
+            this.game.clockTick,
+            ctx,
+            this.x - this.game.camera.x,
+            this.y - this.game.camera.y,
+            PARAMS.SCALE
+        );
+    };
+}

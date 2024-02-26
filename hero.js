@@ -18,7 +18,7 @@ class Hero {
     this.deathTick = 0;
     this.hitstunTick = 0;
 
-     // 0 = right, 1 = left
+    // 0 = right, 1 = left
     this.dir = 0;
 
     // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee, 6 = hitstun, 7 = shoot, 8 = dead
@@ -28,6 +28,8 @@ class Hero {
     this.speed = 400;
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
+    this.baseAttack = 100;
+    this.critChance = 0.2;
     this.dead = false;
     this.gameover = false;
 
@@ -106,9 +108,8 @@ class Hero {
     const DEATH_DURATION = 80;
     const PROJECTILE_VELOCITY = 16;
 
-    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2);
-    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2);
-    const CRIT_CHANCE = 0.2;
+    const MELEE_DAMAGE = 150 * this.baseAttack * (0.9 + Math.random() * 0.2);
+    const PROJECTILE_DAMAGE = 250 * this.baseAttack * (0.9 + Math.random() * 0.2);
 
     let canMoveLeft = true;
     let canMoveRight = true;
@@ -166,7 +167,7 @@ class Hero {
           that.offset = that.dir == 0 ? 150 : -50;
 
           // critical hit chance calculation
-          if (Math.random() * 1 < CRIT_CHANCE) {
+          if (Math.random() * 1 < that.critChance) {
             const critMultiplier = 1.5;
             const critDamage = MELEE_DAMAGE * critMultiplier;
             that.game.addEntity(
@@ -194,7 +195,7 @@ class Hero {
         }
 
         if (boss.currentHealth <= 0) {
-          boss.isDead();
+          boss.dead = true;
         }
       }
 
@@ -204,7 +205,7 @@ class Hero {
           that.currentHealth -= boss.meleeDamage;
           that.meleeTick = ATTACK_READY;
           that.rangedTick = ATTACK_READY;
-          
+
           if (that.meleeTick < MELEE_DURATION) {
             that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
             that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);

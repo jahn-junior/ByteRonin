@@ -9,11 +9,11 @@ class Samurai {
         this.y = y;
 
         this.dir = 1; // 0 = right, 1 = left
-        this.state = 0; // 0 = idle, 1 = running, 2 = charging anim, 3 = primary melee, 4 = projectile blade
+        this.state = 0; // 0 = idle, 1 = running, 2 = charging anim, 3 = primary melee, 4 = projectile blade, 5 = death
         this.phase = 0; // 0 = initial phase, 1 = phase I, 2 = phase II
 
         this.visualRadius = 400;
-        this.speed = 300;
+        this.speed = 220;
         this.velocityY = 0;
         this.chargingTimer = 0;
         this.meleeTimer = 0;
@@ -21,9 +21,11 @@ class Samurai {
         this.hitbox = null;
         this.isTeleported = false;
         this.isInvulnerable = false;
+        this.dead = false;
+        this.deathTick = 0;
 
         this.maxHealth = 2500000;
-        this.baseAttack = 1000;
+        this.baseAttack = 2500;
         this.meleeDamage = (this.baseAttack * 0.6) * (0.9 + Math.random() * 0.2);
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
@@ -151,6 +153,29 @@ class Samurai {
             0.3,
             true
         );
+
+        // death animations
+        this.animations[0][5] = new animator(
+            this.spritesheet,
+            10 * SAMURAI_WIDTH,
+            SAMURAI_HEIGHT,
+            SAMURAI_WIDTH,
+            SAMURAI_HEIGHT,
+            3,
+            0.25,
+            false
+        );
+
+        this.animations[1][5] = new animator(
+            this.spritesheet,
+            10 * SAMURAI_WIDTH,
+            0,
+            SAMURAI_WIDTH,
+            SAMURAI_HEIGHT,
+            3,
+            0.25,
+            false
+        );
     }
 
     applyGravity() {
@@ -220,7 +245,7 @@ class Samurai {
         }
     }
 
-    // A special attack that will cast after every 3rd melee attack
+    // A special attack that will cast when the hero is at a distance
     projectileAttack() {
         const PROJECTILE_VELOCITY = 10;
         const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
@@ -244,9 +269,9 @@ class Samurai {
                 let proj = new SamuraiProjectile(
                     this.game,
                     projX,
-                    this.y - this.game.camera.y + 24,
+                    this.y - this.game.camera.y + 72,
                     16 * PARAMS.SCALE,
-                    this.box.height,
+                    this.box.height / 2,
                     this.dir,
                     PROJECTILE_VELOCITY,
                     PROJECTILE_DAMAGE
@@ -297,7 +322,7 @@ class Samurai {
 
         if (healthRatio < 0.4) {
             this.phase = 2;
-            this.baseAttack = 2500;
+            this.baseAttack = 5000;
         } else if (healthRatio < 0.7) {
             this.phase = 1;
         } else {
@@ -328,16 +353,47 @@ class Samurai {
             }
         });
 
-    // projectile collision
-    this.game.projectiles.forEach(function (proj) {
-        if (that.box.collide(proj.hitbox)) {
-          if (!(proj instanceof SamuraiProjectile)) {
-            that.currentHealth -= proj.damage;
-            proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
-            proj.removeFromWorld = true;
-          }
-        }
-    });
+        // projectile collision from hero
+        this.game.projectiles.forEach(function (proj) {
+            if (that.box.collide(proj.hitbox)) {
+            if (!(proj instanceof SamuraiProjectile)) {
+                that.offset = that.game.hero.dir == 0 ? 150 : -50;
+
+                // critical hit chance calculation
+                if (Math.random() * 1 < that.game.hero.critChance) {
+                const critMultiplier = 1.5;
+                const critDamage = proj.damage * critMultiplier;
+                that.game.addEntity(
+                    new Score(
+                    that.game,
+                    that.x - that.game.camera.x + that.offset,
+                    that.y - that.game.camera.y + 50,
+                    critDamage,
+                    true
+                    )
+                );
+                that.currentHealth -= proj.damage * critMultiplier;
+                } else {
+                that.game.addEntity(
+                    new Score(
+                    that.game,
+                    that.x - that.game.camera.x + that.offset,
+                    that.y - that.game.camera.y + 50,
+                    proj.damage,
+                    false
+                    )
+                );
+                that.currentHealth -= proj.damage;
+                }            
+                proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
+                proj.removeFromWorld = true;
+
+                if (that.currentHealth <= 0) {
+                    that.dead = true;
+                }
+            }
+            }
+        });
 
         // samurai will always face torwards the hero
         if (this.game.camera.hero.x < this.x) {
@@ -347,13 +403,14 @@ class Samurai {
         }
 
         // if the hero is within visualRadius of the samurai, it will follow the hero
-        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (this.x - this.game.hero.x >= 100)) {
+        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (getDistance(this, this.game.hero) > 150)) {
             if (canMoveLeft && this.dir == 1) {
                 this.x -= movement;
                 this.state = 1;
                 this.hitbox = null;
             }
-        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) && (this.x - this.game.hero.x <= 75)) {
+        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) 
+        && (getDistance(this, this.game.hero) > 150)) {
             if (canMoveRight && this.dir == 0) {
                 this.x += movement;
                 this.state = 1;
@@ -364,7 +421,7 @@ class Samurai {
             this.hitbox = null;
         }
 
-        if (getDistance(this, this.game.hero) <= 150) {
+        if (getDistance(this, this.game.hero) <= 200) {
             if (this.phase != 2) {
                 this.meleeAttack();
             } else {
@@ -374,8 +431,15 @@ class Samurai {
             this.projectileAttack();
         }
 
-        // console.log(this.x);
-        // console.log(this.y);
+        if (this.dead) {
+            this.state = 5;
+            this.deathTick++;
+            if (this.deathTick == 80) {
+                this.currentHealth = 0;
+                this.deathTick = 0;
+                this.removeFromWorld = true;
+            }
+        }
 
         this.updateBox();
     }

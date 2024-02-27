@@ -17,14 +17,13 @@ class Samurai {
         this.velocityY = 0;
         this.chargingTimer = 0;
         this.meleeTimer = 0;
-        this.projectileCount = 0;
         this.hitbox = null;
         this.isTeleported = false;
         this.isInvulnerable = false;
         this.dead = false;
         this.deathTick = 0;
 
-        this.maxHealth = 2500000;
+        this.maxHealth = 3000000;
         this.baseAttack = 2500;
         this.meleeDamage = (this.baseAttack * 0.6) * (0.9 + Math.random() * 0.2);
         this.currentHealth = this.maxHealth;
@@ -240,7 +239,6 @@ class Samurai {
                 this.hitbox = null;
                 this.chargingTimer = 0;
                 this.meleeTimer = 0;
-                this.projectileCount += 1;
             }
         }
     }

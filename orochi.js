@@ -3,13 +3,17 @@ class Orochi {
         Object.assign(this, {game, x, y});
         this.game.orochi = this;
         this.dir = 1; // 0 = right, 1 = left
-        this.state = 4; // 0 = idle, 1 = running, 2 = attacking, 3 = transforming, 4 = phase 2, 5 = death
+        this.state = 4; // 0 = idle, 1 = running, 2 = attacking, 3 = transforming, 4 = phase 2, 5 = death, 6 = beam (charging), 7 = beam (active)
         this.phase = 0; // 0 = initial phase, 1 = phase2
         this.spritesheet = ASSET_MANAGER.getAsset("./sprites/orochi.png");
-        this.visualRadius = 550;
+        this.beamsprite = ASSET_MANAGER.getAsset("./sprites/orochiBeam.png");
+        this.visualRadius = 1500;
         this.speed = 100;
         this.baseAttack = 1000;
         this.chargingTimer = 0;
+        this.beamTimer = 0;
+        this.beambox = null;
+        this.beamDamage = (this.baseAttack * 3) * (0.9 + Math.random() * 0.2);
         this.transformTimer = 0;
         this.isTransformed = false;
         this.velocityY = 0;
@@ -19,7 +23,7 @@ class Orochi {
         
         
         this.title = "Cyberhydraic Maiden"
-        this.maxHealth = 1500000;
+        this.maxHealth = 2000000;
         this.currentHealth = this.maxHealth;
         this.healthbar = new BossHealthBar(this);
         
@@ -176,8 +180,53 @@ class Orochi {
             3,
             0.25,
             false
-        )
+        );
 
+        // beam attack charging animations
+        this.animations[0][6] = new animator(
+            this.beamsprite,
+            0,
+            64,
+            448,
+            64,
+            2,
+            1,
+            true 
+        );
+
+        this.animations[1][6] = new animator(
+            this.beamsprite,
+            0,
+            0,
+            448,
+            64,
+            2,
+            1,
+            true
+        );
+
+        // beam attack active animations
+        this.animations[0][7] = new animator(
+            this.beamsprite,
+            2 * 448,
+            64,
+            448,
+            64,
+            1,
+            1,
+            true 
+        );
+
+        this.animations[1][7] = new animator(
+            this.beamsprite,
+            2 * 448,
+            0,
+            448,
+            64,
+            1,
+            1,
+            true
+        );
     }
 
     applyGravity() {
@@ -209,22 +258,31 @@ class Orochi {
     }
 
     // A beam attack that casts in phase II
-    // beamAttack() {
-    //     // const BEAM_DAMAGE = (this.baseAttack * 6) * (0.9 + Math.random() * 0.2);
+    beamAttack() {
+        this.state = 6;
+        let beamLimit = 2;
 
-    //     // let beamX =
-    //     //     this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
-    //     // let beam = new OrochiBeam(
-    //     //     this.game,
-    //     //     beamX,
-    //     //     this.y - this.game.camera.y + 120,
-    //     //     this.dir, 
-    //     //     BEAM_DAMAGE
-    //     // );
-    //     // this.game.addEntity(beam);
-    //     // this.game.projectiles.push(beam);
-    //     // beam.draw();
-    // }
+        if (this.beamTimer < beamLimit) {
+            this.beamTimer += 1 * this.game.clockTick;
+        } else {
+            this.state = 7;
+            if (this.beamTimer < beamLimit + 0.1) { // active beambox for short duration
+                let beamX =
+                    this.dir == 0 ? this.x + 130 : this.x - this.game.camera.x - 1750;
+                this.beambox = new boundingbox(
+                    beamX,
+                    this.y - this.game.camera.y,
+                    448 * PARAMS.SCALE,
+                    64 * PARAMS.SCALE
+                );
+                this.beamTimer += 1 * this.game.clockTick;
+            } else {
+                this.beambox = null;
+                this.beamTimer = 0;
+            }
+        }
+
+    }
 
     // A special attack that will cast when the hero is at a distance
     projectileAttack() {
@@ -237,7 +295,7 @@ class Orochi {
             this.chargingTimer += 1 * this.game.clockTick;
         } else {
             let projX =
-                this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
+                this.dir == 0 ? this.x - this.game.camera.x - 64 + this.box.width : this.x - this.game.camera.x - 80;
             let proj = new OrochiProjectile(
                 this.game,
                 projX,
@@ -257,14 +315,7 @@ class Orochi {
     }
 
     updateBox() {
-        if (this.state == 3) { // null hitbox while transforming
-            this.box = new boundingbox(
-                this.x + 400, 
-                this.y - this.game.camera.y + 224,
-                25,
-                25
-            );
-        } else if (this.phase == 1) { // smaller bounding box in phase II
+        if (this.phase == 1) { // smaller bounding box in phase II
             this.box = new boundingbox(
                 this.x - this.game.camera.x + 56,
                 this.y - this.game.camera.y + 26,
@@ -292,7 +343,7 @@ class Orochi {
         this.updatePosition();
 
         if (healthRatio < 0.5) {
-            if (this.state != 4) {
+            if (this.state != 4 && this.state != 6 && this.state != 7) {
                 this.isInvulnerable = true;
             }
             if (!this.isTransformed) {
@@ -327,7 +378,7 @@ class Orochi {
         // projectile collision
         this.game.projectiles.forEach(function (proj) {
             if (that.box.collide(proj.hitbox)) {
-                if (!(proj instanceof OrochiProjectile)) {
+                if (!(proj instanceof OrochiProjectile) && that.state != 3) {
                     that.offset = that.game.hero.dir == 0 ? 150 : -50;
 
                     // critical hit chance calculation
@@ -374,44 +425,45 @@ class Orochi {
         }        
 
         // if the hero is within visualRadius of the samurai, it will follow the hero
-        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (getDistance(this, this.game.hero) > 300)) {
-            if (canMoveLeft && this.dir == 1 && this.state != 3) {
-                this.x -= movement;
-                if (this.phase == 0) {
-                    this.state = 1;
-                } else {
-                    this.state = 4;
+        if (this.state != 3) {
+            if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (getDistance(this, this.game.hero) > 300)) {
+                if (canMoveLeft && this.dir == 1 && this.state != 3) {
+                    this.x -= movement;
+                    if (this.phase == 0) {
+                        this.state = 1;
+                    } else {
+                        this.state = 4;
+                    }
                 }
-            }
-        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) 
-        && (getDistance(this, this.game.hero) > 300)) {
-            if (canMoveRight && this.dir == 0 && this.state != 3) {
-                this.x += movement;
-                if (this.phase == 0) {
-                    this.state = 1;
-                } else {
-                    this.state = 4;
+            } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) 
+            && (getDistance(this, this.game.hero) > 300)) {
+                if (canMoveRight && this.dir == 0 && this.state != 3) {
+                    this.x += movement;
+                    if (this.phase == 0) {
+                        this.state = 1;
+                    } else {
+                        this.state = 4;
+                    }
                 }
-            }
-        } else {
-            if (this.phase == 0) {
-                this.state = 0;
             } else {
-                this.state = 4;
+                if (this.phase == 0) {
+                    this.state = 0;
+                } else {
+                    this.state = 4;
+                }
             }
         }
 
         // attack logic
-        // if (getDistance(this, this.game.hero) <= 200) {
-        //     if (this.phase != 1) {
-        //         // this.meleeAttack();
-        //     } else {
-        //         this.beamAttack();
-        //     }
-        // } else 
-        if (getDistance(this, this.game.hero) > 400 && this.state != 3) {
-            if (this.phase != 1) {
-                this.projectileAttack();
+        if (this.state != 3) {
+            if (this.phase == 1) {
+                if (getDistance(this, this.game.hero) <= 300) {
+                    this.beamAttack();
+                }
+            } else {
+                if (getDistance(this, this.game.hero) <= 400) {
+                    this.projectileAttack();
+                }
             }
         }
 
@@ -430,13 +482,23 @@ class Orochi {
     };
 
     draw(ctx){
-        this.animations[this.dir][this.state].drawFrame(
-            this.game.clockTick,
-            ctx,
-            this.x - this.game.camera.x,
-            this.y - this.game.camera.y,
-            PARAMS.SCALE
-        );
+        if ((this.state == 6 || this.state == 7) && this.dir == 1) { // adjustment for the alignment of orochiBeam.png facing left
+            this.animations[this.dir][this.state].drawFrame(
+                this.game.clockTick,
+                ctx,
+                this.x - this.game.camera.x - 1550,
+                this.y - this.game.camera.y,
+                PARAMS.SCALE
+            )
+        } else {
+            this.animations[this.dir][this.state].drawFrame(
+                this.game.clockTick,
+                ctx,
+                this.x - this.game.camera.x,
+                this.y - this.game.camera.y,
+                PARAMS.SCALE
+            );
+        }
         this.healthbar.draw(ctx);
     };
 }

@@ -217,6 +217,26 @@ class Hero {
           that.state = 6;
         }
       }
+
+      // beam attack collision receiving from a boss
+      if (boss.beambox && boss.beambox.collide(that.box)) {
+        if (that.state != 1 && that.state != 6) {
+          that.currentHealth -= boss.beamDamage;
+          boss.beambox = null;
+          that.meleeTick = ATTACK_READY;
+          that.rangedTick = ATTACK_READY;
+
+          if (that.meleeTick < MELEE_DURATION) {
+            that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+            that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
+          } else if (that.rangedTick < RANGED_DURATION) {
+            that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+            that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
+          }
+
+          that.state = 6;
+        }
+      }
     });
 
     // projectile collision

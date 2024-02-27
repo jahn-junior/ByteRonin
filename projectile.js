@@ -139,30 +139,3 @@ class OrochiProjectile {
         );
     };
 }
-
-class OrochiBeam {
-    constructor(game, x, y, dir, damage) {
-        Object.assign(this, { game, x, y, dir, damage });
-        const BEAM_LENGTH = 384;
-        const BEAM_HEIGHT = 64;
-
-        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/orochiBeam.png")
-        this.animations = [];
-        this.animations[0] = new animator(this.spritesheet, 3 * BEAM_LENGTH, 0, BEAM_LENGTH, BEAM_HEIGHT, 3, 2, true);
-        this.animations[1] = new animator(this.spritesheet, 0, 0, BEAM_LENGTH, BEAM_HEIGHT, 3, 2, true);
-    };
-
-    update() {
-
-    };
-
-    draw(ctx) {
-        this.animations[this.dir].drawFrame(
-            this.game.clockTick,
-            ctx,
-            this.x - this.game.camera.x,
-            this.y - this.game.camera.y,
-            PARAMS.SCALE
-        );
-    };
-}

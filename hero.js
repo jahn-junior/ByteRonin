@@ -512,40 +512,7 @@ class Hero {
         this.ultActive = 0;
       };
     }
-    
-    // ultimate skill cooldown logic
-    if (this.startCD) {
-      if (this.critCDTimer < 20) {
-        this.critCDTimer += 1 * this.game.clockTick;
-        this.critCDDisplay -= 1 * this.game.clockTick;
-      } else {
-        this.canUseUlt = 1;
-        this.startCD = 0;
-        this.critCDTimer = 0;
-        this.critCDDisplay = 20;
-      }
-    }
 
-    // ultimate (crit chance) input
-    if (this.game.u) {
-      if (this.canUseUlt) {
-        this.critChance = 1;
-        this.ultActive = 1;
-        this.canUseUlt = 0;
-      }
-    };
-
-    // ultimate skill active logic
-    if (this.ultActive) {
-      this.critUltTick += 1 * this.game.clockTick;
-      if (this.critUltTick >= 5) {
-        this.startCD = 1;
-        this.critChance = 0.2; // revert back to regular crit chance
-        this.critUltTick = 0;
-        this.ultActive = 0;
-      };
-    }
-    
     // ultimate skill cooldown logic
     if (this.startCD) {
       if (this.critCDTimer < 20) {

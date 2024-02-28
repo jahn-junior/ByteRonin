@@ -95,5 +95,10 @@ class DashCooldown {
             675,
             PARAMS.SCALE / 2
         );
+        if (this.state == 0) {
+            ctx.font = '20px "Press Start 2P", Courier New';
+            ctx.fillStyle = "White";
+            ctx.fillText(Math.floor(this.agent.dashDisplay), 1105, 720);
+        };
     };
 }

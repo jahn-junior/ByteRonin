@@ -20,6 +20,7 @@ class Orochi {
         this.isInvulnerable = false;
         this.dead = false;
         this.deathTick = 0;
+        this.canHit = true;
         
         
         this.title = "Cyberhydraic Maiden"

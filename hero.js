@@ -542,7 +542,7 @@ class Hero {
         } else {
           if (canMoveRight) this.x += 350 * this.game.clockTick
         }
-        this.y -= 5 - 14 * this.hitstunTick
+        this.y -= 5 - 16 * this.hitstunTick
       } else {
         this.hitstunTick = 0
         this.fallTick = 0
@@ -552,9 +552,9 @@ class Hero {
 
     // y updates for jumping/falling
     if (this.state == 3) {
-      if (8 - 14 * this.jumpTick > 0) {
+      if (7 - 16 * this.jumpTick > 0) {
         this.jumpTick += this.game.clockTick
-        this.y -= 8 - 14 * this.jumpTick
+        this.y -= 7 - 16 * this.jumpTick
       } else {
         this.jumpTick = 0
         this.fallTick = 0
@@ -562,7 +562,7 @@ class Hero {
       }
     } else if (this.state == 4) {
       this.fallTick += this.game.clockTick
-      this.y += 14 * this.fallTick <= MAX_FALL_VELOC ? 14 * this.fallTick : MAX_FALL_VELOC
+      this.y += 16 * this.fallTick <= MAX_FALL_VELOC ? 16 * this.fallTick : MAX_FALL_VELOC
     }
 
     // updates for left/right movement

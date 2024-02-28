@@ -4,6 +4,7 @@ for (let i = 0; i < 39; i++) {
 }
 ASSET_MANAGER.queueDownload("./background/TitlePage/title.png");
 ASSET_MANAGER.queueDownload("./sprites/hero.png");
+ASSET_MANAGER.queueDownload("./sprites/heroAbilities.png");
 ASSET_MANAGER.queueDownload("./sprites/wolf.png");
 ASSET_MANAGER.queueDownload("./sprites/orochi.png");
 ASSET_MANAGER.queueDownload("./sprites/samurai.png");

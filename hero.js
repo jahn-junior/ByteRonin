@@ -17,6 +17,13 @@ class Hero {
     this.rangedTick = 101; // value indicates that attack is ready
     this.deathTick = 0;
     this.hitstunTick = 0;
+    this.critUltTick = 0;
+    this.critCDTimer = 0;
+    this.critCDDisplay = 20;
+    this.startCD = 0;
+    this.canUseUlt = 1;
+    this.ultActive = 0;
+    this.powerUp = 1;
 
     // 0 = right, 1 = left
     this.dir = 0;
@@ -28,6 +35,8 @@ class Hero {
     this.speed = 400;
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
+    this.ultIcon = new CritCooldown(this.game, this, 1, false);
+    this.dashIcon = new DashCooldown(this.game, this, 1);
     this.baseAttack = 100;
     this.critChance = 0.2;
     this.dead = false;
@@ -278,6 +287,39 @@ class Hero {
       this.rangedTick = 0;
     }
 
+    // ultimate (crit chance) input
+    if (this.game.u) {
+      if (this.canUseUlt) {
+        this.critChance = 1;
+        this.ultActive = 1;
+        this.canUseUlt = 0;
+      }
+    };
+
+    // ultimate skill active logic
+    if (this.ultActive) {
+      this.critUltTick += 1 * this.game.clockTick;
+      if (this.critUltTick >= 5) {
+        this.startCD = 1;
+        this.critChance = 0.2; // revert back to regular crit chance
+        this.critUltTick = 0;
+        this.ultActive = 0;
+      };
+    }
+    
+    // ultimate skill cooldown logic
+    if (this.startCD) {
+      if (this.critCDTimer < 20) {
+        this.critCDTimer += 1 * this.game.clockTick;
+        this.critCDDisplay -= 1 * this.game.clockTick;
+      } else {
+        this.canUseUlt = 1;
+        this.startCD = 0;
+        this.critCDTimer = 0;
+        this.critCDDisplay = 20;
+      }
+    }
+
     // handles state when hero is in the middle of a melee attack
     if (this.meleeTick < MELEE_DURATION) {
       canMoveLeft = false;
@@ -402,6 +444,9 @@ class Hero {
       }
     }
 
+    console.log(this.canUseUlt);
+
+    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp);
     this.updateBox();
   }
 
@@ -416,5 +461,7 @@ class Hero {
     );
 
     this.healthbar.draw(ctx);
+    this.ultIcon.draw(ctx);
+    this.dashIcon.draw(ctx);
   }
 }

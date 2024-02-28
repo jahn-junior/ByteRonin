@@ -17,6 +17,11 @@ class Hero {
     this.rangedTick = 101; // value indicates that attack is ready
     this.deathTick = 0;
     this.hitstunTick = 0;
+
+    this.dashTick = 3;
+    this.dashCooldown = 5;
+    this.dashDisplay;
+
     this.critUltTick = 0;
     this.critCDTimer = 0;
     this.critCDDisplay = 20;
@@ -28,7 +33,8 @@ class Hero {
     // 0 = right, 1 = left
     this.dir = 0;
 
-    // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee, 6 = hitstun, 7 = shoot, 8 = dead
+    // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee
+    // 6 = hitstun, 7 = shoot, 8 = dead, 9 = dash
     this.state = 0
 
     this.maxHealth = 25000;
@@ -256,6 +262,28 @@ class Hero {
       0.3,
       false
     )
+
+    // dash frames
+    this.animations[0][9] = new animator(
+      this.spritesheet,
+      24 * HERO_WIDTH,
+      0,
+      HERO_WIDTH,
+      HERO_HEIGHT,
+      6,
+      0.08,
+      true
+    )
+    this.animations[1][9] = new animator(
+      this.spritesheet,
+      24 * HERO_WIDTH,
+      HERO_HEIGHT,
+      HERO_WIDTH,
+      HERO_HEIGHT,
+      6,
+      0.08,
+      true
+    )
   }
 
   updateBox() {
@@ -277,14 +305,17 @@ class Hero {
     const HITSTUN_DURATION = 0.35
     const DEATH_DURATION = 0.85
     const PROJECTILE_VELOCITY = 16
+    const DASH_DURATION = 0.25
+    const DASH_COOLDOWN = 2.5;
 
     const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
     const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
-    const CRIT_CHANCE = 0.2
 
     let canMoveLeft = true
     let canMoveRight = true
     let canTurn = true
+    let canUseDash = this.dashCooldown >= DASH_COOLDOWN
+
 
     let hasFired = false
 
@@ -335,128 +366,159 @@ class Hero {
       this.state = 1
     }
 
+    // dash input
+    if (this.game.l && (this.state == 0 || this.state == 1 || 
+      this.state == 2 || this.state == 3 ||
+      this.state  == 4)) {
+      if (canUseDash) {
+        this.state = 9;
+        this.dashTick = 0;
+        canTurn = false;
+      }
+    }
+
+    // dash logic
+    if (this.dashTick < DASH_DURATION) {
+      this.state = 9;
+      this.dashTick += this.game.clockTick;
+      if (this.dir == 0) {
+        canMoveLeft = false;
+        if (canMoveRight) this.x += 750 * this.game.clockTick;
+      } else {
+        canMoveRight = false;
+        if (canMoveLeft) this.x -= 750 * this.game.clockTick;
+      }
+      this.dashCooldown = 0;
+    }
+
+    // refresh cooldown
+    if (this.dashCooldown < DASH_COOLDOWN) {
+      this.dashCooldown += this.game.clockTick;
+      this.dashDisplay = Math.floor(DASH_COOLDOWN - this.dashCooldown);
+    }
+
+    let boss = null;
+    if (this.game.camera.boss) boss = this.game.camera.boss;
     // melee attack collision
-    this.game.bosses.forEach(function (boss) {
-      if (that.hitbox && that.hitbox.collide(boss.box)) {
-        if (!boss.isInvulnerable && boss.canHit) {
-          // varies where dmg score shows based off of current direction
-          that.offset = that.dir == 0 ? 150 : -50
+    if (that.hitbox && that.hitbox.collide(boss.box)) {
+      if (!boss.isInvulnerable && boss.canHit) {
+        // varies where dmg score shows based off of current direction
+        that.offset = that.dir == 0 ? 150 : -50
 
-          // critical hit chance calculation
-          if (Math.random() * 1 < that.critChance) {
-            const critMultiplier = 1.5;
-            const critDamage = MELEE_DAMAGE * critMultiplier;
-            that.game.addEntity(
-              new Score(
-                that.game,
-                boss.x - that.game.camera.x + that.offset,
-                boss.y - that.game.camera.y + 50,
-                critDamage,
-                true
-              )
+        // critical hit chance calculation
+        if (Math.random() * 1 < that.critChance) {
+          const critMultiplier = 1.5;
+          const critDamage = MELEE_DAMAGE * critMultiplier;
+          that.game.addEntity(
+            new Score(
+              that.game,
+              boss.x - that.game.camera.x + that.offset,
+              boss.y - that.game.camera.y + 50,
+              critDamage,
+              true
             )
-            boss.currentHealth -= MELEE_DAMAGE * critMultiplier
-          } else {
-            that.game.addEntity(
-              new Score(
-                that.game,
-                boss.x - that.game.camera.x + that.offset,
-                boss.y - that.game.camera.y + 50,
-                MELEE_DAMAGE,
-                false
-              )
+          )
+          boss.currentHealth -= MELEE_DAMAGE * critMultiplier
+        } else {
+          that.game.addEntity(
+            new Score(
+              that.game,
+              boss.x - that.game.camera.x + that.offset,
+              boss.y - that.game.camera.y + 50,
+              MELEE_DAMAGE,
+              false
             )
-            boss.currentHealth -= MELEE_DAMAGE
-          }
-          boss.canHit = false
+          )
+          boss.currentHealth -= MELEE_DAMAGE
         }
-
-        if (boss.currentHealth <= 0) {
-          boss.dead = true;
-        }
+        boss.canHit = false
       }
 
-      // melee attack collision receiving from a boss
-      if (boss.hitbox && boss.hitbox.collide(that.box)) {
-        if (that.state != 1 && that.state != 6) {
-          that.currentHealth -= boss.meleeDamage
-          that.hitbox = null
-          that.meleeTick = ATTACK_READY
-          that.rangedTick = ATTACK_READY
-
-          if (that.meleeTick < MELEE_DURATION) {
-            that.animations[0][5] = new animator(
-              that.spritesheet,
-              7 * 60,
-              0,
-              60,
-              54,
-              4,
-              0.08,
-              false
-            )
-            that.animations[1][5] = new animator(
-              that.spritesheet,
-              7 * 60,
-              54,
-              60,
-              54,
-              4,
-              0.08,
-              false
-            )
-          } else if (that.rangedTick < RANGED_DURATION) {
-            that.animations[0][7] = new animator(
-              that.spritesheet,
-              11 * 60,
-              0,
-              60,
-              54,
-              5,
-              0.1,
-              false
-            )
-            that.animations[1][7] = new animator(
-              that.spritesheet,
-              11 * 60,
-              54,
-              60,
-              54,
-              5,
-              0.1,
-              false
-            )
-          }
-
-          that.state = 6
-        }
+      if (boss.currentHealth <= 0) {
+        boss.dead = true;
       }
+    }
 
-      // beam attack collision receiving from a boss
-      if (boss.beambox && boss.beambox.collide(that.box)) {
-        if (that.state != 1 && that.state != 6) {
-          that.currentHealth -= boss.beamDamage;
-          boss.beambox = null;
-          that.meleeTick = ATTACK_READY;
-          that.rangedTick = ATTACK_READY;
+    // melee attack collision receiving from a boss
+    if (boss.hitbox && boss.hitbox.collide(that.box)) {
+      if (that.state != 1 && that.state != 6 && that.state != 9) {
+        that.currentHealth -= boss.meleeDamage
+        that.hitbox = null
+        that.meleeTick = ATTACK_READY
+        that.rangedTick = ATTACK_READY
 
-          if (that.meleeTick < MELEE_DURATION) {
-            that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
-            that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
-          } else if (that.rangedTick < RANGED_DURATION) {
-            that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
-            that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
-          }
-
-          that.state = 6;
+        if (that.meleeTick < MELEE_DURATION) {
+          that.animations[0][5] = new animator(
+            that.spritesheet,
+            7 * 60,
+            0,
+            60,
+            54,
+            4,
+            0.08,
+            false
+          )
+          that.animations[1][5] = new animator(
+            that.spritesheet,
+            7 * 60,
+            54,
+            60,
+            54,
+            4,
+            0.08,
+            false
+          )
+        } else if (that.rangedTick < RANGED_DURATION) {
+          that.animations[0][7] = new animator(
+            that.spritesheet,
+            11 * 60,
+            0,
+            60,
+            54,
+            5,
+            0.1,
+            false
+          )
+          that.animations[1][7] = new animator(
+            that.spritesheet,
+            11 * 60,
+            54,
+            60,
+            54,
+            5,
+            0.1,
+            false
+          )
         }
+
+        that.state = 6
       }
-    });
+    }
+
+    // beam attack collision receiving from a boss
+    if (boss.beambox && boss.beambox.collide(that.box)) {
+      if (that.state != 1 && that.state != 6 && that.state != 9) {
+        that.currentHealth -= boss.beamDamage;
+        boss.beambox = null;
+        that.meleeTick = ATTACK_READY;
+        that.rangedTick = ATTACK_READY;
+
+        if (that.meleeTick < MELEE_DURATION) {
+          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
+        } else if (that.rangedTick < RANGED_DURATION) {
+          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
+        }
+
+        that.state = 6;
+      }
+    }
 
     // projectile collision
     this.game.projectiles.forEach(function (proj) {
       if (that.box.collide(proj.hitbox)) {
-        if (that.state != 6 && !(proj instanceof HeroProjectile)) {
+        if (that.state != 6 && that.state != 9 && !(proj instanceof HeroProjectile)) {
           that.currentHealth -= proj.damage
           that.meleeTick = ATTACK_READY
           that.rangedTick = ATTACK_READY
@@ -504,7 +566,7 @@ class Hero {
 
     // ultimate skill active logic
     if (this.ultActive) {
-      this.critUltTick += 1 * this.game.clockTick;
+      this.critUltTick += this.game.clockTick;
       if (this.critUltTick >= 5) {
         this.startCD = 1;
         this.critChance = 0.2; // revert back to regular crit chance
@@ -512,45 +574,12 @@ class Hero {
         this.ultActive = 0;
       };
     }
-    
+
     // ultimate skill cooldown logic
     if (this.startCD) {
       if (this.critCDTimer < 20) {
-        this.critCDTimer += 1 * this.game.clockTick;
-        this.critCDDisplay -= 1 * this.game.clockTick;
-      } else {
-        this.canUseUlt = 1;
-        this.startCD = 0;
-        this.critCDTimer = 0;
-        this.critCDDisplay = 20;
-      }
-    }
-
-    // ultimate (crit chance) input
-    if (this.game.u) {
-      if (this.canUseUlt) {
-        this.critChance = 1;
-        this.ultActive = 1;
-        this.canUseUlt = 0;
-      }
-    };
-
-    // ultimate skill active logic
-    if (this.ultActive) {
-      this.critUltTick += 1 * this.game.clockTick;
-      if (this.critUltTick >= 5) {
-        this.startCD = 1;
-        this.critChance = 0.2; // revert back to regular crit chance
-        this.critUltTick = 0;
-        this.ultActive = 0;
-      };
-    }
-    
-    // ultimate skill cooldown logic
-    if (this.startCD) {
-      if (this.critCDTimer < 20) {
-        this.critCDTimer += 1 * this.game.clockTick;
-        this.critCDDisplay -= 1 * this.game.clockTick;
+        this.critCDTimer += this.game.clockTick;
+        this.critCDDisplay -= this.game.clockTick;
       } else {
         this.canUseUlt = 1;
         this.startCD = 0;
@@ -634,7 +663,7 @@ class Hero {
       if (this.hitstunTick < HITSTUN_DURATION) {
         this.state = 6
         this.hitstunTick += this.game.clockTick
-        if (this.x < this.game.samurai.x) {
+        if (this.x < this.game.camera.boss.x) {
           if (canMoveLeft) this.x -= 350 * this.game.clockTick
         } else {
           if (canMoveRight) this.x += 350 * this.game.clockTick
@@ -688,8 +717,7 @@ class Hero {
       }
     }
 
-    console.log(this.canUseUlt);
-
+    this.dashIcon = new DashCooldown(this.game, this, canUseDash ? 1 : 0)
     this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp);
     this.updateBox();
   }

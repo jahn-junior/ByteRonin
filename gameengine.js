@@ -180,15 +180,15 @@ class GameEngine {
 
     //draw bounding boxes for debugging
       this.ctx.strokeStyle = "red";
-      if (this.entities[i].box) {
-        this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
-      }
-      if (this.entities[i].hitbox) {
-        this.ctx.strokeRect(this.entities[i].hitbox.x, this.entities[i].hitbox.y, this.entities[i].hitbox.width, this.entities[i].hitbox.height);
-      }
-      if (this.entities[i].beambox) {
-        this.ctx.strokeRect(this.entities[i].beambox.x, this.entities[i].beambox.y, this.entities[i].beambox.width, this.entities[i].beambox.height);
-      }
+      // if (this.entities[i].box) {
+      //   this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
+      // }
+      // if (this.entities[i].hitbox) {
+      //   this.ctx.strokeRect(this.entities[i].hitbox.x, this.entities[i].hitbox.y, this.entities[i].hitbox.width, this.entities[i].hitbox.height);
+      // }
+      // if (this.entities[i].beambox) {
+      //   this.ctx.strokeRect(this.entities[i].beambox.x, this.entities[i].beambox.y, this.entities[i].beambox.width, this.entities[i].beambox.height);
+      // }
     }
     this.camera.draw(this.ctx);
   }

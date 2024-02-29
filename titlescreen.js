@@ -24,8 +24,8 @@ class TitleScreen {
     }
 
     this.wolf = new Wolf(this.game, 200, 490);
-    this.orochi = new Orochi(this.game, 300, 355);
-    this.samurai = new Samurai(this.game, 700, 355);
+    this.orochi = new Orochi(this.game, 300, 350);
+    this.samurai = new Samurai(this.game, 700, 350);
 
     this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
     this.title = 0;

@@ -367,6 +367,9 @@ class TitleScreen {
           );
         }
       }
+    } else if (this.title == 2) {
+      ctx.fillStyle = "#262626";
+      ctx.fillRect(402, 677.5, 595, 35);
     }
   }
 }

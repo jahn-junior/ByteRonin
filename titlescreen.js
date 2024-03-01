@@ -49,6 +49,7 @@ class TitleScreen {
       }
       if (this.game.click && this.game.click.y > 5 * PARAMS.BLOCKWIDTH && this.game.click.y < 6.5 * PARAMS.BLOCKWIDTH) {
         this.title = 2;
+        console.log("upgrades");
         ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
       }
     }

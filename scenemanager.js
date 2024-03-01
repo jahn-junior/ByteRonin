@@ -5,8 +5,10 @@ class SceneManager {
     this.x = 0;
     this.hero = new Hero(this.game, 150, 300);
     this.boss;
+    this.bossSet = 0;
     this.ts = new TitleScreen(this.game);
     this.gameover = new GameOver(this.game);
+    this.winscreen = null;
     this.title();
   }
 
@@ -25,6 +27,7 @@ class SceneManager {
   load(level, theBoss) {
     this.level = level;
     this.boss = theBoss;
+    this.bossSet = 1;
     this.clearEntities();
     this.game.bosses.push(this.boss);
     this.game.addEntity(new Background(this.game));
@@ -116,6 +119,28 @@ class SceneManager {
     this.x = this.hero.x - xmidpoint + PARAMS.BLOCKWIDTH / 2;
     this.y = this.hero.y - ymidpoint + PARAMS.BLOCKWIDTH / 2 - PARAMS.BLOCKWIDTH;
     this.updateAudio();
+
+    // Logic for when a boss dies.
+    if (this.bossSet) {
+      if (this.boss.playWinScreen) {
+        this.boss.playWinScreen = false;
+        this.clearEntities();
+        this.game.clearStageTile();
+
+        if (this.boss.title == "Cyberhydraic Maiden") {
+          this.game.addEntity(new WinScreenTwo(this.game));
+          this.hero = new Hero(this.game, 150, 300);
+          this.game.hero.powerUpTwo = 1;
+        } else if (this.boss.title == "Nano Shogun") {
+          this.hero = new Hero(this.game, 150, 300);
+          this.game.addEntity(new WinScreenThree(this.game));
+        } else {
+          this.game.addEntity(new WinScreenOne(this.game));
+          this.hero = new Hero(this.game, 150, 300);
+          this.game.hero.powerUpOne = 1;
+        }
+      }
+    }    
 
     // Logic for when hero dies. Lets expand on this.
     if (this.game.hero.gameover) {

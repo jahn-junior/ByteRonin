@@ -30,7 +30,7 @@ class Hero {
     this.canUseOrb = 1;
     this.ultActive = 0;
     this.powerUpOne = 1; // after beating 1st boss, update to 1 (init 0)
-    this.powerUpTwo = 1; // after beating 2nd boss, update to 1 (init 0)
+    this.powerUpTwo = 0; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
     this.dir = 0;
@@ -311,8 +311,8 @@ class Hero {
     const DASH_DURATION = 0.25
     const DASH_COOLDOWN = 2.5;
 
-    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
-    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
+    const MELEE_DAMAGE = 150 * this.baseAttack * (0.9 + Math.random() * 0.2)
+    const PROJECTILE_DAMAGE = 200 * this.baseAttack * (0.9 + Math.random() * 0.2)
 
     let canMoveLeft = true
     let canMoveRight = true

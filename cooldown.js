@@ -145,13 +145,22 @@ class OrbitalCooldown {
     };
 
     draw(ctx) {
-        this.animations[this.state].drawFrame(
-            this.game.clockTick,
-            ctx,
-            1154,
-            675,
-            PARAMS.SCALE / 2
-        );
-
+        if (!this.unlocked) {
+            this.animations[2].drawFrame(
+                this.game.clockTick,
+                ctx,
+                1154,
+                675,
+                PARAMS.SCALE / 2
+            );
+        } else {
+            this.animations[this.state].drawFrame(
+                this.game.clockTick,
+                ctx,
+                1154,
+                675,
+                PARAMS.SCALE / 2
+            );
+        }
     };
 }

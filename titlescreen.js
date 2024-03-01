@@ -146,6 +146,11 @@ class TitleScreen {
         this.selection2 = false;
         this.selection3 = false;
       }
+    } else if (this.title == 2) {
+      if (this.game.click && this.game.click.y > 630 && this.game.click.y < 660) {
+        ASSET_MANAGER.playAsset("./sound/lazerReturn.wav");
+        this.title = 0;
+      }
     }
     this.game.click = null;
   }
@@ -156,13 +161,13 @@ class TitleScreen {
     ctx.strokeStyle = "Black"; // Color of the outline
     ctx.lineWidth = 2; // Thickness of the outline
 
-    const x = 8;
+    const x = 7;
     if (this.title == 0) {
       ctx.font = PARAMS.BLOCKWIDTH + 'px "Press Start 2P"';
       ctx.fillStyle = "White";
 
-      ctx.fillText("Byte Ronin", 6 * PARAMS.BLOCKWIDTH, 2 * PARAMS.BLOCKWIDTH);
-      ctx.strokeText("Byte Ronin", 6 * PARAMS.BLOCKWIDTH, 2 * PARAMS.BLOCKWIDTH);
+      ctx.fillText("Byte Ronin", 6.5 * PARAMS.BLOCKWIDTH, 3.5 * PARAMS.BLOCKWIDTH);
+      ctx.strokeText("Byte Ronin", 6.5 * PARAMS.BLOCKWIDTH, 3.5 * PARAMS.BLOCKWIDTH);
 
       ctx.font = PARAMS.BLOCKWIDTH / 2 + 'px "Press Start 2P"';
 
@@ -226,7 +231,7 @@ class TitleScreen {
       if (this.selection1) {
         ctx.fillStyle = "White";
         ctx.font = PARAMS.BLOCKWIDTH / 4 + 'px "Press Start 2P"';
-        ctx.fillText("Accept", 7 * PARAMS.BLOCKWIDTH, 2.5 * PARAMS.BLOCKWIDTH);
+        ctx.fillText("Accept", 6 * PARAMS.BLOCKWIDTH, 2.5 * PARAMS.BLOCKWIDTH);
 
         if (
           this.game.mouse &&
@@ -245,7 +250,7 @@ class TitleScreen {
             35
           );
         }
-        ctx.fillText("Return", 7 * PARAMS.BLOCKWIDTH, 3 * PARAMS.BLOCKWIDTH);
+        ctx.fillText("Return", 6 * PARAMS.BLOCKWIDTH, 3 * PARAMS.BLOCKWIDTH);
 
         if (
           this.game.mouse &&
@@ -279,7 +284,7 @@ class TitleScreen {
         ctx.fillStyle = "White";
         ctx.font = PARAMS.BLOCKWIDTH / 4 + 'px "Press Start 2P"';
 
-        ctx.fillText("Accept", 7 * PARAMS.BLOCKWIDTH, 4.5 * PARAMS.BLOCKWIDTH);
+        ctx.fillText("Accept", 6 * PARAMS.BLOCKWIDTH, 4.5 * PARAMS.BLOCKWIDTH);
         if (
           this.game.mouse &&
           this.game.mouse.y > 4 * PARAMS.BLOCKWIDTH &&
@@ -297,7 +302,7 @@ class TitleScreen {
             35
           );
         }
-        ctx.fillText("Return", 7 * PARAMS.BLOCKWIDTH, 5 * PARAMS.BLOCKWIDTH);
+        ctx.fillText("Return", 6 * PARAMS.BLOCKWIDTH, 5 * PARAMS.BLOCKWIDTH);
         if (
           this.game.mouse &&
           this.game.mouse.y > 4.5 * PARAMS.BLOCKWIDTH &&
@@ -330,7 +335,7 @@ class TitleScreen {
       if (this.selection3) {
         ctx.fillStyle = "White";
         ctx.font = PARAMS.BLOCKWIDTH / 4 + 'px "Press Start 2P"';
-        ctx.fillText("Accept", 7 * PARAMS.BLOCKWIDTH, 6.5 * PARAMS.BLOCKWIDTH);
+        ctx.fillText("Accept", 6 * PARAMS.BLOCKWIDTH, 6.5 * PARAMS.BLOCKWIDTH);
         if (
           this.game.mouse &&
           this.game.mouse.y > 6 * PARAMS.BLOCKWIDTH &&
@@ -348,7 +353,7 @@ class TitleScreen {
             35
           );
         }
-        ctx.fillText("Return", 7 * PARAMS.BLOCKWIDTH, 7 * PARAMS.BLOCKWIDTH);
+        ctx.fillText("Return", 6 * PARAMS.BLOCKWIDTH, 7 * PARAMS.BLOCKWIDTH);
         if (
           this.game.mouse &&
           this.game.mouse.y > 6.5 * PARAMS.BLOCKWIDTH &&
@@ -368,8 +373,71 @@ class TitleScreen {
         }
       }
     } else if (this.title == 2) {
-      ctx.fillStyle = "#262626";
-      ctx.fillRect(402, 677.5, 595, 35);
+      ctx.font = '40px "Press Start 2P"';
+      ctx.fillStyle = "White";
+      ctx.fillText("Upgrades", 100, 100);
+      ctx.font = '25px "Press Start 2P"';
+      ctx.fillText("Return", 630, 650);
+      ctx.font = '22px "Press Start 2P"';
+
+
+      if (this.game.hero.powerUpOne) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./sprites/heroAbilities.png"), 
+        0, 
+        0,
+        32,
+        32,
+        100,
+        150,
+        2.5 * PARAMS.BLOCKWIDTH,
+        2.5 * PARAMS.BLOCKWIDTH);
+
+        ctx.fillText("Ultimate Ability: [Cardiac Overclock]", 275, 185);
+        ctx.fillText("Increase critical chance to 100% for 5 seconds", 275, 215);
+        ctx.fillText("- (20 second cooldown)", 275, 245);
+      } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./sprites/heroAbilities.png"), 
+        64, 
+        0,
+        32,
+        32,
+        100,
+        150,
+        2.5 * PARAMS.BLOCKWIDTH,
+        2.5 * PARAMS.BLOCKWIDTH);
+
+        ctx.fillText("Unlock by completing [Contract I: Cyber Wolf]", 275, 185);
+      }
+
+      if (this.game.hero.powerUpTwo) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./sprites/heroAbilities.png"), 
+        0, 
+        64,
+        32,
+        32,
+        100,
+        400,
+        2.5 * PARAMS.BLOCKWIDTH,
+        2.5 * PARAMS.BLOCKWIDTH);
+
+        ctx.fillText("Tactical Ability: [Orbital Strike]", 275, 435);
+        ctx.fillText("Command an orbital strike that targets an enemy", 275, 465);
+        ctx.fillText("that does devastating damage upon impact", 275, 495);
+        ctx.fillText("- (15 second cooldown)", 275, 525);
+      } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./sprites/heroAbilities.png"), 
+        64, 
+        64,
+        32,
+        32,
+        100,
+        400,
+        2.5 * PARAMS.BLOCKWIDTH,
+        2.5 * PARAMS.BLOCKWIDTH);
+
+        ctx.fillText("Unlock by completing [Contract II: Cyberhydraic", 275, 435);
+        ctx.fillText("Maiden]", 275, 465);
+      }
     }
   }
 }

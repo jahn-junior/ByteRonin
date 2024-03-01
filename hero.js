@@ -27,8 +27,10 @@ class Hero {
     this.critCDDisplay = 20;
     this.startCD = 0;
     this.canUseUlt = 1;
+    this.canUseOrb = 1;
     this.ultActive = 0;
-    this.powerUp = 1;
+    this.powerUpOne = 1; // after beating 1st boss, update to 1 (init 0)
+    this.powerUpTwo = 1; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
     this.dir = 0;
@@ -41,8 +43,9 @@ class Hero {
     this.speed = 400;
     this.currentHealth = this.maxHealth;
     this.healthbar = new HealthBar(this);
-    this.ultIcon = new CritCooldown(this.game, this, 1, false);
+    this.ultIcon = new CritCooldown(this.game, this, 1, 0);
     this.dashIcon = new DashCooldown(this.game, this, 1);
+    this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0);
     this.baseAttack = 100;
     this.critChance = 0.2;
     this.dead = false;
@@ -718,7 +721,8 @@ class Hero {
     }
 
     this.dashIcon = new DashCooldown(this.game, this, canUseDash ? 1 : 0)
-    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp);
+    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUpOne);
+    this.orbitalIcon = new OrbitalCooldown(this.game, this, this.canUseOrb, this.powerUpTwo);
     this.updateBox();
   }
 
@@ -734,5 +738,6 @@ class Hero {
     this.healthbar.draw(ctx);
     this.ultIcon.draw(ctx);
     this.dashIcon.draw(ctx);
+    this.orbitalIcon.draw(ctx);
   }
 }

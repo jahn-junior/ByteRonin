@@ -102,3 +102,56 @@ class DashCooldown {
         };
     };
 }
+
+class OrbitalCooldown {
+    constructor(game, agent, state, unlocked) {
+        Object.assign(this, {game, agent, state, unlocked});
+        this.spritesheet = ASSET_MANAGER.getAsset("./sprites/heroAbilities.png");
+        this.animations = [];
+        this.animations[0] = new animator( // inactive orbital icon
+            this.spritesheet,
+            32,
+            64,
+            32,
+            32,
+            1,
+            0.08,
+            true
+        );
+        this.animations[1] = new animator( // active orbital icon
+            this.spritesheet,
+            0,
+            64,
+            32,
+            32,
+            1,
+            0.08,
+            true
+        );
+        this.animations[2] = new animator( // locked orbital icon
+            this.spritesheet,
+            64,
+            64,
+            32,
+            32,
+            1,
+            0.08,
+            true
+        );
+    };
+
+    update() {
+
+    };
+
+    draw(ctx) {
+        this.animations[this.state].drawFrame(
+            this.game.clockTick,
+            ctx,
+            1154,
+            675,
+            PARAMS.SCALE / 2
+        );
+
+    };
+}

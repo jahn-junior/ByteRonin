@@ -18,14 +18,14 @@ class GameOver {
     ctx.fillStyle = "Black";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    ctx.fillStyle = "White";
-    ctx.fillText("Byte Ronin", 5.7 * PARAMS.BLOCKWIDTH, 3.1 * PARAMS.BLOCKWIDTH);
     ctx.fillStyle = "Red";
+    ctx.fillText("Byte Ronin", 5.7 * PARAMS.BLOCKWIDTH, 3.1 * PARAMS.BLOCKWIDTH);
+    ctx.fillStyle = "#42f5f2";
     ctx.fillText("Byte Ronin", 5.6 * PARAMS.BLOCKWIDTH, 3 * PARAMS.BLOCKWIDTH);
 
-    ctx.fillStyle = "White";
-    ctx.fillText("GAME OVER", 6.1 * PARAMS.BLOCKWIDTH, 6.1 * PARAMS.BLOCKWIDTH);
     ctx.fillStyle = "Red";
+    ctx.fillText("GAME OVER", 6.1 * PARAMS.BLOCKWIDTH, 6.1 * PARAMS.BLOCKWIDTH);
+    ctx.fillStyle = "#42f5f2";
     ctx.fillText("GAME OVER", 6 * PARAMS.BLOCKWIDTH, 6 * PARAMS.BLOCKWIDTH);
   }
 }

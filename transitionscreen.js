@@ -45,7 +45,7 @@ class WinScreenThree {
             this.game.camera.load(levelOne, this.samurai);
         } else if (this.game.click && this.game.click.y > 7.6 * PARAMS.BLOCKWIDTH && this.game.click.y < 8.5 * PARAMS.BLOCKWIDTH) {
             this.game.camera.clearEntities();
-            this.game.addEntity(new TitleScreen(this.game));
+            this.game.addEntity(new TitleScreen(this.game)); // Return to menu
         }
     }
   

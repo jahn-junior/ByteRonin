@@ -464,7 +464,7 @@ class Hero {
           that.currentHealth -= boss.meleeDamage
           that.state = 6
         }
-
+        
         that.hitbox = null
         that.meleeTick = ATTACK_READY
         that.rangedTick = ATTACK_READY
@@ -502,18 +502,19 @@ class Hero {
 
     // projectile collision
     this.game.projectiles.forEach(function (proj) {
-      if (that.box.collide(proj.hitbox)) {
+      if (proj.hitbox && that.box.collide(proj.hitbox)) {
         if (that.state != 6 && that.state != 9 && !(proj instanceof HeroProjectile)) {
           if (that.state == 1) {
             if (that.parryTimer > 0.2) {
-              that.currentHealth -= 0.65 * proj.damage
+              that.currentHealth -= 0.35 * proj.damage
             }
           } else {
+            that.state = 6
             that.currentHealth -= proj.damage
             that.meleeTick = ATTACK_READY
             that.rangedTick = ATTACK_READY
-            that.state = 6
           }
+          proj.hitbox = null
           proj.removeFromWorld = true
         }
       }

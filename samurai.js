@@ -23,8 +23,9 @@ class Samurai {
         this.dead = false;
         this.deathTick = 0;
         this.canHit = true;
+        this.hasAttacked = false;
         this.maxHealth = 3000000;
-        this.baseAttack = 2500;
+        this.baseAttack = 3000;
         this.meleeDamage = (this.baseAttack * 0.6) * (0.9 + Math.random() * 0.2);
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
@@ -224,7 +225,7 @@ class Samurai {
         } else {
             this.state = 3;
             if (this.meleeTimer < meleeLimit) {
-                if (this.meleeTimer < 0.05) {
+                if (this.meleeTimer < 0.05 && !this.hasAttacked) {
                     // active bounding box to be cast for short duration
                     if (this.dir == 1) {
                         this.hitbox = new boundingbox(
@@ -242,9 +243,11 @@ class Samurai {
                         );
                     }
                     this.isTeleported = false;
+                    this.hasAttacked = true;
                 }
                 this.meleeTimer += 1 * this.game.clockTick;
             } else {
+                this.hasAttacked = false;
                 this.hitbox = null;
                 this.chargingTimer = 0;
                 this.meleeTimer = 0;
@@ -362,7 +365,7 @@ class Samurai {
 
         // projectile collision from hero
         this.game.projectiles.forEach(function (proj) {
-            if (that.box.collide(proj.hitbox)) {
+            if (proj.hitbox && that.box.collide(proj.hitbox)) {
             if (!(proj instanceof SamuraiProjectile)) {
                 that.offset = that.game.hero.dir == 0 ? 150 : -50;
 

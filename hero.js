@@ -11,42 +11,45 @@ class Hero {
     this.spawnY = y
     this.radius = 32
 
-    this.jumpTick = 0; // used for jump deceleration
-    this.fallTick = 0; // used for fall acceleration
-    this.meleeTick = 101; // value indicates that attack is ready
-    this.rangedTick = 101; // value indicates that attack is ready
-    this.deathTick = 0;
-    this.hitstunTick = 0;
+    this.jumpTick = 0 // used for jump deceleration
+    this.fallTick = 0 // used for fall acceleration
+    this.meleeTick = 101 // value indicates that attack is ready
+    this.rangedTick = 101 // value indicates that attack is ready
+    this.deathTick = 0
+    this.hitstunTick = 0
+    this.hasFired = false
+    this.parryTimer = 0
 
-    this.dashTick = 3;
-    this.dashCooldown = 5;
-    this.dashDisplay;
+    this.dashTick = 3
+    this.dashCooldown = 5
+    this.dashDisplay = 0
 
-    this.critUltTick = 0;
-    this.critCDTimer = 0;
-    this.critCDDisplay = 20;
-    this.startCD = 0;
-    this.canUseUlt = 1;
-    this.ultActive = 0;
-    this.powerUp = 1;
+    this.critUltTick = 0
+    this.critCDTimer = 0
+    this.critCDDisplay = 20
+    this.startCD = 0
+    this.canUseUlt = 1
+    this.ultActive = 0
+    this.powerUp = 1
 
     // 0 = right, 1 = left
-    this.dir = 0;
+    this.dir = 0
 
     // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee
     // 6 = hitstun, 7 = shoot, 8 = dead, 9 = dash
     this.state = 0
+    this.prevState = 0
 
-    this.maxHealth = 25000;
-    this.speed = 400;
-    this.currentHealth = this.maxHealth;
-    this.healthbar = new HealthBar(this);
-    this.ultIcon = new CritCooldown(this.game, this, 1, false);
-    this.dashIcon = new DashCooldown(this.game, this, 1);
-    this.baseAttack = 100;
-    this.critChance = 0.2;
-    this.dead = false;
-    this.gameover = false;
+    this.maxHealth = 25000
+    this.speed = 400
+    this.currentHealth = this.maxHealth
+    this.healthbar = new HealthBar(this)
+    this.ultIcon = new CritCooldown(this.game, this, 1, false)
+    this.dashIcon = new DashCooldown(this.game, this, 1)
+    this.baseAttack = 100
+    this.critChance = 0.2
+    this.dead = false
+    this.gameover = false
 
     this.animations = []
     this.loadAnimations()
@@ -306,7 +309,7 @@ class Hero {
     const DEATH_DURATION = 0.85
     const PROJECTILE_VELOCITY = 16
     const DASH_DURATION = 0.25
-    const DASH_COOLDOWN = 2.5;
+    const DASH_COOLDOWN = 2.5
 
     const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
     const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
@@ -315,9 +318,6 @@ class Hero {
     let canMoveRight = true
     let canTurn = true
     let canUseDash = this.dashCooldown >= DASH_COOLDOWN
-
-
-    let hasFired = false
 
     // state defaults to falling
     if (this.state != 3 && this.state != 6) {
@@ -345,6 +345,15 @@ class Hero {
           canMoveLeft = false
         }
 
+        if (
+          that.prevState == 6 &&
+          (Math.abs(that.box.left - tile.box.right) < 8 * PARAMS.SCALE ||
+            Math.abs(that.box.right - tile.box.left) < 8 * PARAMS.SCALE)
+        ) {
+          canMoveRight = false
+          canMoveLeft = false
+        }
+
         if (that.state == 3 && that.box.top - tile.box.bottom <= 4 * PARAMS.SCALE) {
           // top collision
           if (
@@ -364,41 +373,46 @@ class Hero {
       canMoveLeft = false
       canMoveRight = false
       this.state = 1
+      this.parryTimer += this.game.clockTick
+    } else {
+      this.parryTimer = 0
     }
+    console.log(this.parryTimer)
 
     // dash input
-    if (this.game.l && (this.state == 0 || this.state == 1 || 
-      this.state == 2 || this.state == 3 ||
-      this.state  == 4)) {
+    if (
+      this.game.l &&
+      (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)
+    ) {
       if (canUseDash) {
-        this.state = 9;
-        this.dashTick = 0;
-        canTurn = false;
+        this.state = 9
+        this.dashTick = 0
+        canTurn = false
       }
     }
 
     // dash logic
     if (this.dashTick < DASH_DURATION) {
-      this.state = 9;
-      this.dashTick += this.game.clockTick;
+      this.state = 9
+      this.dashTick += this.game.clockTick
       if (this.dir == 0) {
-        canMoveLeft = false;
-        if (canMoveRight) this.x += 750 * this.game.clockTick;
+        canMoveLeft = false
+        if (canMoveRight) this.x += 750 * this.game.clockTick
       } else {
-        canMoveRight = false;
-        if (canMoveLeft) this.x -= 750 * this.game.clockTick;
+        canMoveRight = false
+        if (canMoveLeft) this.x -= 750 * this.game.clockTick
       }
-      this.dashCooldown = 0;
+      this.dashCooldown = 0
     }
 
     // refresh cooldown
     if (this.dashCooldown < DASH_COOLDOWN) {
-      this.dashCooldown += this.game.clockTick;
-      this.dashDisplay = Math.floor(DASH_COOLDOWN - this.dashCooldown);
+      this.dashCooldown += this.game.clockTick
+      this.dashDisplay = Math.floor(DASH_COOLDOWN - this.dashCooldown)
     }
 
-    let boss = null;
-    if (this.game.camera.boss) boss = this.game.camera.boss;
+    let boss = null
+    if (this.game.camera.boss) boss = this.game.camera.boss
     // melee attack collision
     if (that.hitbox && that.hitbox.collide(boss.box)) {
       if (!boss.isInvulnerable && boss.canHit) {
@@ -407,8 +421,8 @@ class Hero {
 
         // critical hit chance calculation
         if (Math.random() * 1 < that.critChance) {
-          const critMultiplier = 1.5;
-          const critDamage = MELEE_DAMAGE * critMultiplier;
+          const critMultiplier = 1.5
+          const critDamage = MELEE_DAMAGE * critMultiplier
           that.game.addEntity(
             new Score(
               that.game,
@@ -435,83 +449,54 @@ class Hero {
       }
 
       if (boss.currentHealth <= 0) {
-        boss.dead = true;
+        boss.dead = true
       }
     }
 
     // melee attack collision receiving from a boss
     if (boss.hitbox && boss.hitbox.collide(that.box)) {
-      if (that.state != 1 && that.state != 6 && that.state != 9) {
-        that.currentHealth -= boss.meleeDamage
+      if (that.state != 6 && that.state != 9) {
+        if (that.state == 1) {
+          if (that.parryTimer > 0.2) {
+            that.currentHealth -= boss.meleeDamage * 0.35
+          }
+        } else {
+          that.currentHealth -= boss.meleeDamage
+          that.state = 6
+        }
+
         that.hitbox = null
         that.meleeTick = ATTACK_READY
         that.rangedTick = ATTACK_READY
 
+        // reload animations if interrupted
         if (that.meleeTick < MELEE_DURATION) {
-          that.animations[0][5] = new animator(
-            that.spritesheet,
-            7 * 60,
-            0,
-            60,
-            54,
-            4,
-            0.08,
-            false
-          )
-          that.animations[1][5] = new animator(
-            that.spritesheet,
-            7 * 60,
-            54,
-            60,
-            54,
-            4,
-            0.08,
-            false
-          )
+          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false)
+          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false)
         } else if (that.rangedTick < RANGED_DURATION) {
-          that.animations[0][7] = new animator(
-            that.spritesheet,
-            11 * 60,
-            0,
-            60,
-            54,
-            5,
-            0.1,
-            false
-          )
-          that.animations[1][7] = new animator(
-            that.spritesheet,
-            11 * 60,
-            54,
-            60,
-            54,
-            5,
-            0.1,
-            false
-          )
+          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false)
+          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false)
         }
-
-        that.state = 6
       }
     }
 
     // beam attack collision receiving from a boss
     if (boss.beambox && boss.beambox.collide(that.box)) {
       if (that.state != 1 && that.state != 6 && that.state != 9) {
-        that.currentHealth -= boss.beamDamage;
-        boss.beambox = null;
-        that.meleeTick = ATTACK_READY;
-        that.rangedTick = ATTACK_READY;
+        that.currentHealth -= boss.beamDamage
+        boss.beambox = null
+        that.meleeTick = ATTACK_READY
+        that.rangedTick = ATTACK_READY
 
         if (that.meleeTick < MELEE_DURATION) {
-          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
-          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
+          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false)
+          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false)
         } else if (that.rangedTick < RANGED_DURATION) {
-          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
-          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
+          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false)
+          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false)
         }
 
-        that.state = 6;
+        that.state = 6
       }
     }
 
@@ -519,10 +504,17 @@ class Hero {
     this.game.projectiles.forEach(function (proj) {
       if (that.box.collide(proj.hitbox)) {
         if (that.state != 6 && that.state != 9 && !(proj instanceof HeroProjectile)) {
-          that.currentHealth -= proj.damage
-          that.meleeTick = ATTACK_READY
-          that.rangedTick = ATTACK_READY
-          that.state = 6
+          if (that.state == 1) {
+            if (that.parryTimer > 0.2) {
+              that.currentHealth -= 0.65 * proj.damage
+            }
+          } else {
+            that.currentHealth -= proj.damage
+            that.meleeTick = ATTACK_READY
+            that.rangedTick = ATTACK_READY
+            that.state = 6
+          }
+          proj.removeFromWorld = true
         }
       }
     })
@@ -547,10 +539,10 @@ class Hero {
 
     // ranged attack input
     if (this.game.i && this.rangedTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
-      canMoveLeft = false;
+      canMoveLeft = false
       canMoveRight = false
       canTurn = false
-      hasFired = false
+      this.hasFired = false
       this.state = 7
       this.rangedTick = 0
     }
@@ -558,33 +550,33 @@ class Hero {
     // ultimate (crit chance) input
     if (this.game.u) {
       if (this.canUseUlt) {
-        this.critChance = 1;
-        this.ultActive = 1;
-        this.canUseUlt = 0;
+        this.critChance = 1
+        this.ultActive = 1
+        this.canUseUlt = 0
       }
-    };
+    }
 
     // ultimate skill active logic
     if (this.ultActive) {
-      this.critUltTick += this.game.clockTick;
+      this.critUltTick += this.game.clockTick
       if (this.critUltTick >= 5) {
-        this.startCD = 1;
-        this.critChance = 0.2; // revert back to regular crit chance
-        this.critUltTick = 0;
-        this.ultActive = 0;
-      };
+        this.startCD = 1
+        this.critChance = 0.2 // revert back to regular crit chance
+        this.critUltTick = 0
+        this.ultActive = 0
+      }
     }
 
     // ultimate skill cooldown logic
     if (this.startCD) {
       if (this.critCDTimer < 20) {
-        this.critCDTimer += this.game.clockTick;
-        this.critCDDisplay -= this.game.clockTick;
+        this.critCDTimer += this.game.clockTick
+        this.critCDDisplay -= this.game.clockTick
       } else {
-        this.canUseUlt = 1;
-        this.startCD = 0;
-        this.critCDTimer = 0;
-        this.critCDDisplay = 20;
+        this.canUseUlt = 1
+        this.startCD = 0
+        this.critCDTimer = 0
+        this.critCDDisplay = 20
       }
     }
 
@@ -622,9 +614,7 @@ class Hero {
       this.animations[1][5] = new animator(this.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false)
       this.hitbox = null
       this.meleeTick = ATTACK_READY
-      this.game.bosses.forEach(function (boss) {
-        boss.canHit = true
-      })
+      boss.canHit = true
     }
 
     // handles state when hero is in the middle of a ranged attack
@@ -634,8 +624,8 @@ class Hero {
       canTurn = false
       this.rangedTick += this.game.clockTick
       this.state = 7
-      if (this.rangedTick > 0.45 && this.rangedTick < RANGED_DURATION && !hasFired) {
-        hasFired = true
+      if (this.rangedTick > 0.45 && this.rangedTick < RANGED_DURATION && !this.hasFired) {
+        this.hasFired = true
         let projX = this.x - this.game.camera.x
         if (this.dir == 0) projX += this.box.width
         let proj = new HeroProjectile(
@@ -664,9 +654,9 @@ class Hero {
         this.state = 6
         this.hitstunTick += this.game.clockTick
         if (this.x < this.game.camera.boss.x) {
-          if (canMoveLeft) this.x -= 350 * this.game.clockTick
+          if (canMoveLeft) this.x -= 125 * this.game.clockTick
         } else {
-          if (canMoveRight) this.x += 350 * this.game.clockTick
+          if (canMoveRight) this.x += 125 * this.game.clockTick
         }
         this.y -= 5 - 16 * this.hitstunTick
       } else {
@@ -718,8 +708,10 @@ class Hero {
     }
 
     this.dashIcon = new DashCooldown(this.game, this, canUseDash ? 1 : 0)
-    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp);
-    this.updateBox();
+    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp)
+
+    this.prevState = this.state
+    this.updateBox()
   }
 
   draw(ctx) {
@@ -731,8 +723,8 @@ class Hero {
       PARAMS.SCALE
     )
 
-    this.healthbar.draw(ctx);
-    this.ultIcon.draw(ctx);
-    this.dashIcon.draw(ctx);
+    this.healthbar.draw(ctx)
+    this.ultIcon.draw(ctx)
+    this.dashIcon.draw(ctx)
   }
 }

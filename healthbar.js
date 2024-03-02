@@ -1,11 +1,9 @@
 class HealthBar {
     constructor(agent) {
-        Object.assign(this, {agent});
-    };
+        Object.assign(this, { agent });
+    }
 
-    update() {
-
-    };
+    update() {}
 
     draw(ctx) {
         var ratio = this.agent.currentHealth / this.agent.maxHealth;
@@ -20,17 +18,15 @@ class HealthBar {
         ctx.fillStyle = "White";
         ctx.fillText(Math.floor(this.agent.currentHealth) + "/" + this.agent.maxHealth, 805, 705);
         ctx.fillText("Health", 410, 705);
-    };
+    }
 }
 
 class BossHealthBar {
     constructor(agent) {
-        Object.assign(this, {agent});
-    };
+        Object.assign(this, { agent });
+    }
 
-    update() {
-
-    };
+    update() {}
 
     draw(ctx) {
         var ratio = this.agent.currentHealth / this.agent.maxHealth;
@@ -44,17 +40,15 @@ class BossHealthBar {
         ctx.font = '17px "Press Start 2P", Courier New';
         ctx.fillText(this.agent.title, 190, 70);
         ctx.fillText(Math.floor(this.agent.currentHealth), 1050, 70);
-        
-    };
-
+    }
 }
 
 class Score {
     constructor(game, x, y, score, isCrit) {
-        Object.assign(this, {game, x, y, score, isCrit});
+        Object.assign(this, { game, x, y, score, isCrit });
         this.velocity = -32;
         this.elapsed = 0;
-    };
+    }
 
     update() {
         this.elapsed += this.game.clockTick;
@@ -68,7 +62,7 @@ class Score {
             }
         }
         this.y += this.velocity * this.game.clockTick;
-    };
+    }
 
     draw(ctx) {
         if (this.isCrit == false) {
@@ -80,7 +74,7 @@ class Score {
         } else {
             ctx.strokeStyle = "#8c40ff";
             ctx.fillStyle = "#17ffd8";
-            
+
             ctx.font = '25px "Press Start 2P"';
             ctx.fillText("  CRIT!", this.x, this.y - 50);
             ctx.strokeText("  CRIT!", this.x, this.y - 50);
@@ -89,7 +83,5 @@ class Score {
             ctx.fillText(Math.floor(this.score), this.x, this.y);
             ctx.strokeText(Math.floor(this.score), this.x, this.y);
         }
-    };
-
-
+    }
 }

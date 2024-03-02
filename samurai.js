@@ -23,7 +23,7 @@ class Samurai {
 
         this.maxHealth = 2500000;
         this.baseAttack = 1000;
-        this.meleeDamage = (this.baseAttack * 0.6) * (0.9 + Math.random() * 0.2);
+        this.meleeDamage = this.baseAttack * 0.6 * (0.9 + Math.random() * 0.2);
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
         this.healthbar = new BossHealthBar(this);
@@ -46,110 +46,29 @@ class Samurai {
         }
 
         // idle frames
-        this.animations[0][0] = new animator(
-            this.spritesheet,
-            3 * SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            1,
-            0.08,
-            true
-        );
+        this.animations[0][0] = new animator(this.spritesheet, 3 * SAMURAI_WIDTH, SAMURAI_HEIGHT, SAMURAI_WIDTH, SAMURAI_HEIGHT, 1, 0.08, true);
 
-        this.animations[1][0] = new animator(
-            this.spritesheet,
-            3 * SAMURAI_WIDTH,
-            0,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            1,
-            0.08,
-            true
-        );
+        this.animations[1][0] = new animator(this.spritesheet, 3 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH, SAMURAI_HEIGHT, 1, 0.08, true);
 
         // running frames
-        this.animations[0][1] = new animator(
-            this.spritesheet,
-            0,
-            SAMURAI_HEIGHT,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            3,
-            0.08,
-            true
-        );
+        this.animations[0][1] = new animator(this.spritesheet, 0, SAMURAI_HEIGHT, SAMURAI_WIDTH, SAMURAI_HEIGHT, 3, 0.08, true);
 
         this.animations[1][1] = new animator(this.spritesheet, 0, 0, SAMURAI_WIDTH, SAMURAI_HEIGHT, 3, 0.08, true);
 
         // charging animation frames
-        this.animations[0][2] = new animator(
-            this.spritesheet,
-            4 * SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            2,
-            1,
-            true
-        );
+        this.animations[0][2] = new animator(this.spritesheet, 4 * SAMURAI_WIDTH, SAMURAI_HEIGHT, SAMURAI_WIDTH, SAMURAI_HEIGHT, 2, 1, true);
 
-        this.animations[1][2] = new animator(
-            this.spritesheet,
-            4 * SAMURAI_WIDTH,
-            0,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            2,
-            1,
-            true
-        );
+        this.animations[1][2] = new animator(this.spritesheet, 4 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH, SAMURAI_HEIGHT, 2, 1, true);
 
         // primary melee frames
-        this.animations[0][3] = new animator(
-            this.spritesheet,
-            8 * SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            2,
-            0.3,
-            true
-        );
+        this.animations[0][3] = new animator(this.spritesheet, 8 * SAMURAI_WIDTH, SAMURAI_HEIGHT, SAMURAI_WIDTH, SAMURAI_HEIGHT, 2, 0.3, true);
 
-        this.animations[1][3] = new animator(
-            this.spritesheet,
-            8 * SAMURAI_WIDTH,
-            0,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            2,
-            0.3,
-            true
-        );
+        this.animations[1][3] = new animator(this.spritesheet, 8 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH, SAMURAI_HEIGHT, 2, 0.3, true);
 
         // projectile blade attack frames
-        this.animations[0][4] = new animator(
-            this.spritesheet,
-            6 * SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            2,
-            0.3,
-            true
-        );
+        this.animations[0][4] = new animator(this.spritesheet, 6 * SAMURAI_WIDTH, SAMURAI_HEIGHT, SAMURAI_WIDTH, SAMURAI_HEIGHT, 2, 0.3, true);
 
-        this.animations[1][4] = new animator(
-            this.spritesheet,
-            6 * SAMURAI_WIDTH,
-            0,
-            SAMURAI_WIDTH,
-            SAMURAI_HEIGHT,
-            2,
-            0.3,
-            true
-        );
+        this.animations[1][4] = new animator(this.spritesheet, 6 * SAMURAI_WIDTH, 0, SAMURAI_WIDTH, SAMURAI_HEIGHT, 2, 0.3, true);
     }
 
     applyGravity() {
@@ -167,12 +86,7 @@ class Samurai {
     }
 
     updateBox() {
-        this.box = new boundingbox(
-            this.x - this.game.camera.x + 48,
-            this.y - this.game.camera.y + 26,
-            36 * PARAMS.SCALE,
-            56 * PARAMS.SCALE
-        );
+        this.box = new boundingbox(this.x - this.game.camera.x + 48, this.y - this.game.camera.y + 26, 36 * PARAMS.SCALE, 56 * PARAMS.SCALE);
     }
 
     meleeAttack() {
@@ -185,19 +99,9 @@ class Samurai {
                 if (this.meleeTimer < 0.05) {
                     // active bounding box to be cast for short duration
                     if (this.dir == 1) {
-                        this.hitbox = new boundingbox(
-                            this.x - this.game.camera.x,
-                            this.y - this.game.camera.y,
-                            48 * PARAMS.SCALE,
-                            64 * PARAMS.SCALE
-                        );
+                        this.hitbox = new boundingbox(this.x - this.game.camera.x, this.y - this.game.camera.y, 48 * PARAMS.SCALE, 64 * PARAMS.SCALE);
                     } else {
-                        this.hitbox = new boundingbox(
-                            this.x - this.game.camera.x + 48,
-                            this.y - this.game.camera.y,
-                            48 * PARAMS.SCALE,
-                            64 * PARAMS.SCALE
-                        );
+                        this.hitbox = new boundingbox(this.x - this.game.camera.x + 48, this.y - this.game.camera.y, 48 * PARAMS.SCALE, 64 * PARAMS.SCALE);
                     }
                     this.isTeleported = false;
                 }
@@ -214,10 +118,11 @@ class Samurai {
     // A special attack that will cast after every 3rd melee attack
     projectileAttack() {
         const PROJECTILE_VELOCITY = 10;
-        const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
+        const PROJECTILE_DAMAGE = this.baseAttack * 1.2 * (0.9 + Math.random() * 0.2);
         let chargingLimit = 2;
         let projLimit = 0.5;
-        if (this.phase != 0) { // more rapid projectile attack if not initial phase
+        if (this.phase != 0) {
+            // more rapid projectile attack if not initial phase
             chargingLimit = 1;
             projLimit = 0.25;
         }
@@ -230,8 +135,7 @@ class Samurai {
             if (this.projectileTimer < projLimit) {
                 this.projectileTimer += 1 * this.game.clockTick;
             } else {
-                let projX =
-                    this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
+                let projX = this.dir == 0 ? this.x - this.game.camera.x + 48 + this.box.width : this.x - this.game.camera.x + 48;
                 let proj = new SamuraiProjectile(
                     this.game,
                     projX,
@@ -256,10 +160,10 @@ class Samurai {
 
     teleportAttack() {
         const originalX = this.x;
-    
+
         // Determine the direction the Samurai should face after teleporting
         this.dir = this.game.hero.dir === 0 ? 0 : 1; // Face opposite direction of the hero
-    
+
         // Teleport the Samurai behind the hero
         if (this.isTeleported == false) {
             if (this.dir === 0) {
@@ -274,7 +178,6 @@ class Samurai {
         }
         // Perform a melee attack after teleporting
         this.meleeAttack();
-
     }
 
     update() {
@@ -309,7 +212,8 @@ class Samurai {
                         if (that.x <= -800) {
                             that.x = -700;
                         }
-                    } else if (that.dir == 1) { // <-- left collisions
+                    } else if (that.dir == 1) {
+                        // <-- left collisions
                         that.x += movement;
                         if (that.x >= 1200) {
                             // if the samurai clips off the map, then reset it's position inside arena
@@ -328,13 +232,13 @@ class Samurai {
         }
 
         // if the hero is within visualRadius of the samurai, it will follow the hero
-        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (this.x - this.game.hero.x >= 100)) {
+        if (canSee(this, this.game.hero) && this.x > this.game.hero.x && this.x - this.game.hero.x >= 100) {
             if (canMoveLeft && this.dir == 1) {
                 this.x -= movement;
                 this.state = 1;
                 this.hitbox = null;
             }
-        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) && (this.x - this.game.hero.x <= 75)) {
+        } else if (canSee(this, this.game.hero) && this.x + 32 * PARAMS.SCALE < this.game.hero.x && this.x - this.game.hero.x <= 75) {
             if (canMoveRight && this.dir == 0) {
                 this.x += movement;
                 this.state = 1;
@@ -362,13 +266,7 @@ class Samurai {
     }
 
     draw(ctx) {
-        this.animations[this.dir][this.state].drawFrame(
-            this.game.clockTick,
-            ctx,
-            this.x - this.game.camera.x,
-            this.y - this.game.camera.y,
-            PARAMS.SCALE
-        );
+        this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y - this.game.camera.y, PARAMS.SCALE);
         this.healthbar.draw(ctx);
     }
 }

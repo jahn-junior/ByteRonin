@@ -378,7 +378,7 @@ class Orochi {
 
         // projectile collision
         this.game.projectiles.forEach(function (proj) {
-            if (that.box.collide(proj.hitbox)) {
+            if (proj.hitbox && that.box.collide(proj.hitbox)) {
                 if (!(proj instanceof OrochiProjectile) && that.state != 3) {
                     that.offset = that.game.hero.dir == 0 ? 150 : -50;
 

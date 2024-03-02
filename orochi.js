@@ -21,7 +21,7 @@ class Orochi {
         this.dead = false;
         this.deathTick = 0;
         this.canHit = true;
-        
+        this.playWinScreen = false;
         
         this.title = "Cyberhydraic Maiden"
         this.maxHealth = 2000000;
@@ -474,6 +474,7 @@ class Orochi {
             if (this.deathTick == 80) {
                 this.currentHealth = 0;
                 this.dead = false;
+                this.playWinScreen = true;
                 this.deathTick = 0;
                 this.removeFromWorld = true;
             }

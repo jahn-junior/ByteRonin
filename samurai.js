@@ -30,6 +30,7 @@ class Samurai {
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
         this.healthbar = new BossHealthBar(this);
+        this.playWinScreen = false;
 
         this.animations = [];
         this.updateBox();
@@ -447,6 +448,7 @@ class Samurai {
             if (this.deathTick == 80) {
                 this.currentHealth = 0;
                 this.deathTick = 0;
+                this.playWinScreen = true;
                 this.removeFromWorld = true;
             }
         }

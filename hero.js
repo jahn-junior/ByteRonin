@@ -24,13 +24,15 @@ class Hero {
     this.dashCooldown = 5
     this.dashDisplay = 0
 
-    this.critUltTick = 0
-    this.critCDTimer = 0
-    this.critCDDisplay = 20
-    this.startCD = 0
-    this.canUseUlt = 1
-    this.ultActive = 0
-    this.powerUp = 1
+    this.critUltTick = 0;
+    this.critCDTimer = 0;
+    this.critCDDisplay = 20;
+    this.startCD = 0;
+    this.canUseUlt = 1;
+    this.canUseOrb = 1;
+    this.ultActive = 0;
+    this.powerUpOne = 1; // after beating 1st boss, update to 1 (init 0)
+    this.powerUpTwo = 0; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
     this.dir = 0
@@ -40,16 +42,17 @@ class Hero {
     this.state = 0
     this.prevState = 0
 
-    this.maxHealth = 25000
-    this.speed = 400
-    this.currentHealth = this.maxHealth
-    this.healthbar = new HealthBar(this)
-    this.ultIcon = new CritCooldown(this.game, this, 1, false)
-    this.dashIcon = new DashCooldown(this.game, this, 1)
-    this.baseAttack = 100
-    this.critChance = 0.2
-    this.dead = false
-    this.gameover = false
+    this.maxHealth = 25000;
+    this.speed = 400;
+    this.currentHealth = this.maxHealth;
+    this.healthbar = new HealthBar(this);
+    this.ultIcon = new CritCooldown(this.game, this, 1, 0);
+    this.dashIcon = new DashCooldown(this.game, this, 1);
+    this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0);
+    this.baseAttack = 100;
+    this.critChance = 0.2;
+    this.dead = false;
+    this.gameover = false;
 
     this.animations = []
     this.loadAnimations()
@@ -311,8 +314,8 @@ class Hero {
     const DASH_DURATION = 0.25
     const DASH_COOLDOWN = 2.5
 
-    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
-    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
+    const MELEE_DAMAGE = 150 * this.baseAttack * (0.9 + Math.random() * 0.2)
+    const PROJECTILE_DAMAGE = 200 * this.baseAttack * (0.9 + Math.random() * 0.2)
 
     let canMoveLeft = true
     let canMoveRight = true
@@ -709,10 +712,8 @@ class Hero {
     }
 
     this.dashIcon = new DashCooldown(this.game, this, canUseDash ? 1 : 0)
-    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp)
-
-    this.prevState = this.state
-    this.updateBox()
+    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp);
+    this.updateBox();
   }
 
   draw(ctx) {
@@ -724,8 +725,8 @@ class Hero {
       PARAMS.SCALE
     )
 
-    this.healthbar.draw(ctx)
-    this.ultIcon.draw(ctx)
-    this.dashIcon.draw(ctx)
+    this.healthbar.draw(ctx);
+    this.ultIcon.draw(ctx);
+    this.dashIcon.draw(ctx);
   }
 }

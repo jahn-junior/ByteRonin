@@ -42,17 +42,17 @@ class Hero {
     this.state = 0
     this.prevState = 0
 
-    this.maxHealth = 25000;
-    this.speed = 400;
-    this.currentHealth = this.maxHealth;
-    this.healthbar = new HealthBar(this);
-    this.ultIcon = new CritCooldown(this.game, this, 1, 0);
-    this.dashIcon = new DashCooldown(this.game, this, 1);
-    this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0);
-    this.baseAttack = 100;
-    this.critChance = 0.2;
-    this.dead = false;
-    this.gameover = false;
+    this.maxHealth = 25000
+    this.speed = 400
+    this.currentHealth = this.maxHealth
+    this.healthbar = new HealthBar(this)
+    this.ultIcon = new CritCooldown(this.game, this, 1, 0)
+    this.dashIcon = new DashCooldown(this.game, this, 1)
+    this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0)
+    this.baseAttack = 100
+    this.critChance = 0.2
+    this.dead = false
+    this.gameover = false
 
     this.animations = []
     this.loadAnimations()

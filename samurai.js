@@ -258,7 +258,7 @@ class Samurai {
 
     // A special attack that will cast when the hero is at a distance
     projectileAttack() {
-        const PROJECTILE_VELOCITY = 10;
+        const PROJECTILE_VELOCITY = 900;
         const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
         let chargingLimit = 2;
         let projLimit = 0.5;
@@ -280,7 +280,7 @@ class Samurai {
                 let proj = new SamuraiProjectile(
                     this.game,
                     projX,
-                    this.y - this.game.camera.y + 72,
+                    this.y - this.game.camera.y + 24,
                     16 * PARAMS.SCALE,
                     this.box.height / 2,
                     this.dir,

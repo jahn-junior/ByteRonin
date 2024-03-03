@@ -310,7 +310,7 @@ class Hero {
     const RANGED_DURATION = 0.48
     const HITSTUN_DURATION = 0.35
     const DEATH_DURATION = 0.85
-    const PROJECTILE_VELOCITY = 16
+    const PROJECTILE_VELOCITY = 850
     const DASH_DURATION = 0.25
     const DASH_COOLDOWN = 2.5
 

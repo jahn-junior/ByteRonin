@@ -287,7 +287,7 @@ class Orochi {
 
     // A special attack that will cast when the hero is at a distance
     projectileAttack() {
-        const PROJECTILE_VELOCITY = 7;
+        const PROJECTILE_VELOCITY = 650;
         const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
         let chargingLimit = 2.05;
 

@@ -29,6 +29,7 @@ class GameEngine {
     this.k = false;
     this.l = false;
     this.u = false;
+    this.o = false;
 
     // Options and the Details
     this.options = options || {
@@ -112,6 +113,9 @@ class GameEngine {
           case "KeyU":
             that.u = true;
             break;
+          case "KeyO":
+            that.o = true;
+            break;
         }
       },
       false
@@ -147,7 +151,10 @@ class GameEngine {
             break;
           case "KeyU":
             that.u = false;
-            break;          
+            break;      
+          case "KeyO":
+            that.o = false;
+            break;
         }
       },
       false

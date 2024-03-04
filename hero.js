@@ -318,9 +318,9 @@ class Hero {
     const ORBITAL_COOLDOWN = 30;
     const ORBITAL_RATE = 0.25;
 
-    const ORBITAL_DAMAGE = 32500 * (0.9 + Math.random() * 0.2);
+    const ORBITAL_DAMAGE = 42500 * (0.9 + Math.random() * 0.2);
     const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
-    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
+    const PROJECTILE_DAMAGE = 30000 * (0.9 + Math.random() * 0.2)
 
     let canMoveLeft = true
     let canMoveRight = true
@@ -457,8 +457,8 @@ class Hero {
 
       if (boss.currentHealth <= 0) {
         boss.dead = true
-        if (boss instanceof Wolf) this.powerUpOne = true;
-        if (boss instanceof Orochi) this.powerupTwo = true;
+        if (boss instanceof Wolf) this.powerUpOne = 1;
+        if (boss instanceof Orochi) this.powerupTwo = 1;
       }
     }
 
@@ -496,8 +496,8 @@ class Hero {
 
         if (boss.currentHealth <= 0) {
           boss.dead = true;
-          if (boss instanceof Wolf) this.powerUpOne = true;
-          if (boss instanceof Orochi) this.powerupTwo = true;
+          if (boss instanceof Wolf) this.powerUpOne = 1;
+          if (boss instanceof Orochi) this.powerupTwo = 1;
         }
       }
     });

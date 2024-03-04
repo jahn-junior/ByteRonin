@@ -13,7 +13,7 @@ class Orochi {
         this.chargingTimer = 0;
         this.beamTimer = 0;
         this.beambox = null;
-        this.beamDamage = (this.baseAttack * 3) * (0.9 + Math.random() * 0.2);
+        this.beamDamage = (this.baseAttack * 2) * (0.9 + Math.random() * 0.2);
         this.transformTimer = 0;
         this.isTransformed = false;
         this.velocityY = 0;

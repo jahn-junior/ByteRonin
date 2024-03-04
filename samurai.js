@@ -25,7 +25,7 @@ class Samurai {
         this.canHit = true;
         this.hasAttacked = false;
         this.maxHealth = 3000000;
-        this.baseAttack = 3000;
+        this.baseAttack = 1500;
         this.meleeDamage = (this.baseAttack * 0.6) * (0.9 + Math.random() * 0.2);
         this.currentHealth = this.maxHealth;
         this.title = "Nano Shogun";
@@ -332,7 +332,7 @@ class Samurai {
 
         if (healthRatio < 0.4) {
             this.phase = 2;
-            this.baseAttack = 5000;
+            this.baseAttack = 3000;
         } else if (healthRatio < 0.7) {
             this.phase = 1;
         } else {
@@ -408,6 +408,8 @@ class Samurai {
             this.deathTick = 0;
             this.playWinScreen = true;
             this.removeFromWorld = true;
+            this.game.hero.powerUpOne = 1;
+            this.game.hero.powerUpTwo = 1;
         }
     }
 

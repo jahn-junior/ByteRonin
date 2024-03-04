@@ -35,7 +35,7 @@ class Hero {
     this.nextOrbitalHit = 0;
     this.ultActive = 0;
     this.powerUpOne = 1; // after beating 1st boss, update to 1 (init 0)
-    this.powerUpTwo = 1; // after beating 2nd boss, update to 1 (init 0)
+    this.powerUpTwo = 0; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
     this.dir = 0

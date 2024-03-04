@@ -364,48 +364,6 @@ class Samurai {
       }
     })
 
-        // projectile collision from hero
-        this.game.projectiles.forEach(function (proj) {
-            if (proj.hitbox && that.box.collide(proj.hitbox)) {
-            if (!(proj instanceof SamuraiProjectile)) {
-                that.offset = that.game.hero.dir == 0 ? 150 : -50;
-
-                // critical hit chance calculation
-                if (Math.random() * 1 < that.game.hero.critChance) {
-                const critMultiplier = 1.5;
-                const critDamage = proj.damage * critMultiplier;
-                that.game.addEntity(
-                    new Score(
-                    that.game,
-                    that.x - that.game.camera.x + that.offset,
-                    that.y - that.game.camera.y + 50,
-                    critDamage,
-                    true
-                    )
-                );
-                that.currentHealth -= proj.damage * critMultiplier;
-                } else {
-                that.game.addEntity(
-                    new Score(
-                    that.game,
-                    that.x - that.game.camera.x + that.offset,
-                    that.y - that.game.camera.y + 50,
-                    proj.damage,
-                    false
-                    )
-                );
-                that.currentHealth -= proj.damage;
-                }            
-                proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
-                proj.removeFromWorld = true;
-
-                if (that.currentHealth <= 0) {
-                    that.dead = true;
-                }
-            }
-            }
-        });
-
     // samurai will always face torwards the hero
     if (this.game.camera.hero.x < this.x) {
       this.dir = 1
@@ -413,45 +371,45 @@ class Samurai {
       this.dir = 0
     }
 
-        // if the hero is within visualRadius of the samurai, it will follow the hero
-        if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (getDistance(this, this.game.hero) > 150)) {
-            if (canMoveLeft && this.dir == 1) {
-                this.x -= movement;
-                this.state = 1;
-                this.hitbox = null;
-            }
-        } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) 
-        && (getDistance(this, this.game.hero) > 150)) {
-            if (canMoveRight && this.dir == 0) {
-                this.x += movement;
-                this.state = 1;
-                this.hitbox = null;
-            }
-        } else {
-            this.state = 0;
+    // if the hero is within visualRadius of the samurai, it will follow the hero
+    if (canSee(this, this.game.hero) && (this.x > this.game.hero.x) && (getDistance(this, this.game.hero) > 150)) {
+        if (canMoveLeft && this.dir == 1) {
+            this.x -= movement;
+            this.state = 1;
             this.hitbox = null;
         }
-
-        if (getDistance(this, this.game.hero) <= 200) {
-            if (this.phase != 2) {
-                this.meleeAttack();
-            } else {
-                this.teleportAttack();
-            }
-        } else if (getDistance(this, this.game.hero) > 400) {
-            this.projectileAttack();
+    } else if (canSee(this, this.game.hero) && (this.x + 32 * PARAMS.SCALE < this.game.hero.x) 
+    && (getDistance(this, this.game.hero) > 150)) {
+        if (canMoveRight && this.dir == 0) {
+            this.x += movement;
+            this.state = 1;
+            this.hitbox = null;
         }
+    } else {
+        this.state = 0;
+        this.hitbox = null;
+    }
 
-        if (this.dead) {
-            this.state = 5;
-            this.deathTick++;
-            if (this.deathTick == 80) {
-                this.currentHealth = 0;
-                this.deathTick = 0;
-                this.playWinScreen = true;
-                this.removeFromWorld = true;
-            }
+    if (getDistance(this, this.game.hero) <= 200) {
+        if (this.phase != 2) {
+            this.meleeAttack();
+        } else {
+            this.teleportAttack();
         }
+    } else if (getDistance(this, this.game.hero) > 400) {
+        this.projectileAttack();
+    }
+
+    if (this.dead) {
+        this.state = 5;
+        this.deathTick++;
+        if (this.deathTick == 80) {
+            this.currentHealth = 0;
+            this.deathTick = 0;
+            this.playWinScreen = true;
+            this.removeFromWorld = true;
+        }
+    }
 
     this.updateBox()
   }

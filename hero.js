@@ -7,6 +7,7 @@ class Hero {
 
     this.x = x
     this.y = y
+    this.initY = 0;
     this.spawnX = x
     this.spawnY = y
     this.radius = 32
@@ -29,10 +30,12 @@ class Hero {
     this.critCDDisplay = 20;
     this.startCD = 0;
     this.canUseUlt = 1;
-    this.canUseOrb = 1;
+    this.orbCD = 30;
+    this.activeOrb = null;
+    this.nextOrbitalHit = 0;
     this.ultActive = 0;
     this.powerUpOne = 1; // after beating 1st boss, update to 1 (init 0)
-    this.powerUpTwo = 0; // after beating 2nd boss, update to 1 (init 0)
+    this.powerUpTwo = 1; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
     this.dir = 0
@@ -49,7 +52,6 @@ class Hero {
     this.ultIcon = new CritCooldown(this.game, this, 1, 0)
     this.dashIcon = new DashCooldown(this.game, this, 1)
     this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0)
-    this.baseAttack = 100
     this.critChance = 0.2
     this.dead = false
     this.gameover = false
@@ -313,14 +315,19 @@ class Hero {
     const PROJECTILE_VELOCITY = 850
     const DASH_DURATION = 0.25
     const DASH_COOLDOWN = 2.5
+    const ORBITAL_DAMAGE = 35000;
+    const ORBITAL_COOLDOWN = 30;
+    const ORBITAL_RATE = 0.25;
 
-    const MELEE_DAMAGE = 150 * this.baseAttack * (0.9 + Math.random() * 0.2)
-    const PROJECTILE_DAMAGE = 200 * this.baseAttack * (0.9 + Math.random() * 0.2)
+    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
+    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
 
     let canMoveLeft = true
     let canMoveRight = true
     let canTurn = true
+    let offset = this.dir == 0 ? 150 : -50;
     let canUseDash = this.dashCooldown >= DASH_COOLDOWN
+    let canUseOrb = this.orbCD >= ORBITAL_COOLDOWN
 
     // state defaults to falling
     if (this.state != 3 && this.state != 6) {
@@ -384,8 +391,7 @@ class Hero {
 
     // dash input
     if (
-      this.game.l &&
-      (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)
+      this.game.l && (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)
     ) {
       if (canUseDash) {
         this.state = 9
@@ -416,12 +422,10 @@ class Hero {
 
     let boss = null
     if (this.game.camera.boss) boss = this.game.camera.boss
-    // melee attack collision
+
+    
     if (that.hitbox && that.hitbox.collide(boss.box)) {
       if (!boss.isInvulnerable && boss.canHit) {
-        // varies where dmg score shows based off of current direction
-        that.offset = that.dir == 0 ? 150 : -50
-
         // critical hit chance calculation
         if (Math.random() * 1 < that.critChance) {
           const critMultiplier = 1.5
@@ -453,6 +457,70 @@ class Hero {
 
       if (boss.currentHealth <= 0) {
         boss.dead = true
+        if (boss instanceof Wolf) this.powerUpOne = true;
+        if (boss instanceof Orochi) this.powerupTwo = true;
+      }
+    }
+
+    this.game.projectiles.forEach(function (proj) {
+      if (proj.hitbox && boss.box.collide(proj.hitbox) && proj instanceof HeroProjectile) {
+        // critical hit chance calculation
+        if (Math.random() < that.critChance) {
+          const critMultiplier = 1.5;
+          const critDamage = proj.damage * critMultiplier;
+          that.game.addEntity(
+              new Score(
+              that.game,
+              boss.x - that.game.camera.x + offset,
+              boss.y - that.game.camera.y + 50,
+              critDamage,
+              true
+              )
+          );
+          boss.currentHealth -= proj.damage * critMultiplier;
+        } else {
+          that.game.addEntity(
+              new Score(
+              that.game,
+              boss.x - that.game.camera.x + offset,
+              boss.y - that.game.camera.y + 50,
+              proj.damage,
+              false
+              )
+          );
+          boss.currentHealth -= proj.damage;
+        }     
+
+        proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
+        proj.removeFromWorld = true;
+
+        if (boss.currentHealth <= 0) {
+          boss.dead = true;
+          if (boss instanceof Wolf) this.powerUpOne = true;
+          if (boss instanceof Orochi) this.powerupTwo = true;
+        }
+      }
+    });
+
+    if (this.activeOrb && this.activeOrb.box && boss.box.collide(this.activeOrb.box)) {
+      if ((this.activeOrb.timer - 1.5) / ORBITAL_RATE > this.nextOrbitalHit) {
+        this.nextOrbitalHit++;
+        if (!boss.isInvulnerable) {
+          boss.currentHealth -= ORBITAL_DAMAGE;
+          this.game.addEntity(
+            new Score(
+              that.game,
+              boss.x - that.game.camera.x + offset,
+              boss.y - that.game.camera.y + 50,
+              ORBITAL_DAMAGE,
+              false
+            )
+          );
+
+          if (boss.currentHealth <= 0) {
+            boss.dead = true;
+          }
+        }
       }
     }
 
@@ -538,6 +606,7 @@ class Hero {
 
     // jump input
     if (this.game.w && (this.state == 0 || this.state == 2)) {
+      this.initY = this.y;
       this.state = 3
     }
 
@@ -552,7 +621,7 @@ class Hero {
     }
 
     // ultimate (crit chance) input
-    if (this.game.u) {
+    if (this.game.u  && this.powerUpOne) {
       if (this.canUseUlt) {
         this.critChance = 1
         this.ultActive = 1
@@ -582,6 +651,20 @@ class Hero {
         this.critCDTimer = 0
         this.critCDDisplay = 20
       }
+    }
+
+    if (this.game.o && this.powerUpTwo) {
+      if (canUseOrb) {
+        this.activeOrb = new OrbitalStrike(this.game);
+        this.game.addEntity(this.activeOrb);
+        this.nextOrbitalHit = 0;
+        this.orbCD = 0;
+      }
+    }
+
+    if (!canUseOrb) {
+      this.orbCD += this.game.clockTick;
+      this.orbDisplay = Math.floor(ORBITAL_COOLDOWN - this.orbCD);
     }
 
     // handles state when hero is in the middle of a melee attack
@@ -672,7 +755,7 @@ class Hero {
 
     // y updates for jumping/falling
     if (this.state == 3) {
-      if (7 - 16 * this.jumpTick > 0) {
+      if (7 - 16 * this.jumpTick > 0 && this.initY - this.y < 150) { // band-aid fix for framerate-dependent jump
         this.jumpTick += this.game.clockTick
         this.y -= 7 - 16 * this.jumpTick
       } else {
@@ -711,8 +794,9 @@ class Hero {
       }
     }
 
-    this.dashIcon = new DashCooldown(this.game, this, canUseDash ? 1 : 0)
-    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUp);
+    this.dashIcon = new DashCooldown(this.game, this, canUseDash ? 1 : 0);
+    this.ultIcon = new CritCooldown(this.game, this, this.canUseUlt, this.powerUpOne);
+    this.orbitalIcon = new OrbitalCooldown(this.game, this, canUseOrb ? 1 : 0, this.powerUpTwo);
     this.updateBox();
   }
 
@@ -728,5 +812,6 @@ class Hero {
     this.healthbar.draw(ctx);
     this.ultIcon.draw(ctx);
     this.dashIcon.draw(ctx);
+    this.orbitalIcon.draw(ctx);
   }
 }

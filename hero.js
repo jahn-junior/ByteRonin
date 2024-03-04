@@ -315,12 +315,12 @@ class Hero {
     const PROJECTILE_VELOCITY = 850
     const DASH_DURATION = 0.25
     const DASH_COOLDOWN = 2.5
-    const ORBITAL_COOLDOWN = 30;
+    const ORBITAL_COOLDOWN = 22;
     const ORBITAL_RATE = 0.25;
 
-    const ORBITAL_DAMAGE = 32500 * (0.9 + Math.random() * 0.2);
+    const ORBITAL_DAMAGE = 42500 * (0.9 + Math.random() * 0.2);
     const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
-    const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
+    const PROJECTILE_DAMAGE = 30000 * (0.9 + Math.random() * 0.2)
 
     let canMoveLeft = true
     let canMoveRight = true
@@ -455,47 +455,45 @@ class Hero {
 
       if (boss.currentHealth <= 0) {
         boss.dead = true
-        if (boss instanceof Wolf) this.powerUpOne = true;
-        if (boss instanceof Orochi) this.powerupTwo = true;
       }
     }
 
     this.game.projectiles.forEach(function (proj) {
       if (proj.hitbox && boss.box.collide(proj.hitbox) && proj instanceof HeroProjectile) {
         // critical hit chance calculation
-        if (Math.random() < that.critChance) {
-          const critMultiplier = 1.5;
-          const critDamage = proj.damage * critMultiplier;
-          that.game.addEntity(
-              new Score(
-              that.game,
-              boss.x - that.game.camera.x + offset,
-              boss.y - that.game.camera.y + 50,
-              critDamage,
-              true
-              )
-          );
-          boss.currentHealth -= proj.damage * critMultiplier;
-        } else {
-          that.game.addEntity(
-              new Score(
-              that.game,
-              boss.x - that.game.camera.x + offset,
-              boss.y - that.game.camera.y + 50,
-              proj.damage,
-              false
-              )
-          );
-          boss.currentHealth -= proj.damage;
-        }     
+        if (!boss.isInvulnerable && boss.canHit) {
+          if (Math.random() < that.critChance) {
+            const critMultiplier = 1.5;
+            const critDamage = proj.damage * critMultiplier;
+            that.game.addEntity(
+                new Score(
+                that.game,
+                boss.x - that.game.camera.x + offset,
+                boss.y - that.game.camera.y + 50,
+                critDamage,
+                true
+                )
+            );
+            boss.currentHealth -= proj.damage * critMultiplier;
+          } else {
+            that.game.addEntity(
+                new Score(
+                that.game,
+                boss.x - that.game.camera.x + offset,
+                boss.y - that.game.camera.y + 50,
+                proj.damage,
+                false
+                )
+            );
+            boss.currentHealth -= proj.damage;
+          }                             
+        }
 
         proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
         proj.removeFromWorld = true;
 
         if (boss.currentHealth <= 0) {
           boss.dead = true;
-          if (boss instanceof Wolf) this.powerUpOne = true;
-          if (boss instanceof Orochi) this.powerupTwo = true;
         }
       }
     });

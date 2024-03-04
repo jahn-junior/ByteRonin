@@ -428,23 +428,21 @@ class Hero {
       if (!boss.isInvulnerable && boss.canHit) {
         // critical hit chance calculation
         if (Math.random() * 1 < that.critChance) {
-          const critMultiplier = 1.5
-          const critDamage = MELEE_DAMAGE * critMultiplier
           that.game.addEntity(
             new Score(
               that.game,
-              boss.x - that.game.camera.x + that.offset,
+              boss.x - that.game.camera.x + offset,
               boss.y - that.game.camera.y + 50,
-              critDamage,
+              MELEE_DAMAGE * 1.5,
               true
             )
           )
-          boss.currentHealth -= MELEE_DAMAGE * critMultiplier
+          boss.currentHealth -= MELEE_DAMAGE * 1.5
         } else {
           that.game.addEntity(
             new Score(
               that.game,
-              boss.x - that.game.camera.x + that.offset,
+              boss.x - that.game.camera.x + offset,
               boss.y - that.game.camera.y + 50,
               MELEE_DAMAGE,
               false

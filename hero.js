@@ -315,10 +315,10 @@ class Hero {
     const PROJECTILE_VELOCITY = 850
     const DASH_DURATION = 0.25
     const DASH_COOLDOWN = 2.5
-    const ORBITAL_DAMAGE = 35000;
     const ORBITAL_COOLDOWN = 30;
     const ORBITAL_RATE = 0.25;
 
+    const ORBITAL_DAMAGE = 32500 * (0.9 + Math.random() * 0.2);
     const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
     const PROJECTILE_DAMAGE = 20000 * (0.9 + Math.random() * 0.2)
 
@@ -506,16 +506,30 @@ class Hero {
       if ((this.activeOrb.timer - 1.5) / ORBITAL_RATE > this.nextOrbitalHit) {
         this.nextOrbitalHit++;
         if (!boss.isInvulnerable) {
-          boss.currentHealth -= ORBITAL_DAMAGE;
-          this.game.addEntity(
-            new Score(
+
+          if (Math.random() < that.critChance) {
+            boss.currentHealth -= ORBITAL_DAMAGE * 1.5
+            that.game.addEntity(
+              new Score(
               that.game,
               boss.x - that.game.camera.x + offset,
               boss.y - that.game.camera.y + 50,
-              ORBITAL_DAMAGE,
-              false
-            )
-          );
+              ORBITAL_DAMAGE * 1.5,
+              true
+              )
+          )
+          } else {
+            boss.currentHealth -= ORBITAL_DAMAGE;
+            this.game.addEntity(
+              new Score(
+                that.game,
+                boss.x - that.game.camera.x + offset,
+                boss.y - that.game.camera.y + 50,
+                ORBITAL_DAMAGE,
+                false
+              )
+            );
+          }
 
           if (boss.currentHealth <= 0) {
             boss.dead = true;

@@ -282,7 +282,7 @@ class TitleScreen {
         ctx.fillText("Tactical Ability: [Orbital Strike]", 275, 435);
         ctx.fillText("Command an orbital strike that targets an enemy", 275, 465);
         ctx.fillText("that does devastating damage upon impact", 275, 495);
-        ctx.fillText("- (15 second cooldown)", 275, 525);
+        ctx.fillText("- (22 second cooldown)", 275, 525);
       } else {
         ctx.drawImage(ASSET_MANAGER.getAsset("./sprites/heroAbilities.png"), 64, 64, 32, 32, 100, 400, 2.5 * PARAMS.BLOCKWIDTH, 2.5 * PARAMS.BLOCKWIDTH);
         ctx.strokeText("Unlock by completing [Contract II: Cyberhydraic", 275, 435);

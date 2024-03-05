@@ -13,7 +13,7 @@ class Orochi {
         this.chargingTimer = 0;
         this.beamTimer = 0;
         this.beambox = null;
-        this.beamDamage = (this.baseAttack * 3) * (0.9 + Math.random() * 0.2);
+        this.beamDamage = (this.baseAttack * 2) * (0.9 + Math.random() * 0.2);
         this.transformTimer = 0;
         this.isTransformed = false;
         this.velocityY = 0;
@@ -287,7 +287,7 @@ class Orochi {
 
     // A special attack that will cast when the hero is at a distance
     projectileAttack() {
-        const PROJECTILE_VELOCITY = 7;
+        const PROJECTILE_VELOCITY = 650;
         const PROJECTILE_DAMAGE = (this.baseAttack * 1.2) * (0.9 + Math.random() * 0.2);
         let chargingLimit = 2.05;
 
@@ -374,49 +374,7 @@ class Orochi {
                     }
                 }
             }
-        });
-
-        // projectile collision
-        this.game.projectiles.forEach(function (proj) {
-            if (that.box.collide(proj.hitbox)) {
-                if (!(proj instanceof OrochiProjectile) && that.state != 3) {
-                    that.offset = that.game.hero.dir == 0 ? 150 : -50;
-
-                    // critical hit chance calculation
-                    if (Math.random() * 1 < that.game.hero.critChance) {
-                        const critMultiplier = 1.5;
-                        const critDamage = proj.damage * critMultiplier;
-                        that.game.addEntity(
-                            new Score(
-                            that.game,
-                            that.x - that.game.camera.x + that.offset,
-                            that.y - that.game.camera.y + 50,
-                            critDamage,
-                            true
-                            )
-                        );
-                        that.currentHealth -= proj.damage * critMultiplier;
-                    } else {
-                        that.game.addEntity(
-                            new Score(
-                            that.game,
-                            that.x - that.game.camera.x + that.offset,
-                            that.y - that.game.camera.y + 50,
-                            proj.damage,
-                            false
-                            )
-                        );
-                        that.currentHealth -= proj.damage;
-                    }            
-                    proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
-                    proj.removeFromWorld = true;
-
-                    if (that.currentHealth <= 0) {
-                        that.dead = true;
-                    }
-                }
-            }
-        });      
+        });     
 
         // orochi will always face torwards the hero
         if (this.game.camera.hero.x < this.x) {

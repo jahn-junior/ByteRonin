@@ -40,19 +40,28 @@ class CritCooldown {
     };
 
     draw(ctx) {
-        this.animations[this.state].drawFrame(
-            this.game.clockTick,
-            ctx,
-            1010,
-            675,
-            PARAMS.SCALE / 2
-        );
-        if (this.state == 0) {
-            ctx.font = '20px "Press Start 2P", Courier New';
-            ctx.fillStyle = "White";
-            ctx.fillText(Math.floor(this.agent.critCDDisplay), 1025, 720);
-        };
-
+        if (this.unlocked) {
+            this.animations[this.state].drawFrame(
+                this.game.clockTick,
+                ctx,
+                1010,
+                675,
+                PARAMS.SCALE / 2
+            );
+            if (this.state == 0) {
+                ctx.font = '20px "Press Start 2P", Courier New';
+                ctx.fillStyle = "White";
+                ctx.fillText(Math.floor(this.agent.critCDDisplay), 1025, 720);
+            };
+        } else {
+            this.animations[2].drawFrame(
+                this.game.clockTick,
+                ctx,
+                1010,
+                675,
+                PARAMS.SCALE / 2
+            );
+        }
     };
 }
 
@@ -161,6 +170,11 @@ class OrbitalCooldown {
                 675,
                 PARAMS.SCALE / 2
             );
+            if (this.state == 0) {
+                ctx.font = '20px "Press Start 2P", Courier New';
+                ctx.fillStyle = "White";
+                ctx.fillText(Math.floor(this.agent.orbDisplay), 1166, 720);
+            };
         }
     };
 }

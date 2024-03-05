@@ -140,7 +140,7 @@ class SceneManager {
           this.game.hero.powerUpOne = 1;
         }
       }
-    }    
+    }
 
     // Logic for when hero dies. Lets expand on this.
     if (this.game.hero.gameover) {

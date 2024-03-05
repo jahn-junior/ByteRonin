@@ -1,9 +1,9 @@
 class Hero {
   constructor(game, x, y) {
-    Object.assign(this, { game, x, y })
+    Object.assign(this, { game, x, y });
 
-    this.game.hero = this
-    this.spritesheet = ASSET_MANAGER.getAsset('./sprites/hero.png')
+    this.game.hero = this;
+    this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
     this.x = x
     this.y = y
@@ -42,6 +42,7 @@ class Hero {
 
     // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee
     // 6 = hitstun, 7 = shoot, 8 = dead, 9 = dash
+
     this.state = 0
     this.prevState = 0
 
@@ -55,252 +56,67 @@ class Hero {
     this.critChance = 0.2
     this.dead = false
     this.gameover = false
+    
+    this.animations = [];
+    this.loadAnimations();
 
-    this.animations = []
-    this.loadAnimations()
-
-    this.updateBox()
+    this.updateBox();
   }
 
   loadAnimations() {
-    const HERO_WIDTH = 60
-    const HERO_HEIGHT = 54
+    const HERO_WIDTH = 60;
+    const HERO_HEIGHT = 54;
 
     for (let i = 0; i < 2; i++) {
-      this.animations.push([])
+      this.animations.push([]);
       for (let j = 0; j < 6; j++) {
-        this.animations[i].push([])
+        this.animations[i].push([]);
       }
     }
 
     // idle frames
-    this.animations[0][0] = new animator(
-      this.spritesheet,
-      0,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
-    this.animations[1][0] = new animator(
-      this.spritesheet,
-      0,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
+    this.animations[0][0] = new animator(this.spritesheet, 0, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][0] = new animator(this.spritesheet, 0, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
     // parry frames
-    this.animations[0][1] = new animator(
-      this.spritesheet,
-      18 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
-    this.animations[1][1] = new animator(
-      this.spritesheet,
-      18 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
+    this.animations[0][1] = new animator(this.spritesheet, 18 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][1] = new animator(this.spritesheet, 18 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
     // running frames
-    this.animations[0][2] = new animator(
-      this.spritesheet,
-      HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      6,
-      0.08,
-      true
-    )
-    this.animations[1][2] = new animator(
-      this.spritesheet,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      6,
-      0.08,
-      true
-    )
+    this.animations[0][2] = new animator(this.spritesheet, HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 6, 0.08, true);
+    this.animations[1][2] = new animator(this.spritesheet, HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 6, 0.08, true);
 
     // jumping frames
-    this.animations[0][3] = new animator(
-      this.spritesheet,
-      16 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
-    this.animations[1][3] = new animator(
-      this.spritesheet,
-      16 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
+    this.animations[0][3] = new animator(this.spritesheet, 16 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][3] = new animator(this.spritesheet, 16 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
     // falling frames
-    this.animations[0][4] = new animator(
-      this.spritesheet,
-      17 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
-    this.animations[1][4] = new animator(
-      this.spritesheet,
-      17 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      1,
-      0.08,
-      true
-    )
+    this.animations[0][4] = new animator(this.spritesheet, 17 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
+    this.animations[1][4] = new animator(this.spritesheet, 17 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 1, 0.08, true);
 
     // melee attack frames
-    this.animations[0][5] = new animator(
-      this.spritesheet,
-      7 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      4,
-      0.08,
-      false
-    )
-    this.animations[1][5] = new animator(
-      this.spritesheet,
-      7 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      4,
-      0.08,
-      false
-    )
+    this.animations[0][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 4, 0.08, false);
+    this.animations[1][5] = new animator(this.spritesheet, 7 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 4, 0.08, false);
 
     // hitstun frames
-    this.animations[0][6] = new animator(
-      this.spritesheet,
-      19 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      2,
-      0.06,
-      true
-    )
-    this.animations[1][6] = new animator(
-      this.spritesheet,
-      19 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      2,
-      0.06,
-      true
-    )
+    this.animations[0][6] = new animator(this.spritesheet, 19 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 2, 0.06, true);
+    this.animations[1][6] = new animator(this.spritesheet, 19 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 2, 0.06, true);
 
     // ranged attack frames
-    this.animations[0][7] = new animator(
-      this.spritesheet,
-      11 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      5,
-      0.1,
-      false
-    )
-    this.animations[1][7] = new animator(
-      this.spritesheet,
-      11 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      5,
-      0.1,
-      false
-    )
+    this.animations[0][7] = new animator(this.spritesheet, 11 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 5, 0.1, false);
+    this.animations[1][7] = new animator(this.spritesheet, 11 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 5, 0.1, false);
 
     // death frames
-    this.animations[0][8] = new animator(
-      this.spritesheet,
-      21 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      3,
-      0.3,
-      false
-    )
-    this.animations[1][8] = new animator(
-      this.spritesheet,
-      21 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      3,
-      0.3,
-      false
-    )
+    this.animations[0][8] = new animator(this.spritesheet, 21 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 3, 0.3, false);
+    this.animations[1][8] = new animator(this.spritesheet, 21 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 3, 0.3, false);
 
     // dash frames
-    this.animations[0][9] = new animator(
-      this.spritesheet,
-      24 * HERO_WIDTH,
-      0,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      6,
-      0.08,
-      true
-    )
-    this.animations[1][9] = new animator(
-      this.spritesheet,
-      24 * HERO_WIDTH,
-      HERO_HEIGHT,
-      HERO_WIDTH,
-      HERO_HEIGHT,
-      6,
-      0.08,
-      true
-    )
+    this.animations[0][9] = new animator(this.spritesheet, 24 * HERO_WIDTH, 0, HERO_WIDTH, HERO_HEIGHT, 6, 0.08, true);
+    this.animations[1][9] = new animator(this.spritesheet, 24 * HERO_WIDTH, HERO_HEIGHT, HERO_WIDTH, HERO_HEIGHT, 6, 0.08, true);
   }
 
   updateBox() {
-    this.box = new boundingbox(
-      this.x + 20 * PARAMS.SCALE - this.game.camera.x,
-      this.y + 16 * PARAMS.SCALE,
-      21 * PARAMS.SCALE,
-      37 * PARAMS.SCALE
-    )
+    this.box = new boundingbox(this.x + 20 * PARAMS.SCALE - this.game.camera.x, this.y + 16 * PARAMS.SCALE, 21 * PARAMS.SCALE, 37 * PARAMS.SCALE);
   }
 
   update() {
@@ -329,9 +145,10 @@ class Hero {
     let canUseDash = this.dashCooldown >= DASH_COOLDOWN
     let canUseOrb = this.orbCD >= ORBITAL_COOLDOWN
 
+
     // state defaults to falling
     if (this.state != 3 && this.state != 6) {
-      this.state = 4
+      this.state = 4;
     }
 
     // collision handling
@@ -339,20 +156,17 @@ class Hero {
       if (that.box.collide(tile.box)) {
         if (that.box.bottom - tile.box.top <= 4 * PARAMS.SCALE) {
           // bottom collision
-          if (
-            (that.dir == 0 && that.box.right >= tile.box.left + 5 * PARAMS.SCALE) ||
-            (that.dir == 1 && that.box.left <= tile.box.right - 5 * PARAMS.SCALE)
-          ) {
-            that.jumpTick = 0
-            that.fallTick = 0
-            that.state = 0
+          if ((that.dir == 0 && that.box.right >= tile.box.left + 5 * PARAMS.SCALE) || (that.dir == 1 && that.box.left <= tile.box.right - 5 * PARAMS.SCALE)) {
+            that.jumpTick = 0;
+            that.fallTick = 0;
+            that.state = 0;
           }
         } else if (that.dir == 0 && that.box.right > tile.box.left) {
           // right collision
-          canMoveRight = false
+          canMoveRight = false;
         } else if (that.dir == 1 && that.box.left < tile.box.right) {
           // left collision
-          canMoveLeft = false
+          canMoveLeft = false;
         }
 
         if (
@@ -366,17 +180,14 @@ class Hero {
 
         if (that.state == 3 && that.box.top - tile.box.bottom <= 4 * PARAMS.SCALE) {
           // top collision
-          if (
-            (that.dir == 0 && that.box.right >= tile.box.left + 5 * PARAMS.SCALE) ||
-            (that.dir == 1 && that.box.left <= tile.box.right - 5 * PARAMS.SCALE)
-          ) {
-            that.jumpTick = 0
-            that.fallTick = 0
-            that.state = 4
+          if ((that.dir == 0 && that.box.right >= tile.box.left + 5 * PARAMS.SCALE) || (that.dir == 1 && that.box.left <= tile.box.right - 5 * PARAMS.SCALE)) {
+            that.jumpTick = 0;
+            that.fallTick = 0;
+            that.state = 4;
           }
         }
       }
-    })
+    });
 
     // parry input
     if (this.game.k && (this.state == 0 || this.state == 1 || this.state == 2)) {
@@ -390,6 +201,7 @@ class Hero {
     console.log(this.parryTimer)
 
     // dash input
+
     if (
       this.game.l && (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)
     ) {
@@ -450,7 +262,7 @@ class Hero {
           )
           boss.currentHealth -= MELEE_DAMAGE
         }
-        boss.canHit = false
+        boss.canHit = false;
       }
 
       if (boss.currentHealth <= 0) {
@@ -599,19 +411,19 @@ class Hero {
           proj.removeFromWorld = true
         }
       }
-    })
+    });
 
     if (this.currentHealth <= 0) {
-      this.dead = true
+      this.dead = true;
     }
 
     // melee attack input
     if (this.game.j && this.meleeTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
-      canMoveLeft = false
-      canMoveRight = false
-      canTurn = false
-      this.state = 5
-      this.meleeTick = 0
+      canMoveLeft = false;
+      canMoveRight = false;
+      canTurn = false;
+      this.state = 5;
+      this.meleeTick = 0;
     }
 
     // jump input
@@ -679,31 +491,21 @@ class Hero {
 
     // handles state when hero is in the middle of a melee attack
     if (this.meleeTick < MELEE_DURATION) {
-      canMoveLeft = false
-      canMoveRight = false
-      canTurn = false
-      this.meleeTick += this.game.clockTick
-      this.state = 5
+      canMoveLeft = false;
+      canMoveRight = false;
+      canTurn = false;
+      this.meleeTick += this.game.clockTick;
+      this.state = 5;
       if (this.meleeTick > 0.26 && this.meleeTick < MELEE_DURATION) {
         // enable hitbox on active frames
         if (this.dir == 0) {
-          this.hitbox = new boundingbox(
-            this.x + 40 * PARAMS.SCALE - this.game.camera.x,
-            this.y + 20 * PARAMS.SCALE,
-            24 * PARAMS.SCALE,
-            34 * PARAMS.SCALE
-          )
+          this.hitbox = new boundingbox(this.x + 40 * PARAMS.SCALE - this.game.camera.x, this.y + 20 * PARAMS.SCALE, 24 * PARAMS.SCALE, 34 * PARAMS.SCALE);
         } else {
-          this.hitbox = new boundingbox(
-            this.x - 4 * PARAMS.SCALE - this.game.camera.x,
-            this.y + 20 * PARAMS.SCALE,
-            24 * PARAMS.SCALE,
-            34 * PARAMS.SCALE
-          )
+          this.hitbox = new boundingbox(this.x - 4 * PARAMS.SCALE - this.game.camera.x, this.y + 20 * PARAMS.SCALE, 24 * PARAMS.SCALE, 34 * PARAMS.SCALE);
         }
       } else {
         // disable hitbox on inactive frames
-        this.hitbox = null
+        this.hitbox = null;
       }
     } else {
       // reload animation so that it can play on the next attack
@@ -739,27 +541,27 @@ class Hero {
         this.game.projectiles.push(proj)
       }
     } else {
-      this.animations[0][7] = new animator(this.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false)
-      this.animations[1][7] = new animator(this.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false)
+      this.animations[0][7] = new animator(this.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+      this.animations[1][7] = new animator(this.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
 
-      this.rangedTick = ATTACK_READY
+      this.rangedTick = ATTACK_READY;
     }
 
     // hitstun updates
     if (this.state == 6) {
       if (this.hitstunTick < HITSTUN_DURATION) {
-        this.state = 6
-        this.hitstunTick += this.game.clockTick
+        this.state = 6;
+        this.hitstunTick += this.game.clockTick;
         if (this.x < this.game.camera.boss.x) {
           if (canMoveLeft) this.x -= 125 * this.game.clockTick
         } else {
           if (canMoveRight) this.x += 125 * this.game.clockTick
         }
-        this.y -= 5 - 16 * this.hitstunTick
+        this.y -= 5 - 16 * this.hitstunTick;
       } else {
-        this.hitstunTick = 0
-        this.fallTick = 0
-        this.state = 4
+        this.hitstunTick = 0;
+        this.fallTick = 0;
+        this.state = 4;
       }
     }
 
@@ -768,39 +570,40 @@ class Hero {
       if (7 - 16 * this.jumpTick > 0 && this.initY - this.y < 150) { // band-aid fix for framerate-dependent jump
         this.jumpTick += this.game.clockTick
         this.y -= 7 - 16 * this.jumpTick
+
       } else {
-        this.jumpTick = 0
-        this.fallTick = 0
-        this.state = 4
+        this.jumpTick = 0;
+        this.fallTick = 0;
+        this.state = 4;
       }
     } else if (this.state == 4) {
-      this.fallTick += this.game.clockTick
-      this.y += 16 * this.fallTick <= MAX_FALL_VELOC ? 16 * this.fallTick : MAX_FALL_VELOC
+      this.fallTick += this.game.clockTick;
+      this.y += 16 * this.fallTick <= MAX_FALL_VELOC ? 16 * this.fallTick : MAX_FALL_VELOC;
     }
 
     // updates for left/right movement
     if (this.game.d && !this.game.a) {
-      if (this.state == 0 || this.state == 2) this.state = 2
-      if (canTurn) this.dir = 0
-      if (canMoveRight) this.x += this.speed * this.game.clockTick
+      if (this.state == 0 || this.state == 2) this.state = 2;
+      if (canTurn) this.dir = 0;
+      if (canMoveRight) this.x += this.speed * this.game.clockTick;
     } else if (this.game.a && !this.game.d) {
-      if (this.state == 0 || this.state == 2) this.state = 2
-      if (canTurn) this.dir = 1
-      if (canMoveLeft) this.x -= this.speed * this.game.clockTick
+      if (this.state == 0 || this.state == 2) this.state = 2;
+      if (canTurn) this.dir = 1;
+      if (canMoveLeft) this.x -= this.speed * this.game.clockTick;
     }
 
     if (this.dead) {
-      this.state = 8
-      this.deathTick += this.game.clockTick
+      this.state = 8;
+      this.deathTick += this.game.clockTick;
       if (this.deathTick > DEATH_DURATION) {
-        this.x = this.spawnX
-        this.y = this.spawnY
-        this.currentHealth = this.maxHealth
-        this.dead = false
-        this.deathTick = 0
-        this.animations[0][8] = new animator(this.spritesheet, 21 * 60, 0, 60, 54, 3, 0.3, false)
-        this.animations[1][8] = new animator(this.spritesheet, 21 * 60, 54, 60, 54, 3, 0.3, false)
-        this.gameover = true
+        this.x = this.spawnX;
+        this.y = this.spawnY;
+        this.currentHealth = this.maxHealth;
+        this.dead = false;
+        this.deathTick = 0;
+        this.animations[0][8] = new animator(this.spritesheet, 21 * 60, 0, 60, 54, 3, 0.3, false);
+        this.animations[1][8] = new animator(this.spritesheet, 21 * 60, 54, 60, 54, 3, 0.3, false);
+        this.gameover = true;
       }
     }
 
@@ -811,13 +614,7 @@ class Hero {
   }
 
   draw(ctx) {
-    this.animations[this.dir][this.state].drawFrame(
-      this.game.clockTick,
-      ctx,
-      this.x - this.game.camera.x,
-      this.y,
-      PARAMS.SCALE
-    )
+    this.animations[this.dir][this.state].drawFrame(this.game.clockTick, ctx, this.x - this.game.camera.x, this.y, PARAMS.SCALE);
 
     this.healthbar.draw(ctx);
     this.ultIcon.draw(ctx);

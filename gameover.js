@@ -2,7 +2,7 @@ class GameOver {
   constructor(game) {
     this.game = game;
     this.elapsed = 0;
-    this.reviveTimer = 3
+    this.reviveTimer = 3;
     ASSET_MANAGER.pauseBackgroundMusic();
   }
   update() {

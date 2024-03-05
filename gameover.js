@@ -3,17 +3,19 @@ class GameOver {
     this.game = game;
     this.elapsed = 0;
     this.reviveTimer = 3;
-    ASSET_MANAGER.pauseBackgroundMusic();
   }
   update() {
     this.elapsed += this.game.clockTick;
-    this.reviveTimer -= 1 * this.game.clockTick;
-    if (this.elapsed > 3) {
+
+    if (this.reviveTimer > 1) {
+      ASSET_MANAGER.playAsset("./sound/gameOver.wav");
+      this.reviveTimer -= 1 * this.game.clockTick;
+    }
+    if (this.elapsed > 5) {
       this.game.camera.clearEntities();
       this.game.addEntity(new TitleScreen(this.game));
     }
   }
-
   draw(ctx) {
     ctx.font = PARAMS.BLOCKWIDTH + 'px "Press Start 2P"';
 

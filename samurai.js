@@ -115,6 +115,7 @@ class Samurai {
       if (this.meleeTimer < meleeLimit) {
         if (this.meleeTimer < 0.05 && !this.hasAttacked) {
           // active bounding box to be cast for short duration
+          ASSET_MANAGER.playAsset("./sound/samuraiSlash.wav");
           if (this.dir == 1) {
             this.hitbox = new boundingbox(this.x - this.game.camera.x, this.y - this.game.camera.y, 48 * PARAMS.SCALE, 64 * PARAMS.SCALE);
           } else {
@@ -158,7 +159,7 @@ class Samurai {
 
         this.game.addEntity(proj);
         this.game.projectiles.push(proj);
-
+        ASSET_MANAGER.playAsset("./sound/samuraiProj.wav");
         this.chargingTimer = 0;
         this.projectileTimer = 0;
         this.projectileCount = 0;

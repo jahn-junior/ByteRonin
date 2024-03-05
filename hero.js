@@ -5,25 +5,25 @@ class Hero {
     this.game.hero = this;
     this.spritesheet = ASSET_MANAGER.getAsset("./sprites/hero.png");
 
-    this.x = x
-    this.y = y
+    this.x = x;
+    this.y = y;
     this.initY = 0;
-    this.spawnX = x
-    this.spawnY = y
-    this.radius = 32
+    this.spawnX = x;
+    this.spawnY = y;
+    this.radius = 32;
 
-    this.jumpTick = 0 // used for jump deceleration
-    this.fallTick = 0 // used for fall acceleration
-    this.meleeTick = 101 // value indicates that attack is ready
-    this.rangedTick = 101 // value indicates that attack is ready
-    this.deathTick = 0
-    this.hitstunTick = 0
-    this.hasFired = false
-    this.parryTimer = 0
+    this.jumpTick = 0; // used for jump deceleration
+    this.fallTick = 0; // used for fall acceleration
+    this.meleeTick = 101; // value indicates that attack is ready
+    this.rangedTick = 101; // value indicates that attack is ready
+    this.deathTick = 0;
+    this.hitstunTick = 0;
+    this.hasFired = false;
+    this.parryTimer = 0;
 
-    this.dashTick = 3
-    this.dashCooldown = 5
-    this.dashDisplay = 0
+    this.dashTick = 3;
+    this.dashCooldown = 5;
+    this.dashDisplay = 0;
 
     this.critUltTick = 0;
     this.critCDTimer = 0;
@@ -38,25 +38,25 @@ class Hero {
     this.powerUpTwo = 0; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
-    this.dir = 0
+    this.dir = 0;
 
     // 0 = idle, 1 = parry, 2 = running, 3 = jumping, 4 = falling, 5 = melee
     // 6 = hitstun, 7 = shoot, 8 = dead, 9 = dash
 
-    this.state = 0
-    this.prevState = 0
+    this.state = 0;
+    this.prevState = 0;
 
-    this.maxHealth = 25000
-    this.speed = 400
-    this.currentHealth = this.maxHealth
-    this.healthbar = new HealthBar(this)
-    this.ultIcon = new CritCooldown(this.game, this, 1, 0)
-    this.dashIcon = new DashCooldown(this.game, this, 1)
-    this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0)
-    this.critChance = 0.2
-    this.dead = false
-    this.gameover = false
-    
+    this.maxHealth = 25000;
+    this.speed = 400;
+    this.currentHealth = this.maxHealth;
+    this.healthbar = new HealthBar(this);
+    this.ultIcon = new CritCooldown(this.game, this, 1, 0);
+    this.dashIcon = new DashCooldown(this.game, this, 1);
+    this.orbitalIcon = new OrbitalCooldown(this.game, this, 1, 0);
+    this.critChance = 0.2;
+    this.dead = false;
+    this.gameover = false;
+
     this.animations = [];
     this.loadAnimations();
 
@@ -120,31 +120,30 @@ class Hero {
   }
 
   update() {
-    let that = this
+    let that = this;
 
-    const MAX_FALL_VELOC = 7
-    const MELEE_DURATION = 0.3 // matches up with the animation duration
-    const ATTACK_READY = 101 // arbitrary value to signal that the hero can attack again
-    const RANGED_DURATION = 0.48
-    const HITSTUN_DURATION = 0.35
-    const DEATH_DURATION = 0.85
-    const PROJECTILE_VELOCITY = 850
-    const DASH_DURATION = 0.25
-    const DASH_COOLDOWN = 2.5
-    const ORBITAL_COOLDOWN = 22;
+    const MAX_FALL_VELOC = 7;
+    const MELEE_DURATION = 0.3; // matches up with the animation duration
+    const ATTACK_READY = 101; // arbitrary value to signal that the hero can attack again
+    const RANGED_DURATION = 0.48;
+    const HITSTUN_DURATION = 0.35;
+    const DEATH_DURATION = 0.85;
+    const PROJECTILE_VELOCITY = 850;
+    const DASH_DURATION = 0.25;
+    const DASH_COOLDOWN = 2.5;
+    const ORBITAL_COOLDOWN = 1;
     const ORBITAL_RATE = 0.25;
 
     const ORBITAL_DAMAGE = 42500 * (0.9 + Math.random() * 0.2);
-    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2)
-    const PROJECTILE_DAMAGE = 30000 * (0.9 + Math.random() * 0.2)
+    const MELEE_DAMAGE = 15000 * (0.9 + Math.random() * 0.2);
+    const PROJECTILE_DAMAGE = 30000 * (0.9 + Math.random() * 0.2);
 
-    let canMoveLeft = true
-    let canMoveRight = true
-    let canTurn = true
+    let canMoveLeft = true;
+    let canMoveRight = true;
+    let canTurn = true;
     let offset = this.dir == 0 ? 150 : -50;
-    let canUseDash = this.dashCooldown >= DASH_COOLDOWN
-    let canUseOrb = this.orbCD >= ORBITAL_COOLDOWN
-
+    let canUseDash = this.dashCooldown >= DASH_COOLDOWN;
+    let canUseOrb = this.orbCD >= ORBITAL_COOLDOWN;
 
     // state defaults to falling
     if (this.state != 3 && this.state != 6) {
@@ -169,13 +168,9 @@ class Hero {
           canMoveLeft = false;
         }
 
-        if (
-          that.prevState == 6 &&
-          (Math.abs(that.box.left - tile.box.right) < 8 * PARAMS.SCALE ||
-            Math.abs(that.box.right - tile.box.left) < 8 * PARAMS.SCALE)
-        ) {
-          canMoveRight = false
-          canMoveLeft = false
+        if (that.prevState == 6 && (Math.abs(that.box.left - tile.box.right) < 8 * PARAMS.SCALE || Math.abs(that.box.right - tile.box.left) < 8 * PARAMS.SCALE)) {
+          canMoveRight = false;
+          canMoveLeft = false;
         }
 
         if (that.state == 3 && that.box.top - tile.box.bottom <= 4 * PARAMS.SCALE) {
@@ -191,82 +186,65 @@ class Hero {
 
     // parry input
     if (this.game.k && (this.state == 0 || this.state == 1 || this.state == 2)) {
-      canMoveLeft = false
-      canMoveRight = false
-      this.state = 1
-      this.parryTimer += this.game.clockTick
+      ASSET_MANAGER.playAsset("./sound/parry.wav");
+      canMoveLeft = false;
+      canMoveRight = false;
+      this.state = 1;
+      this.parryTimer += this.game.clockTick;
     } else {
-      this.parryTimer = 0
+      this.parryTimer = 0;
     }
-    console.log(this.parryTimer)
+    console.log(this.parryTimer);
 
     // dash input
 
-    if (
-      this.game.l && (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)
-    ) {
+    if (this.game.l && (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)) {
       if (canUseDash) {
-        this.state = 9
-        this.dashTick = 0
-        canTurn = false
+        ASSET_MANAGER.playAsset("./sound/dash.wav");
+        this.state = 9;
+        this.dashTick = 0;
+        canTurn = false;
       }
     }
 
     // dash logic
     if (this.dashTick < DASH_DURATION) {
-      this.state = 9
-      this.dashTick += this.game.clockTick
+      this.state = 9;
+      this.dashTick += this.game.clockTick;
       if (this.dir == 0) {
-        canMoveLeft = false
-        if (canMoveRight) this.x += 750 * this.game.clockTick
+        canMoveLeft = false;
+        if (canMoveRight) this.x += 750 * this.game.clockTick;
       } else {
-        canMoveRight = false
-        if (canMoveLeft) this.x -= 750 * this.game.clockTick
+        canMoveRight = false;
+        if (canMoveLeft) this.x -= 750 * this.game.clockTick;
       }
-      this.dashCooldown = 0
+      this.dashCooldown = 0;
     }
 
     // refresh cooldown
     if (this.dashCooldown < DASH_COOLDOWN) {
-      this.dashCooldown += this.game.clockTick
-      this.dashDisplay = Math.floor(DASH_COOLDOWN - this.dashCooldown)
+      this.dashCooldown += this.game.clockTick;
+      this.dashDisplay = Math.floor(DASH_COOLDOWN - this.dashCooldown);
     }
 
-    let boss = null
-    if (this.game.camera.boss) boss = this.game.camera.boss
+    let boss = null;
+    if (this.game.camera.boss) boss = this.game.camera.boss;
 
-    
     if (that.hitbox && that.hitbox.collide(boss.box)) {
       if (!boss.isInvulnerable && boss.canHit) {
         // critical hit chance calculation
         if (Math.random() * 1 < that.critChance) {
-          that.game.addEntity(
-            new Score(
-              that.game,
-              boss.x - that.game.camera.x + offset,
-              boss.y - that.game.camera.y + 50,
-              MELEE_DAMAGE * 1.5,
-              true
-            )
-          )
-          boss.currentHealth -= MELEE_DAMAGE * 1.5
+          that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + offset, boss.y - that.game.camera.y + 50, MELEE_DAMAGE * 1.5, true));
+          boss.currentHealth -= MELEE_DAMAGE * 1.5;
         } else {
-          that.game.addEntity(
-            new Score(
-              that.game,
-              boss.x - that.game.camera.x + offset,
-              boss.y - that.game.camera.y + 50,
-              MELEE_DAMAGE,
-              false
-            )
-          )
-          boss.currentHealth -= MELEE_DAMAGE
+          that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + offset, boss.y - that.game.camera.y + 50, MELEE_DAMAGE, false));
+          boss.currentHealth -= MELEE_DAMAGE;
         }
         boss.canHit = false;
       }
 
       if (boss.currentHealth <= 0) {
-        boss.dead = true
+        boss.dead = true;
       }
     }
 
@@ -277,28 +255,12 @@ class Hero {
           if (Math.random() < that.critChance) {
             const critMultiplier = 1.5;
             const critDamage = proj.damage * critMultiplier;
-            that.game.addEntity(
-                new Score(
-                that.game,
-                boss.x - that.game.camera.x + offset,
-                boss.y - that.game.camera.y + 50,
-                critDamage,
-                true
-                )
-            );
+            that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + offset, boss.y - that.game.camera.y + 50, critDamage, true));
             boss.currentHealth -= proj.damage * critMultiplier;
           } else {
-            that.game.addEntity(
-                new Score(
-                that.game,
-                boss.x - that.game.camera.x + offset,
-                boss.y - that.game.camera.y + 50,
-                proj.damage,
-                false
-                )
-            );
+            that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + offset, boss.y - that.game.camera.y + 50, proj.damage, false));
             boss.currentHealth -= proj.damage;
-          }                             
+          }
         }
 
         proj.hitbox = new boundingbox(3000, 3000, 1, 1); // teleport the BB outside arena on collision
@@ -314,29 +276,12 @@ class Hero {
       if ((this.activeOrb.timer - 1.5) / ORBITAL_RATE > this.nextOrbitalHit) {
         this.nextOrbitalHit++;
         if (!boss.isInvulnerable) {
-
           if (Math.random() < that.critChance) {
-            boss.currentHealth -= ORBITAL_DAMAGE * 1.5
-            that.game.addEntity(
-              new Score(
-              that.game,
-              boss.x - that.game.camera.x + offset,
-              boss.y - that.game.camera.y + 50,
-              ORBITAL_DAMAGE * 1.5,
-              true
-              )
-          )
+            boss.currentHealth -= ORBITAL_DAMAGE * 1.5;
+            that.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + offset, boss.y - that.game.camera.y + 50, ORBITAL_DAMAGE * 1.5, true));
           } else {
             boss.currentHealth -= ORBITAL_DAMAGE;
-            this.game.addEntity(
-              new Score(
-                that.game,
-                boss.x - that.game.camera.x + offset,
-                boss.y - that.game.camera.y + 50,
-                ORBITAL_DAMAGE,
-                false
-              )
-            );
+            this.game.addEntity(new Score(that.game, boss.x - that.game.camera.x + offset, boss.y - that.game.camera.y + 50, ORBITAL_DAMAGE, false));
           }
 
           if (boss.currentHealth <= 0) {
@@ -351,24 +296,26 @@ class Hero {
       if (that.state != 6 && that.state != 9) {
         if (that.state == 1) {
           if (that.parryTimer > 0.2) {
-            that.currentHealth -= boss.meleeDamage * 0.35
+            that.currentHealth -= boss.meleeDamage * 0.35;
+            ASSET_MANAGER.playAsset("./sound/hit.wav");
           }
         } else {
-          that.currentHealth -= boss.meleeDamage
-          that.state = 6
+          that.currentHealth -= boss.meleeDamage;
+          ASSET_MANAGER.playAsset("./sound/hit.wav");
+          that.state = 6;
         }
-        
-        that.hitbox = null
-        that.meleeTick = ATTACK_READY
-        that.rangedTick = ATTACK_READY
+
+        that.hitbox = null;
+        that.meleeTick = ATTACK_READY;
+        that.rangedTick = ATTACK_READY;
 
         // reload animations if interrupted
         if (that.meleeTick < MELEE_DURATION) {
-          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false)
-          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false)
+          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
         } else if (that.rangedTick < RANGED_DURATION) {
-          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false)
-          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false)
+          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
         }
       }
     }
@@ -376,20 +323,22 @@ class Hero {
     // beam attack collision receiving from a boss
     if (boss.beambox && boss.beambox.collide(that.box)) {
       if (that.state != 1 && that.state != 6 && that.state != 9) {
-        that.currentHealth -= boss.beamDamage
-        boss.beambox = null
-        that.meleeTick = ATTACK_READY
-        that.rangedTick = ATTACK_READY
+        ASSET_MANAGER.playAsset("./sound/hit.wav");
+        that.currentHealth -= boss.beamDamage;
+
+        boss.beambox = null;
+        that.meleeTick = ATTACK_READY;
+        that.rangedTick = ATTACK_READY;
 
         if (that.meleeTick < MELEE_DURATION) {
-          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false)
-          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false)
+          that.animations[0][5] = new animator(that.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+          that.animations[1][5] = new animator(that.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
         } else if (that.rangedTick < RANGED_DURATION) {
-          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false)
-          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false)
+          that.animations[0][7] = new animator(that.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
+          that.animations[1][7] = new animator(that.spritesheet, 11 * 60, 54, 60, 54, 5, 0.1, false);
         }
 
-        that.state = 6
+        that.state = 6;
       }
     }
 
@@ -399,26 +348,25 @@ class Hero {
         if (that.state != 6 && that.state != 9 && !(proj instanceof HeroProjectile)) {
           if (that.state == 1) {
             if (that.parryTimer > 0.2) {
-              that.currentHealth -= 0.35 * proj.damage
+              that.currentHealth -= 0.35 * proj.damage;
+              ASSET_MANAGER.playAsset("./sound/hit.wav");
             }
           } else {
-            that.state = 6
-            that.currentHealth -= proj.damage
-            that.meleeTick = ATTACK_READY
-            that.rangedTick = ATTACK_READY
+            that.state = 6;
+            that.currentHealth -= proj.damage;
+            ASSET_MANAGER.playAsset("./sound/hit.wav");
+            that.meleeTick = ATTACK_READY;
+            that.rangedTick = ATTACK_READY;
           }
-          proj.hitbox = null
-          proj.removeFromWorld = true
+          proj.hitbox = null;
+          proj.removeFromWorld = true;
         }
       }
     });
 
-    if (this.currentHealth <= 0) {
-      this.dead = true;
-    }
-
     // melee attack input
     if (this.game.j && this.meleeTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
+      ASSET_MANAGER.playAsset("./sound/slash.wav");
       canMoveLeft = false;
       canMoveRight = false;
       canTurn = false;
@@ -428,50 +376,53 @@ class Hero {
 
     // jump input
     if (this.game.w && (this.state == 0 || this.state == 2)) {
+      ASSET_MANAGER.playAsset("./sound/jump.wav");
+
       this.initY = this.y;
-      this.state = 3
+      this.state = 3;
     }
 
     // ranged attack input
     if (this.game.i && this.rangedTick == ATTACK_READY && (this.state == 0 || this.state == 1)) {
-      canMoveLeft = false
-      canMoveRight = false
-      canTurn = false
-      this.hasFired = false
-      this.state = 7
-      this.rangedTick = 0
+      ASSET_MANAGER.playAsset("./sound/lazerButton.wav");
+      canMoveLeft = false;
+      canMoveRight = false;
+      canTurn = false;
+      this.hasFired = false;
+      this.state = 7;
+      this.rangedTick = 0;
     }
 
     // ultimate (crit chance) input
-    if (this.game.u  && this.powerUpOne) {
+    if (this.game.u && this.powerUpOne) {
       if (this.canUseUlt) {
-        this.critChance = 1
-        this.ultActive = 1
-        this.canUseUlt = 0
+        this.critChance = 1;
+        this.ultActive = 1;
+        this.canUseUlt = 0;
       }
     }
 
     // ultimate skill active logic
     if (this.ultActive) {
-      this.critUltTick += this.game.clockTick
+      this.critUltTick += this.game.clockTick;
       if (this.critUltTick >= 5) {
-        this.startCD = 1
-        this.critChance = 0.2 // revert back to regular crit chance
-        this.critUltTick = 0
-        this.ultActive = 0
+        this.startCD = 1;
+        this.critChance = 0.2; // revert back to regular crit chance
+        this.critUltTick = 0;
+        this.ultActive = 0;
       }
     }
 
     // ultimate skill cooldown logic
     if (this.startCD) {
       if (this.critCDTimer < 20) {
-        this.critCDTimer += this.game.clockTick
-        this.critCDDisplay -= this.game.clockTick
+        this.critCDTimer += this.game.clockTick;
+        this.critCDDisplay -= this.game.clockTick;
       } else {
-        this.canUseUlt = 1
-        this.startCD = 0
-        this.critCDTimer = 0
-        this.critCDDisplay = 20
+        this.canUseUlt = 1;
+        this.startCD = 0;
+        this.critCDTimer = 0;
+        this.critCDDisplay = 20;
       }
     }
 
@@ -479,6 +430,7 @@ class Hero {
       if (canUseOrb) {
         this.activeOrb = new OrbitalStrike(this.game);
         this.game.addEntity(this.activeOrb);
+        ASSET_MANAGER.playAsset("./sound/orbital.wav");
         this.nextOrbitalHit = 0;
         this.orbCD = 0;
       }
@@ -509,36 +461,27 @@ class Hero {
       }
     } else {
       // reload animation so that it can play on the next attack
-      this.animations[0][5] = new animator(this.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false)
-      this.animations[1][5] = new animator(this.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false)
-      this.hitbox = null
-      this.meleeTick = ATTACK_READY
-      boss.canHit = true
+      this.animations[0][5] = new animator(this.spritesheet, 7 * 60, 0, 60, 54, 4, 0.08, false);
+      this.animations[1][5] = new animator(this.spritesheet, 7 * 60, 54, 60, 54, 4, 0.08, false);
+      this.hitbox = null;
+      this.meleeTick = ATTACK_READY;
+      boss.canHit = true;
     }
 
     // handles state when hero is in the middle of a ranged attack
     if (this.rangedTick < RANGED_DURATION) {
-      canMoveLeft = false
-      canMoveRight = false
-      canTurn = false
-      this.rangedTick += this.game.clockTick
-      this.state = 7
+      canMoveLeft = false;
+      canMoveRight = false;
+      canTurn = false;
+      this.rangedTick += this.game.clockTick;
+      this.state = 7;
       if (this.rangedTick > 0.45 && this.rangedTick < RANGED_DURATION && !this.hasFired) {
-        this.hasFired = true
-        let projX = this.x - this.game.camera.x
-        if (this.dir == 0) projX += this.box.width
-        let proj = new HeroProjectile(
-          this.game,
-          projX,
-          this.y - this.game.camera.y + 20 * PARAMS.SCALE,
-          13 * PARAMS.SCALE,
-          3 * PARAMS.SCALE,
-          this.dir,
-          PROJECTILE_VELOCITY,
-          PROJECTILE_DAMAGE
-        )
-        this.game.addEntity(proj)
-        this.game.projectiles.push(proj)
+        this.hasFired = true;
+        let projX = this.x - this.game.camera.x;
+        if (this.dir == 0) projX += this.box.width;
+        let proj = new HeroProjectile(this.game, projX, this.y - this.game.camera.y + 20 * PARAMS.SCALE, 13 * PARAMS.SCALE, 3 * PARAMS.SCALE, this.dir, PROJECTILE_VELOCITY, PROJECTILE_DAMAGE);
+        this.game.addEntity(proj);
+        this.game.projectiles.push(proj);
       }
     } else {
       this.animations[0][7] = new animator(this.spritesheet, 11 * 60, 0, 60, 54, 5, 0.1, false);
@@ -549,13 +492,16 @@ class Hero {
 
     // hitstun updates
     if (this.state == 6) {
+      if (this.currentHealth <= 0) {
+        this.currentHealth = 0;
+      }
       if (this.hitstunTick < HITSTUN_DURATION) {
         this.state = 6;
         this.hitstunTick += this.game.clockTick;
         if (this.x < this.game.camera.boss.x) {
-          if (canMoveLeft) this.x -= 125 * this.game.clockTick
+          if (canMoveLeft) this.x -= 125 * this.game.clockTick;
         } else {
-          if (canMoveRight) this.x += 125 * this.game.clockTick
+          if (canMoveRight) this.x += 125 * this.game.clockTick;
         }
         this.y -= 5 - 16 * this.hitstunTick;
       } else {
@@ -565,12 +511,18 @@ class Hero {
       }
     }
 
+    if (this.currentHealth <= 0 && this.state != 6) {
+      this.currentHealth = 0;
+      this.dead = true;
+      ASSET_MANAGER.pauseBackgroundMusic();
+      ASSET_MANAGER.playAsset("./sound/death.wav");
+    }
     // y updates for jumping/falling
     if (this.state == 3) {
-      if (7 - 16 * this.jumpTick > 0 && this.initY - this.y < 150) { // band-aid fix for framerate-dependent jump
-        this.jumpTick += this.game.clockTick
-        this.y -= 7 - 16 * this.jumpTick
-
+      if (7 - 16 * this.jumpTick > 0 && this.initY - this.y < 150) {
+        // band-aid fix for framerate-dependent jump
+        this.jumpTick += this.game.clockTick;
+        this.y -= 7 - 16 * this.jumpTick;
       } else {
         this.jumpTick = 0;
         this.fallTick = 0;

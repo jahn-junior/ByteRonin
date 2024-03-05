@@ -17,6 +17,19 @@ ASSET_MANAGER.queueDownload("./music/bossMusic.wav");
 ASSET_MANAGER.queueDownload("./music/titlePageMusic.wav");
 ASSET_MANAGER.queueDownload("./sound/lazerButton.wav");
 ASSET_MANAGER.queueDownload("./sound/lazerReturn.wav");
+ASSET_MANAGER.queueDownload("./sound/jump.wav");
+ASSET_MANAGER.queueDownload("./sound/parry.wav");
+ASSET_MANAGER.queueDownload("./sound/dash.wav");
+ASSET_MANAGER.queueDownload("./sound/slash.wav");
+ASSET_MANAGER.queueDownload("./sound/hit.wav");
+ASSET_MANAGER.queueDownload("./sound/death.wav");
+ASSET_MANAGER.queueDownload("./sound/gameOver.wav");
+ASSET_MANAGER.queueDownload("./sound/samuraiProj.wav");
+ASSET_MANAGER.queueDownload("./sound/samuraiSlash.wav");
+ASSET_MANAGER.queueDownload("./sound/orochiLazer.wav");
+ASSET_MANAGER.queueDownload("./sound/transform.wav");
+ASSET_MANAGER.queueDownload("./sound/beam.wav");
+ASSET_MANAGER.queueDownload("./sound/orbital.wav");
 ASSET_MANAGER.queueDownload("./sprites/wasd.png");
 
 ASSET_MANAGER.downloadAll(() => {

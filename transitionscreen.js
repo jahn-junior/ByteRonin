@@ -63,12 +63,12 @@ class WinScreenThree {
       ctx.fillText("Upgrade unlocked:", 3.7 * PARAMS.BLOCKWIDTH, 3.1 * PARAMS.BLOCKWIDTH);
       ctx.fillText("[Orbital Strike]", 3.6 * PARAMS.BLOCKWIDTH, 3.6 * PARAMS.BLOCKWIDTH);
       ctx.fillText("Press 'O' to command an orbital stike on an enemy", 3.7 * PARAMS.BLOCKWIDTH, 4.1 * PARAMS.BLOCKWIDTH);
-      ctx.fillText("(15 second cooldown)", 3.7 * PARAMS.BLOCKWIDTH, 4.6 * PARAMS.BLOCKWIDTH);
+      ctx.fillText("(22 second cooldown)", 3.7 * PARAMS.BLOCKWIDTH, 4.6 * PARAMS.BLOCKWIDTH);
       ctx.fillStyle = "#42f5f2";
       ctx.fillText("Upgrade unlocked:", 3.7 * PARAMS.BLOCKWIDTH, 3 * PARAMS.BLOCKWIDTH);
       ctx.fillText("[Orbital Strike]", 3.6 * PARAMS.BLOCKWIDTH, 3.5 * PARAMS.BLOCKWIDTH);
       ctx.fillText("Press 'O' to command an orbital stike on an enemy", 3.7 * PARAMS.BLOCKWIDTH, 4.0 * PARAMS.BLOCKWIDTH);
-      ctx.fillText("(15 second cooldown)", 3.7 * PARAMS.BLOCKWIDTH, 4.5 * PARAMS.BLOCKWIDTH);
+      ctx.fillText("(22 second cooldown)", 3.7 * PARAMS.BLOCKWIDTH, 4.5 * PARAMS.BLOCKWIDTH);
 
       ctx.fillStyle = "Red";
       ctx.fillText("Continue", 3.7 * PARAMS.BLOCKWIDTH, 7.1 * PARAMS.BLOCKWIDTH);

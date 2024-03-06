@@ -131,7 +131,7 @@ class Hero {
     const PROJECTILE_VELOCITY = 850;
     const DASH_DURATION = 0.25;
     const DASH_COOLDOWN = 2.5;
-    const ORBITAL_COOLDOWN = 1;
+    const ORBITAL_COOLDOWN = 22;
     const ORBITAL_RATE = 0.25;
 
     const ORBITAL_DAMAGE = 42500 * (0.9 + Math.random() * 0.2);

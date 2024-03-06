@@ -9,6 +9,8 @@ class WinScreenThree {
       if (this.elapsed > 3) {
         this.game.camera.clearEntities();
         this.game.addEntity(new TitleScreen(this.game));
+        this.game.hero.powerUpOne = 1;
+        this.game.hero.powerUpTwo = 1;
       }
     }
   
@@ -46,6 +48,8 @@ class WinScreenThree {
         } else if (this.game.click && this.game.click.y > 7.6 * PARAMS.BLOCKWIDTH && this.game.click.y < 8.5 * PARAMS.BLOCKWIDTH) {
             this.game.camera.clearEntities();
             this.game.addEntity(new TitleScreen(this.game)); // Return to menu
+            this.game.hero.powerUpOne = 1;
+            this.game.hero.powerUpTwo = 1;
         }
     }
   
@@ -102,6 +106,8 @@ class WinScreenThree {
         } else if (this.game.click && this.game.click.y > 7.6 * PARAMS.BLOCKWIDTH && this.game.click.y < 8.5 * PARAMS.BLOCKWIDTH) {
             this.game.camera.clearEntities();
             this.game.addEntity(new TitleScreen(this.game));
+            this.game.hero.powerUpOne = 1;
+            this.game.hero.powerUpTwo = 0;
         }
     }
   

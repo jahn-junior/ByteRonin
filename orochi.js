@@ -9,11 +9,11 @@ class Orochi {
     this.beamsprite = ASSET_MANAGER.getAsset("./sprites/orochiBeam.png");
     this.visualRadius = 1500;
     this.speed = 100;
-    this.baseAttack = 1000;
+    this.baseAttack = 700;
     this.chargingTimer = 0;
     this.beamTimer = 0;
     this.beambox = null;
-    this.beamDamage = this.baseAttack * 2 * (0.9 + Math.random() * 0.2);
+    this.beamDamage = this.baseAttack * 1.75 * (0.9 + Math.random() * 0.2);
     this.transformTimer = 0;
     this.isTransformed = false;
     this.play = true;

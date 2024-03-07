@@ -1,19 +1,28 @@
-body, html {
+html,
+body {
     height: 100%;
     margin: 0;
     display: flex;
+    /* Changed to flex */
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    /* Ensures vertical stacking */
+    text-align: center;
+    /* Centers the text for all child elements */
 }
+
 body {
-   background-color: #453663;
-    background-size: cover; 
-    background-repeat: no-repeat; 
-    background-position: center;
-}
-.canvas-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: #453663;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: 'Press Start 2P', serif;
+    font-size: 24px;
+}
+
+#gameWorld {
+    background: white;
+    border: 1px solid black;
+    /* Add any specific styles you want for the canvas */
 }

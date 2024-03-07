@@ -9,6 +9,12 @@ class GameEngine {
     // Everything that will be updated and drawn each frame
     this.entities = [];
 
+    // Store bosses so that combat code can be written generically
+    this.bosses = [];
+
+    // Store projectiles so that their logic can be handled separately
+    this.projectiles = [];
+
     // List of tiles that comprise the stage
     this.stageTiles = [];
 
@@ -22,6 +28,8 @@ class GameEngine {
     this.j = false;
     this.k = false;
     this.l = false;
+    this.u = false;
+    this.o = false;
 
     // Options and the Details
     this.options = options || {
@@ -51,7 +59,13 @@ class GameEngine {
       x: e.clientX - this.ctx.canvas.getBoundingClientRect().left,
       y: e.clientY - this.ctx.canvas.getBoundingClientRect().top,
     });
-
+    function mouseListener(e) {
+      that.mouse = getXandY(e);
+    }
+    function mouseClickListener(e) {
+      that.click = getXandY(e);
+      if (PARAMS.DEBUG) console.log(that.click);
+    }
     this.ctx.canvas.addEventListener("wheel", (e) => {
       if (this.options.debugging) {
         console.log("WHEEL", getXandY(e), e.wheelDelta);
@@ -96,6 +110,12 @@ class GameEngine {
           case "KeyL":
             that.l = true;
             break;
+          case "KeyU":
+            that.u = true;
+            break;
+          case "KeyO":
+            that.o = true;
+            break;
         }
       },
       false
@@ -129,10 +149,22 @@ class GameEngine {
           case "KeyL":
             that.l = false;
             break;
+          case "KeyU":
+            that.u = false;
+
+            break;      
+          case "KeyO":
+            that.o = false;
+
+            break;
         }
       },
       false
     );
+    that.mousemove = mouseListener;
+    that.leftclick = mouseClickListener;
+    this.ctx.canvas.addEventListener("mousemove", that.mousemove, false);
+    this.ctx.canvas.addEventListener("click", that.leftclick, false);
   }
 
   addEntity(entity) {
@@ -143,6 +175,10 @@ class GameEngine {
     this.stageTiles.push(tile);
   }
 
+  clearStageTile() {
+    this.stageTiles = [];
+  }
+
   draw() {
     // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -151,11 +187,17 @@ class GameEngine {
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw(this.ctx, this);
 
+      //draw bounding boxes for debugging
       this.ctx.strokeStyle = "red";
-      if (this.entities[i].box) {
-        this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
-      }
-
+      // if (this.entities[i].box) {
+      //   this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
+      // }
+      // if (this.entities[i].hitbox) {
+      //   this.ctx.strokeRect(this.entities[i].hitbox.x, this.entities[i].hitbox.y, this.entities[i].hitbox.width, this.entities[i].hitbox.height);
+      // }
+      // if (this.entities[i].beambox) {
+      //   this.ctx.strokeRect(this.entities[i].beambox.x, this.entities[i].beambox.y, this.entities[i].beambox.width, this.entities[i].beambox.height);
+      // }
     }
     this.camera.draw(this.ctx);
   }
@@ -165,7 +207,9 @@ class GameEngine {
 
     for (let i = 0; i < entitiesCount; i++) {
       let entity = this.entities[i];
-      entity.update();
+      if (!entity.removeFromWorld) {
+        entity.update();
+      }
     }
     this.camera.update();
 

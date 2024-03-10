@@ -188,7 +188,7 @@ class GameEngine {
       this.entities[i].draw(this.ctx, this);
 
       //draw bounding boxes for debugging
-      this.ctx.strokeStyle = "red";
+      // this.ctx.strokeStyle = "red";
       // if (this.entities[i].box) {
       //   this.ctx.strokeRect(this.entities[i].box.x, this.entities[i].box.y, this.entities[i].box.width, this.entities[i].box.height);
       // }

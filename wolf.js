@@ -91,20 +91,20 @@ class Wolf {
     }
 
     dashAttack(){
-        const DASH_COOLDOWN = 4
-        const DASH_DURATION = 1
-        if (this.dashTick < DASH_DURATION) {
-            this.state = 9;
-            this.dashTick += this.game.clockTick;
-            if (this.dir == 0) {
-              canMoveLeft = false;
-              if (canMoveRight) this.x += 750 * this.game.clockTick;
-            } else {
-              canMoveRight = false;
-              if (canMoveLeft) this.x -= 750 * this.game.clockTick;
-            }
-            this.dashCooldown = 0;
-          }
+        // const DASH_COOLDOWN = 4
+        // const DASH_DURATION = 1
+        // if (this.dashTick < DASH_DURATION) {
+        //     this.state = 9;
+        //     this.dashTick += this.game.clockTick;
+        //     if (this.dir == 0) {
+        //       canMoveLeft = false;
+        //       if (canMoveRight) this.x += 750 * this.game.clockTick;
+        //     } else {
+        //       canMoveRight = false;
+        //       if (canMoveLeft) this.x -= 750 * this.game.clockTick;
+        //     }
+        //     this.dashCooldown = 0;
+        //   }
     }
 
     updateBox() {

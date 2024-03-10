@@ -12,12 +12,12 @@ class SamuraiProjectile {
     };
 
     updateBox() {
-        this.hitbox = new boundingbox(this.x, this.y, this.w, this.h);
+        this.hitbox = new boundingbox(this.x, this.y + 72, this.w, this.h);
     };
 
     update() {
         let that = this;
-        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc);
+        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc) * this.game.clockTick;
         this.updateBox();
         this.game.stageTiles.forEach(function (tile) {
             if (that.hitbox.collide(tile.box)) {
@@ -67,7 +67,7 @@ class HeroProjectile {
 
     update() {
         let that = this;
-        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc);
+        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc) * this.game.clockTick;
         this.updateBox();
         this.game.stageTiles.forEach(function (tile) {
             if (that.hitbox.collide(tile.box)) {
@@ -117,7 +117,7 @@ class OrochiProjectile {
 
     update() {
         let that = this;
-        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc);
+        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc) * this.game.clockTick;
         this.updateBox();
         this.game.stageTiles.forEach(function (tile) {
             if (that.hitbox.collide(tile.box)) {
@@ -155,12 +155,16 @@ class wolfProjectile {
     };
 
     updateBox() {
-        this.hitbox = new boundingbox(this.x, this.y - this.game.camera.y, this.w, this.h);
+        if (this.dir == 1) {
+            this.hitbox = new boundingbox(this.x, this.y - this.game.camera.y, this.w, this.h);
+        } else {
+            this.hitbox = new boundingbox(this.x - 142, this.y - this.game.camera.y, this.w, this.h);
+        }
     }
 
     update() {
         let that = this;
-        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc);
+        this.x += (this.dir == 0 ? this.veloc : -1 * this.veloc) * this.game.clockTick;
         this.updateBox();
         this.game.stageTiles.forEach(function (tile) {
             if (that.hitbox.collide(tile.box)) {

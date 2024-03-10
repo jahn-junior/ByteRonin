@@ -34,7 +34,7 @@ class Hero {
     this.activeOrb = null;
     this.nextOrbitalHit = 0;
     this.ultActive = 0;
-    this.powerUpOne = 1; // after beating 1st boss, update to 1 (init 0)
+    this.powerUpOne = 0; // after beating 1st boss, update to 1 (init 0)
     this.powerUpTwo = 0; // after beating 2nd boss, update to 1 (init 0)
 
     // 0 = right, 1 = left
@@ -196,8 +196,7 @@ class Hero {
     }
     console.log(this.parryTimer);
 
-    // dash input
-
+    // dash inputi
     if (this.game.l && (this.state == 0 || this.state == 1 || this.state == 2 || this.state == 3 || this.state == 4)) {
       if (canUseDash) {
         ASSET_MANAGER.playAsset("./sound/dash.wav");

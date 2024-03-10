@@ -127,7 +127,7 @@ class Wolf {
     }
 
     projectileAttack() {
-        const PROJ_VELOCITY = 12;
+        const PROJ_VELOCITY = 650;
         const PROJECTILE_DAMAGE = (this.baseAttack * 0.8) * (0.9 + Math.random() * 0.2);
         let chargingLimit = 0.8
         let projLimit = 1
